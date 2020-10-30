@@ -1,0 +1,284 @@
+index:
+    path: /
+    controller: App\Controller\IndexController::index
+
+set_timezone:
+    path: /settimezone
+    controller: App\Controller\IndexController::setTimeZone
+
+# Users
+login:
+    path: /login
+    controller: App\Controller\UserController::login
+logout:
+    path: /logout
+register:
+    path: /register
+    controller: App\Controller\UserController::register
+
+
+register_account:
+    path: /register_account
+    controller: App\Controller\NewAccountController::register
+
+user_settings:
+    path: /user/settings
+    controller: App\Controller\UserSettingsController::index
+
+user_settings_access_token:
+    path: /user/settings/accessTokens
+    controller: App\Controller\UserSettingsController::accessTokens
+
+user_settings_access_token_new:
+    path: /user/settings/accessTokens/new
+    controller: App\Controller\UserSettingsController::accessTokensNew
+
+# Public Account
+account_public:
+    path: /a/{account_username}
+    controller: App\Controller\AccountPublicController::indexAccount
+
+
+# Public Account - Events
+account_public_event:
+    path: /a/{account_username}/event
+    controller: App\Controller\AccountPublicEventListController::index
+
+account_public_event_calendar:
+    path: /a/{account_username}/event/calendar
+    controller: App\Controller\AccountPublicEventListController::calendar
+
+account_public_event_calendar_data:
+    path: /a/{account_username}/event/calendar/data
+    controller: App\Controller\AccountPublicEventListController::calendarData
+
+account_public_event_show_event:
+    path: /a/{account_username}/event/details/{event_id}
+    controller: App\Controller\AccountPublicEventDetailsController::showEvent
+
+account_public_event_show_event_series:
+    path: /a/{account_username}/event/details/{event_id}/series
+    controller: App\Controller\AccountPublicEventDetailsController::showEventSeries
+
+# Public Account - Tags
+account_public_tag:
+    path: /a/{account_username}/tag
+    controller: App\Controller\AccountPublicTagListController::index
+
+account_public_tag_show_tag:
+    path: /a/{account_username}/tag/details/{tag_id}
+    controller: App\Controller\AccountPublicTagDetailsController::showTag
+
+
+# Public Account - Profile
+account_public_profile:
+    path: /a/{account_username}/profile
+    controller: App\Controller\AccountPublicProfileController::index
+
+
+
+
+# Manage Account
+account_manage:
+    path: /a/{account_username}/manage
+    controller: App\Controller\AccountManageController::index
+
+
+
+# Manage Account - events
+account_manage_event:
+    path: /a/{account_username}/manage/event
+    controller: App\Controller\AccountManageEventListController::indexManageEvent
+
+account_manage_event_calendar:
+    path: /a/{account_username}/manage/event/calendar
+    controller: App\Controller\AccountManageEventListController::calendar
+
+account_manage_event_calendar_data:
+    path: /a/{account_username}/manage/event/calendar/data
+    controller: App\Controller\AccountManageEventListController::calendarData
+
+account_manage_event_new:
+    path: /a/{account_username}/manage/event/new
+    controller: App\Controller\AccountManageEventNewController::newEvent
+
+account_manage_event_show_event:
+    path: /a/{account_username}/manage/event/details/{event_id}
+    controller: App\Controller\AccountManageEventDetailsController::indexShow
+
+account_manage_event_edit_show_event_series:
+    path: /a/{account_username}/manage/event/details/{event_id}/series
+    controller: App\Controller\AccountManageEventDetailsController::indexShowSeries
+
+account_manage_event_edit_event_details:
+    path: /a/{account_username}/manage/event/details/{event_id}/edit/details
+    controller: App\Controller\AccountManageEventDetailsController::indexEditDetails
+
+account_manage_event_edit_event_tags:
+    path: /a/{account_username}/manage/event/details/{event_id}/edit/tags
+    controller: App\Controller\AccountManageEventDetailsController::indexEditTags
+
+account_manage_event_edit_event_cancel:
+    path: /a/{account_username}/manage/event/details/{event_id}/edit/cancel
+    controller: App\Controller\AccountManageEventDetailsController::indexEditCancel
+
+account_manage_event_edit_event_delete:
+    path: /a/{account_username}/manage/event/details/{event_id}/edit/delete
+    controller: App\Controller\AccountManageEventDetailsController::indexEditDelete
+
+
+# Manage Account - discover
+account_manage_discover_event:
+    path: /a/{account_username}/manage/discover/event
+    controller: App\Controller\AccountManageDiscoverEventListController::indexDiscover
+
+account_manage_discover_event_show_event:
+    path: /a/{account_username}/manage/discover/event/details/{discover_account_id}/{discover_event_id}
+    controller: App\Controller\AccountManageDiscoverEventDetailsController::indexEventDetails
+
+account_manage_discover_event_add:
+    path: /a/{account_username}/manage/discover/event/details/{discover_account_id}/{discover_event_id}/add
+    controller: App\Controller\AccountManageDiscoverEventDetailsController::indexEventAdd
+
+
+# Manage Account - tags
+account_manage_tag:
+    path: /a/{account_username}/manage/tag
+    controller: App\Controller\AccountManageTagListController::indexManageTag
+
+account_manage_tag_new:
+    path: /a/{account_username}/manage/tag/new
+    controller: App\Controller\AccountManageTagNewController::newTag
+
+account_manage_tag_show_tag:
+    path: /a/{account_username}/manage/tag/details/{tag_id}
+    controller: App\Controller\AccountManageTagDetailsController::indexShow
+
+account_manage_tag_edit_tag_details:
+    path: /a/{account_username}/manage/tag/details/{tag_id}/edit/details
+    controller: App\Controller\AccountManageTagDetailsController::indexEditDetails
+
+
+# Manage Account - profile
+account_manage_profile:
+    path: /a/{account_username}/manage/profile
+    controller: App\Controller\AccountManageProfileController::indexManageProfile
+
+account_manage_new_follow_local:
+    path: /a/{account_username}/manage/profile/new_follow_local
+    controller: App\Controller\AccountManageProfileController::indexNewFollowLocal
+
+
+account_manage_new_follow_remote:
+    path: /a/{account_username}/manage/profile/new_follow_remote
+    controller: App\Controller\AccountManageProfileController::indexNewFollowRemote
+
+
+
+# Manage Account - settings
+account_manage_settings:
+    path: /a/{account_username}/manage/settings
+    controller: App\Controller\AccountManageSettingsController::index
+
+
+# API - Misc
+
+occasion_octopus_info_json:
+    path: /.well-known/occasion-octopus-instance.json
+    controller: App\Controller\APIIndexController::occasionOctopusInfoJSON
+
+webfinger:
+    path: /.well-known/webfinger
+    controller: App\Controller\APIIndexController::webfinger
+
+account_activity_streams_index:
+    path: /activitystreams/{account_id}
+    controller: App\Controller\APIActivityStreamsController::index
+
+account_activity_streams_inbox:
+    path: /activitystreams/{account_id}/inbox
+    controller: App\Controller\APIActivityStreamsController::inbox
+
+account_activity_streams_outbox:
+    path: /activitystreams/{account_id}/outbox
+    controller: App\Controller\APIActivityStreamsController::outbox
+
+# API 1
+
+api1_account_profile_json:
+    path: /api/v1/account/{account_id}/profile.json
+    controller: App\Controller\APIV1AccountProfileController::profileJSON
+    methods:  [GET]
+
+# API 1 - Events
+
+api1_account_events_ical:
+    path: /api/v1/account/{account_id}/events.ical
+    controller: App\Controller\APIV1AccountEventListController::listICAL
+    methods:  [GET]
+
+api1_account_events_json:
+    path: /api/v1/account/{account_id}/events.json
+    controller: App\Controller\APIV1AccountEventListController::listJSON
+    methods:  [GET]
+
+
+api1_account_events_show_event_json:
+    path: /api/v1/account/{account_id}/event/{event_id}.json
+    controller: App\Controller\APIV1AccountEventDetailsController::showJSON
+    methods:  [GET]
+
+
+api1_account_events_edit_event_json:
+    path: /api/v1/account/{account_id}/event/{event_id}.json
+    controller: App\Controller\APIV1AccountEventDetailsController::editJSON
+    methods:  [POST]
+
+api1_account_events_new_event_json:
+    path: /api/v1/account/{account_id}/event.json
+    controller: App\Controller\APIV1AccountEventNewController::newJSON
+    methods:  [POST]
+
+
+# API 1 - Tags
+
+api1_account_tags_json:
+    path: /api/v1/account/{account_id}/tags.json
+    controller: App\Controller\APIV1AccountTagListController::listJSON
+    methods:  [GET]
+
+
+api1_account_tags_show_tag_json:
+    path: /api/v1/account/{account_id}/tag/{tag_id}.json
+    controller: App\Controller\APIV1AccountTagDetailsController::showJSON
+    methods:  [GET]
+
+
+api1_account_tags_edit_tag_json:
+    path: /api/v1/account/{account_id}/tag/{tag_id}.json
+    controller: App\Controller\APIV1AccountTagDetailsController::editJSON
+    methods:  [POST]
+
+api1_account_tags_new_tag_json:
+    path: /api/v1/account/{account_id}/tag.json
+    controller: App\Controller\APIV1AccountTagNewController::newJSON
+    methods:  [POST]
+
+
+# SYSADMIN
+
+sysadmin_index:
+    path: /sysadmin
+    controller: App\Controller\SysAdminIndexController::index
+
+sysadmin_user:
+    path: /sysadmin/user
+    controller: App\Controller\SysAdminUserListController::index
+
+sysadmin_account_local:
+    path: /sysadmin/account/local
+    controller: App\Controller\SysAdminAccountListController::local
+
+sysadmin_account_remote:
+    path: /sysadmin/account/remote
+    controller: App\Controller\SysAdminAccountListController::remote

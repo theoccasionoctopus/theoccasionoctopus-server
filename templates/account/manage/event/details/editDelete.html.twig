@@ -1,0 +1,15 @@
+{%  extends "account/manage/base.html.twig" %}
+
+{% block body %}
+
+
+    <div class="content">
+        <form method="post">
+            {#  @TODO Add CSFR  #}
+            <input type="hidden" name="action" value="delete">
+            <input type="submit" value="Delete this event">
+        </form>
+
+    </div>
+
+{% endblock %}

@@ -1,0 +1,209 @@
+
+@import 'vars';
+
+html, body {
+  padding: 0px;
+  margin: 0px;
+  background-color: lightgray;
+  font-family: Arial, sans-serif;
+}
+
+header#headerMain {
+  padding: 10px 0px;
+  margin: 0px;
+  background: darkblue;
+  color: white;
+  h1 {
+    margin: 0;
+  }
+  a {
+    color: white;
+    text-decoration: none;
+  }
+  a:hover, a:focus {
+    text-decoration: underline;
+  }
+  nav {
+    text-align: right;
+    float: right;
+    flex-grow: 1;
+  }
+  .content {
+    display: flex;
+  }
+}
+
+header#headerSecondary {
+  padding: 10px 0px;
+  margin: 0px;
+  background: blue;
+  color: white;
+  a {
+    color: white;
+    text-decoration: none;
+  }
+  h2 {
+    margin: 0;
+  }
+  a {
+    color: white;
+    text-decoration: none;
+  }
+  a:hover, a:focus {
+    text-decoration: underline;
+  }
+  nav {
+    text-align: right;
+    float: right;
+    flex-grow: 1;
+  }
+  .content {
+    display: flex;
+  }
+}
+
+
+
+main {
+  margin: 0px;
+  padding: 10px 0px;
+  background-color: white;
+}
+
+footer {
+  text-align: center;
+  padding: 50px 0 0 0;
+  background-color: lightgray;
+  font-size: 0.8rem;
+}
+
+.content {
+  max-width: 960px;
+  margin: 0px auto;
+}
+
+
+.flashWarning {
+  margin: 10px;
+  padding: 10px;
+  border: red solid 3px;
+  background-color: lightcoral;
+  border-radius: 4px;
+}
+
+
+p {
+  line-height: 1.5;
+}
+
+a.button {
+  padding: 10px 20px;
+  color: white;
+  background-color: darkblue;
+  border: 0;
+  border-radius: 5px;
+  text-decoration: none;
+}
+a.button:hover, a.button:focus {
+  background-color: blue;
+  text-decoration: underline;
+}
+
+
+.switcherWrapper {
+  margin: 10px 0;
+  text-align: right;
+  .switcherList {
+    line-height: 2;
+    .switcherAction {
+      background: #EEEEEE;
+      display: inline;
+      padding: 5px 15px;
+      border-radius: 2px;
+      a {
+        padding: 10px 30px;
+        text-decoration: none;
+        color: #333;
+      }
+      a:hover, a:focus {
+        text-decoration: underline;
+      }
+    }
+    .current {
+      border: 1px solid #000000;
+      border-radius: 2px;
+      background: lightblue;
+      a {
+        font-weight: bold;
+      }
+    }
+  }
+}
+
+table.table {
+  margin: 15px 0;
+  tr {
+    margin: 0px;
+    th {
+      margin: 0px;
+      padding: 15px;
+      border-bottom: 3px black solid;
+    }
+    td {
+      margin: 0px;
+      padding: 15px;
+      border-bottom: 1px black solid;
+    }
+  }
+}
+
+
+.mainListTags {
+  list-style-type: none;
+  li.tag {
+    padding: 10px;
+    border-bottom: 1px solid #8c8c8c;
+  }
+}
+
+.mainListEvents {
+  list-style-type: none;
+  li.event {
+    padding: 10px;
+    border-bottom: 1px solid #8c8c8c;
+  }
+}
+
+.filterListWrapper {
+  border: 1px solid black;
+  padding: 10px;
+}
+
+form.styled {
+  div {
+    margin: 10px 0;
+  }
+  label {
+    display: block;
+  }
+  textarea {
+    width: 100%;
+    height: 100px;
+  }
+  input[type="text"] {
+    width: 100%;
+  }
+  button[type="submit"] {
+    padding: 10px 20px;
+    color: white;
+    background-color: darkblue;
+    border: 0;
+    border-radius: 5px;
+    text-decoration: none;
+  }
+  button[type="submit"].button:hover, button[type="submit"].button:focus {
+    background-color: blue;
+    text-decoration: underline;
+  }
+
+}

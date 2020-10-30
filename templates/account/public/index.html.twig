@@ -1,0 +1,19 @@
+{%  extends "account/public/base.html.twig" %}
+
+{% block body %}
+
+    <div class="content">
+        <p>Welcome to this account</p>
+
+        <h3>Events</h3>
+
+        <a  class="button" role="button"    href="{{ path('account_public_event',{'account_username':account.username}) }}">Events</a>
+
+        <h3>Tags</h3>
+
+        <a  class="button" role="button"    href="{{ path('account_public_tag',{'account_username':account.username}) }}">Tags</a>
+
+    </div>
+
+
+{% endblock %}

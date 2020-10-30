@@ -1,0 +1,55 @@
+{%  extends "account/manage/base.html.twig" %}
+
+{% block body %}
+
+    <div class="content">
+        <div>Account ID (for API Access): {{  account.id }}</div>
+
+        <div>Default Timezone: {{  account.accountLocal.defaultTimeZone.title }}</div>
+
+        <div>Default Country: {{  account.accountLocal.defaultCountry.title }}</div>
+
+        <div>Default Privacy: {%  if account.accountLocal.defaultPrivacy == 0 %}Public{%  else %}Private{%  endif %}</div>
+
+        <div>Years Behind: {{ account.yearsBehind }}</div>
+        <div>Years Ahead: {{ account.yearsAhead }}</div>
+
+
+
+
+        <h3>Imports</h3>
+
+        {%  if imports %}
+
+            <table class="table">
+                <tr>
+                    <th>Title</th>
+                    <th>Description</th>
+                    <th>URL</th>
+                    <th>Privacy</th>
+                    <th>Default Country</th>
+                    <th>Default Timezone</th>
+                    <th>Enabled</th>
+                    <th>&nbsp;</th>
+                </tr>
+                {%  for import in imports %}
+                    <tr>
+                        <td>{{  import.title }}</td>
+                        <td>{{  import.description }}</td>
+                        <td><a href="{{  import.url }}">{{  import.url }}</a></td>
+                        <td>{%  if import.privacy == 0 %}Public{%  else %}Private{%  endif %}</td>
+                        <td>{%  if import.defaultCountry %}{{  import.defaultCountry.title }}{%  endif %}</td>
+                        <td>{{  import.defaultTimezone.code }}</td>
+                        <td>{%  if import.enabled %}Enabled{%  else %}-{%  endif %}</td>
+                        <td></td>
+                        <td>
+                            &nbsp;
+                        </td>
+                    </tr>
+                {%  endfor %}
+            </table>
+
+        {%  endif %}
+    </div>
+
+{% endblock %}

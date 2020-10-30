@@ -1,0 +1,14 @@
+
+<div class="filterListWrapper">
+    <form method="get" style="clear: both;">
+        <input type="hidden" name="eventListFilterDataSubmitted" value="1">
+
+        <label><input type="checkbox" name="fromNow" value="1" {% if eventListFilterParams.fromNow %}checked{% endif %}> From now</label>
+
+        <label><input type="checkbox" name="showDeleted" value="1" {% if eventListFilterParams.showDeleted %}checked{% endif %}> Show Deleted</label>
+        <label><input type="checkbox" name="showCancelled" value="1" {% if eventListFilterParams.showCancelled %}checked{% endif %}> Show Cancelled</label>
+
+        <input type="submit" value="Filter"/>
+
+    </form>
+</div>

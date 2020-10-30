@@ -1,0 +1,68 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}User Settings{% endblock %}
+
+{% block subbanner %}
+    <h2>
+        <a class="p-2 text-dark" href="{{ path('user_settings') }}">User Settings</a>
+    </h2>
+{% endblock %}
+
+{% block body %}
+
+
+    <div class="content">
+
+        <table class="table">
+            <tr>
+                <th>Token</th>
+                <th>Permission</th>
+                <th>Enabled?</th>
+                <th>Locked to account?</th>
+                <th>Note</th>
+            </tr>
+            {%  for accessToken in accessTokens %}
+                <tr>
+                    <td>{{ accessToken.token }}</td>
+                    <td>{%  if accessToken.write %}Write{%  else %}Read{%  endif %}</td>
+                    <td>{%  if accessToken.enabled %}Enabled{%  else %}Blocked{%  endif %}</td>
+                    <td>
+                    {%  if accessToken.account %}
+                        {{  accessToken.account.title }} ({{  accessToken.account.username }})
+                    {%  else %}
+                        All accounts
+                    {%  endif %}
+                    </td>
+                    <td>{{  accessToken.note | nl2br  }}</td>
+                </tr>
+            {%  endfor %}
+        </table>
+
+        <a href="{{ path('user_settings_access_token_new') }}" class="button" role="button">New Access Token</a>
+
+        {%  if accounts_user_can_manage %}
+
+            <h3>Account Guid's</h3>
+
+            <p>To use an access token, you will also need the GUID of your account. These are listed below:</p>
+
+            <table class="table">
+                <tr>
+                    <th>Account Title</th>
+                    <th>Account UserName</th>
+                    <th>Account GUID</th>
+                </tr>
+                {%  for account in accounts_user_can_manage %}
+                    <tr>
+                        <td>{{  account.title }}</td>
+                        <td>{{  account.username }}</td>
+                        <td>{{  account.id }}</td>
+                    </tr>
+                {%  endfor %}
+            </table>
+
+        {% endif %}
+
+    </div>
+
+{%  endblock %}

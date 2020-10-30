@@ -1,0 +1,58 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}User Settings{% endblock %}
+
+{% block subbanner %}
+    <h2>
+        <a class="p-2 text-dark" href="{{ path('user_settings') }}">User Settings</a>
+    </h2>
+{% endblock %}
+
+{% block body %}
+
+
+    <div class="content">
+
+        <h3>Accounts</h3>
+
+        {%  if accounts_user_can_manage %}
+
+            <p>Please select the account you want to use:</p>
+
+            <table class="table">
+                <tr>
+                    <th>Title</th>
+                    <th>Username</th>
+                    <th>&nbsp;</th>
+                </tr>
+                {%  for account in accounts_user_can_manage %}
+                    <tr>
+                        <td>{{  account.title }}</td>
+                        <td>{{  account.accountLocal.username }}</td>
+                        <td>
+                            <a href="{{ path('account_manage',{'account_username':account.username}) }}" class="button" role="button">Visit</a>
+                            <a href="{{ path('account_manage_settings',{'account_username':account.username}) }}" class="button" role="button">Settings</a>
+                        </td>
+                    </tr>
+                {%  endfor %}
+            </table>
+
+        {%  endif %}
+
+        <a href="{{ path('register_account') }}" class="button" role="button">Create a new account</a>
+
+        <h3>User Settings</h3>
+
+        <a href="{{ path('user_settings_access_token') }}" class="button" role="button">Access Tokens</a>
+
+        {# TODO upcoming email managment #}
+
+        {# TODO Change password #}
+
+        {# TODO View / change title #}
+
+        {# TODO Change email #}
+
+    </div>
+
+{%  endblock %}

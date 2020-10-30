@@ -1,0 +1,25 @@
+{%  extends "account/public/base.html.twig" %}
+
+{% block body %}
+
+
+
+    <div class="content">
+        <ul class="mainListTags">
+            {% for tag in tags %}
+
+                <li class="tag">
+                    <p>{{  tag.title }}</p>
+                    <p>{{  tag.description | nl2br }}</p>
+                    <p>{% if tag.enabled %}Enabled{%  else %}Disabled{%  endif %}</p>
+                    <a class="button" href="{{ path('account_public_tag_show_tag',{'account_username':account.username,'tag_id': tag.id }) }}">Details</a>
+                </li>
+
+            {%  endfor %}
+        </ul>
+
+        <a class="button" href="{{ url('api1_account_tags_json',{'account_id':account.id }) }}">Export JSON</a>
+
+    </div>
+
+{% endblock %}

@@ -1,0 +1,25 @@
+{%  extends "account/manage/base.html.twig" %}
+
+{% block body %}
+
+
+    <div class="content">
+
+        <p>Welcome to your account</p>
+
+        <h3>Events</h3>
+
+        <p>See what events you are publishing to your followers, and add events of your own.</p>
+
+        <a class="button" role="button" href="{{ path('account_manage_event',{'account_username':account.username}) }}">Events</a>
+
+        <h3>Tags</h3>
+
+        <p>Create as many tags as you want to sort your events into categories easily.</p>
+
+        <a class="button" role="button" href="{{ path('account_manage_tag',{'account_username':account.username}) }}">Tags</a>
+
+    </div>
+
+
+{% endblock %}

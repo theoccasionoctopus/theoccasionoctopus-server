@@ -1,0 +1,13 @@
+{%  extends "base.html.twig" %}
+
+{% block subbanner %}
+    <h2>
+        <a href="{{ path('sysadmin_index') }}">Sysadmin</a>
+    </h2>
+    <nav>
+        <a href="{{ path('sysadmin_user',) }}">Users</a>
+        <a href="{{ path('sysadmin_account_local') }}">Local Accounts</a>
+        <a href="{{ path('sysadmin_account_remote') }}">Remote Accounts</a>
+    </nav>
+{% endblock %}
+

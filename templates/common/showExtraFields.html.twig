@@ -1,0 +1,8 @@
+{%  if entity.extraFields %}
+    {% for k,v in entity.extraFields %}
+        <p><strong>{{  k }}:</strong></p>
+        <p>
+            {{ v | nl2br | linkify }}
+        </p>
+    {%  endfor %}
+{%  endif %}

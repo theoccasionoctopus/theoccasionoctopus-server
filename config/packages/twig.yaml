@@ -1,0 +1,7 @@
+twig:
+    default_path: '%kernel.project_dir%/templates'
+    globals:
+        instance_name: '%env(default:app.instance_name_default:INSTANCE_NAME)%'
+    paths:
+        '%kernel.project_dir%/templates-local':  ~
+    form_themes: ['form_div_layout.html.twig','form_theme.html.twig']

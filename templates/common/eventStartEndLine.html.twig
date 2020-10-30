@@ -1,0 +1,6 @@
+<div>
+    {{  start|date("D F jS Y g:ia", timezone) }} to {{ end|date("D F jS Y g:ia", timezone) }}
+    {% if showTimeZone is defined and showTimeZone %}
+        ({{ timezone }})
+    {%  endif %}
+</div>

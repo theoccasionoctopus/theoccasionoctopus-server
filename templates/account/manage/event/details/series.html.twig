@@ -1,0 +1,39 @@
+{%  extends "account/manage/base.html.twig" %}
+
+{% block body %}
+
+
+    <div class="content">
+
+        <h3>Reoccurs</h3>
+
+        <p>RRULE: {{  event.rrule }}</p>
+
+        <table class="table">
+            <tr>
+                <th>Start</th>
+                <th>End</th>
+                <th></th>
+            </tr>
+            {%  for eventOccurrence in eventOccurrences %}
+                <tr>
+                    <td>{{ eventOccurrence.start(userTimeZone)|date("D F jS Y g:ia" ) }}</td>
+                    <td>{{ eventOccurrence.end(userTimeZone)|date("D F jS Y g:ia")  }}</td>
+                    <td>
+                        <a class="button"
+                           href="{{ path('account_manage_event_show_event',{'account_username':account.username,'event_id': eventOccurrence.event.id }) }}?startutc={{ eventOccurrence.start('UTC')|date("Y-m-d-H-i-s") }}">
+                            View
+                        </a>
+                    </td>
+                </tr>
+            {%  endfor %}
+        </table>
+    </div>
+
+
+{% endblock %}
+
+{% block javascripts %}
+
+{% endblock %}
+

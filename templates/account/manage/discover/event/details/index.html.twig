@@ -1,0 +1,51 @@
+{%  extends "account/manage/base.html.twig" %}
+
+{% block body %}
+
+    <div class="content">
+
+        {%  if discoverEvent.deleted %}
+            <h2>DELETED</h2>
+        {%  elseif discoverEvent.cancelled %}
+            <h2>CANCELLED</h2>
+        {%  endif %}
+        <h2>{{  discoverEvent.title }}</h2>
+        <p>{{  discoverEvent.description | nl2br | linkify }}</p>
+        {%  include '/common/showExtraFields.html.twig' with { 'entity':discoverEvent } %}
+        {% if discoverEvent.url %}
+            <p>URL: <a href="{{ discoverEvent.url }}">{{ discoverEvent.url }}</a></p>
+        {% endif %}
+        {% if discoverEvent.urlTickets %}
+            <p>Tickets URL: <a href="{{ discoverEvent.urlTickets }}">{{ discoverEvent.urlTickets }}</a></p>
+        {% endif %}
+
+        {%  if discoverEvent.timezone.code == userTimeZone %}
+            {%  include '/common/eventStartEndLine.html.twig' with { 'start':discoverEvent.start, 'end':discoverEvent.end, 'timezone': discoverEvent.timezone.code } %}
+        {%  else %}
+            {%  include '/common/eventStartEndLine.html.twig' with { 'start':discoverEvent.start, 'end':discoverEvent.end, 'timezone': discoverEvent.timezone.code, 'showTimeZone': true } %}
+            {%  include '/common/eventStartEndLine.html.twig' with { 'start':discoverEvent.start(userTimeZone), 'end':discoverEvent.end(userTimeZone), 'timezone': userTimeZone, 'showTimeZone': true } %}
+        {%  endif %}
+
+        <div>
+            {{ discoverEvent.timezone.title }}
+        </div>
+        <div>
+            {{ discoverEvent.country.title }}
+        </div>
+
+        <a class="button"
+                    href="{{ path('account_manage_discover_event_add',{'account_username':account.username, 'discover_account_id':discoverEvent.account.id,'discover_event_id': discoverEvent.id }) }}"
+
+        >
+            Add to my events
+        </a>
+
+
+    </div>
+
+{% endblock %}
+
+{% block javascripts %}
+
+{% endblock %}
+

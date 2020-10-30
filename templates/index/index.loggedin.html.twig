@@ -1,0 +1,24 @@
+{%  extends "base.html.twig" %}
+
+
+{% block body %}
+
+
+    <div class="content">
+        {%  if accounts_user_can_manage %}
+
+            <p>Please select the account you want to use:</p>
+
+            {%  for account in accounts_user_can_manage %}
+                <p>
+                    <a href="{{ path('account_manage',{'account_username':account.username}) }}" class="button" role="button">{{  account.title }}</a>
+                </p>
+            {%  endfor %}
+        {% else  %}
+
+            <a href="{{ path('register_account') }}" class="button" role="button">Create a new account</a>
+
+        {%  endif %}
+    </div>
+
+{% endblock %}

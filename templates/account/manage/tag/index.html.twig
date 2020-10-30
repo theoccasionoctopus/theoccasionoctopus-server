@@ -1,0 +1,25 @@
+{%  extends "account/manage/base.html.twig" %}
+
+{% block body %}
+
+    <div class="content">
+
+        <ul class="mainListTags">
+            {% for tag in tags %}
+
+                <li class="tag">
+                    <p>{{  tag.title }}</p>
+                    <p>{{  tag.description | nl2br }}</p>
+                    <p>{% if tag.enabled %}Enabled{%  else %}Disabled{%  endif %}</p>
+                    <p>{% if tag.privacy == 10000 %}<i class="fas fa-lock"></i> Private{%  else %}<i class="fas fa-globe-europe"></i> Public{%  endif %}</p>
+                    <a class="button" href="{{ path('account_manage_tag_show_tag',{'account_username':account.username,'tag_id': tag.id }) }}">Details</a>
+                </li>
+
+            {%  endfor %}
+        </ul>
+
+        <a href="{{ path('account_manage_tag_new',{'account_username':account.username}) }}" class="button" role="button">New Tag</a>
+
+    </div>
+
+{% endblock %}

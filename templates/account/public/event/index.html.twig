@@ -1,0 +1,45 @@
+{%  extends "account/public/base.html.twig" %}
+
+{% block body %}
+
+
+    <div class="content">
+
+        {%  include 'common/eventViewSwitcher.html.twig' with {'selected':'agenda', 'agendaURL':path('account_public_event',{'account_username':account.username }), 'calendarURL':path('account_public_event_calendar',{'account_username':account.username }) } %}
+
+        {%  include 'common/eventListFilter.html.twig' with {  } %}
+
+        <ul class="mainListEvents">
+            {% for eventOccurrence in eventOccurrences %}
+
+                <li class="event">
+                    {%  if eventOccurrence.event.deleted %}
+                        <h2>DELETED</h2>
+                    {%  elseif eventOccurrence.event.cancelled %}
+                        <h2>CANCELLED</h2>
+                    {%  endif %}
+                    <h2>{{  eventOccurrence.event.title }}</h2>
+                    <p>{{  eventOccurrence.event.description }}</p>
+                    {%  include '/common/eventStartEndLine.html.twig' with { 'start':eventOccurrence.start, 'end':eventOccurrence.end, 'timezone': eventOccurrence.event.timezone.code } %}
+
+                    <a class="button"
+                            {%  if  eventOccurrence.event.hasReoccurence %}
+                                href="{{ path('account_public_event_show_event',{'account_username':account.username,'event_id': eventOccurrence.event.id }) }}?startutc={{ eventOccurrence.start('UTC')|date("Y-m-d-H-i-s") }}"
+                            {%  else  %}
+                                href="{{ path('account_public_event_show_event',{'account_username':account.username,'event_id': eventOccurrence.event.id }) }}"
+                            {%  endif %}
+                    >
+                        Details
+                    </a>
+                </li>
+
+            {%  endfor %}
+
+        </ul>
+
+        <a class="button" href="{{ url('api1_account_events_ical',{'account_id':account.id }) }}">Export ICal</a>
+        <a class="button" href="{{ url('api1_account_events_json',{'account_id':account.id }) }}">Export JSON</a>
+
+    </div>
+
+{% endblock %}

@@ -1,0 +1,17 @@
+{%  extends "account/manage/base.html.twig" %}
+
+{% block title %}Edit Tags Event{% endblock %}
+
+{% block body %}
+
+
+    <div class="content">
+        {{ form_start(form) }}
+        {{ form_errors(form) }}
+        {{ form_rest(form) }}
+
+        <button type="submit" class="button">Save</button>
+        {{ form_end(form) }}
+    </div>
+
+{%  endblock %}

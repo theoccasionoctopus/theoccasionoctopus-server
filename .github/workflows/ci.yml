@@ -1,0 +1,54 @@
+name: Testing App
+on: [push, pull_request]
+jobs:
+  test-app:
+    name: test-app (PHP ${{ matrix.php-versions }})
+    runs-on: ubuntu-20.04
+    services:
+      postgres:
+        image: postgres:12
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: postgres
+        ports:
+          - 5432/tcp
+        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 3
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      # We need Composer 2
+      - name: Get latest Composer
+        run: wget -O composer.phar -q https://getcomposer.org/composer.phar
+
+      - name: Validate composer.json and composer.lock
+        run: php composer.phar validate
+
+      - name: Set up test config file
+        run: echo "DATABASE_URL=postgresql://postgres:postgres@localhost:${{ job.services.postgres.ports[5432] }}/postgres?serverVersion=12&charset=utf8" > .env.test.local
+
+      - name: Cache Composer packages
+        id: composer-cache
+        uses: actions/cache@v2
+        with:
+          path: vendor
+          key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-php-
+
+      - name: Cache Composer packages for PHPUnit
+        id: composer-cache-phpunit
+        uses: actions/cache@v2
+        with:
+          path: bin/.phpunit
+          key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}-phpunit
+          restore-keys: |
+            ${{ runner.os }}-php-
+
+      - name: Install dependencies
+        if: steps.composer-cache.outputs.cache-hit != 'true'
+        run: php composer.phar install --prefer-dist --no-progress --no-suggest
+
+      - name: Run Tests
+        run: php bin/phpunit

@@ -1,0 +1,29 @@
+{%  extends "account/manage/base.html.twig" %}
+
+{% block body %}
+
+    <div class="content">
+        <h3>Following</h3>
+
+        {%  if accounts_following %}
+
+            {%  for account_following in accounts_following %}
+                <div>
+                    {%  if account_following.AccountLocal %}
+                        {{  account_following.username }} / {{  account_following.title }}
+                        <a href="{{ path('account_public',{'account_username':account_following.username}) }}" class="button" role="button">View</a>
+                    {%  elseif account_following.AccountRemote %}
+                        {{  account_following.title }} on {{ account_following.accountRemote.remoteServer.title }}
+                        <a href="{{ account_following.accountRemote.humanURL }}" class="button" role="button" target="_blank">View</a>
+                    {%  endif %}
+                </div>
+            {%  endfor %}
+        {%  endif %}
+
+
+        <a href="{{ path('account_manage_new_follow_local',{'account_username':account.username}) }}" class="button" role="button">Follow Another Account on this server</a>
+        <a href="{{ path('account_manage_new_follow_remote',{'account_username':account.username}) }}" class="button" role="button">Follow Another Account on another server</a>
+
+    </div>
+
+{% endblock %}

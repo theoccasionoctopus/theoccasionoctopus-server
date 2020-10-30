@@ -1,0 +1,15 @@
+# The Occasion Octopus Docs
+
+
+## Contents
+
+* API
+    * [Our API V1](api/v1/index.md)
+    * [ActivityPub](api/activitypub.md)
+    * [WebFinger](api/webfinger.md)
+* [Sysadmin](sysadmin.md)
+* Hosting
+    * [Minimum Requirements](hosting/minimum-requirements.md)
+    * [Hosting on Ubuntu 20.04 Focal LTS](hosting/ubuntu-focal.md)
+* Dev
+    * [Running on Vagrant](dev/vagrant-for-dev.md)

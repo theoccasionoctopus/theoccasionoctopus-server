@@ -1,0 +1,8 @@
+[Unit]
+Description=MailHog
+
+[Service]
+ExecStart=/bin/mailhog
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,37 @@
+<?php
+
+namespace App\Controller;
+
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use App\Entity\Account;
+use App\Entity\Tag;
+use App\Library;
+use App\Form\EventNewType;
+use Symfony\Component\HttpFoundation\Request;
+
+
+
+class AccountManageTagListController extends AccountManageController
+{
+
+
+
+    public function indexManageTag($account_username, Request $request)
+    {
+
+        $this->build($account_username);
+
+
+        $doctrine = $this->getDoctrine();
+        $repository = $doctrine->getRepository(Tag::class);
+        $tags = $repository->findBy(['account'=>$this->account]);
+
+        return $this->render('account/manage/tag/index.html.twig', $this->getTemplateVariables([
+            'account'=> $this->account,
+            'tags' => $tags,
+        ]));
+
+    }
+
+}

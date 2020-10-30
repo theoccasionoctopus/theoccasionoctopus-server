@@ -1,0 +1,19 @@
+{%  extends "account/manage/base.html.twig" %}
+
+{% block body %}
+
+
+    <div class="content">
+        <form method="post">
+            {#  @TODO Add CSFR  #}
+            <input type="hidden" name="action" value="cancel">
+            <input type="submit" value="Cancel this event">
+        </form>
+
+        <div>OR</div>
+
+        <a class="button" href="{{ path('account_manage_event_edit_event_delete',{'account_username':account.username,'event_id': event.id }) }}">Delete Event</a>
+
+    </div>
+
+{% endblock %}

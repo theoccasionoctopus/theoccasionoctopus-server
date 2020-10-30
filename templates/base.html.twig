@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Welcome!{% endblock %} - {{  instance_name }}</title>
+    {# FullCalendar #}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.0/fullcalendar.min.css" integrity="sha256-9VgA72/TnFndEp685+regIGSD6voLveO2iDuWhqTY3g=" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.0/fullcalendar.print.min.css" integrity="sha256-JYJWCNB1pXBwUngem7hITwB6SdmCGkhewhKS8NL1A8A=" crossorigin="anonymous" media="print"/>
+    {# Ours #}
+    {% block stylesheets %}{% endblock %}
+    {{ encore_entry_link_tags('app') }}
+    <META NAME="ROBOTS" CONTENT="NOINDEX, NOFOLLOW">
+</head>
+<body>
+
+
+    <header id="headerMain">
+        <div class="content">
+            <h1>
+                {% if app.user and accounts_user_can_manage|length == 1  %}
+                <a href="{{ path('account_manage',{'account_username':accounts_user_can_manage[0].username}) }}">
+                    {% else %}
+                    <a class="text-dark" href="{{ path('index') }}">
+                        {% endif %}
+                        {{  instance_name }}
+                    </a>
+            </h1>
+            <nav>
+                {% if app.user %}
+                    Hello {{ app.user.title }}
+                    <a href="{{ path('user_settings') }}"><i class="fas fa-user-cog"></i></a>
+                    <a href="{{ path('logout') }}">Logout</a>
+                {% else %}
+                    <a href="{{ path('login') }}">Login</a>
+                    <a href="{{ path('register') }}">Register</a>
+                {% endif %}
+            </nav>
+        </div>
+    </header>
+    <header  id="headerSecondary">
+        <div class="content">
+            {% block subbanner %}{% endblock %}
+        </div>
+    </header>
+
+    <main>
+        {% block body %}{% endblock %}
+    </main>
+
+    <footer>
+        <div class="content">
+            <p>{% if userTimeZone is defined %}Currently: {{  userTimeZone }} {%  endif %}(<a href="{{  path('set_timezone') }}">Change TimeZone</a>)</p>
+            {% if app.user %}
+                <p><a  href="{{ path('user_settings') }}"><i class="fas fa-user-cog"></i> Your User Settings</a></p>
+                {%  if accounts_user_can_manage|length > 1 %}
+                    <p >
+                        Switch to account:
+                        {%  for account in accounts_user_can_manage %}
+                            <a href="{{ path('account_manage',{'account_username':account.username}) }}">{{  account.title }}</a>
+                        {%  endfor %}
+                    </p>
+                {%  endif %}
+            {%  endif %}
+            <p>{{  instance_name }} powered by <a href="https://www.theoccasionoctopus.net/">The Occasion Octopus software</a> (Open Source)</p>
+        </div>
+    </footer>
+
+</div>
+{# jQuery #}
+<script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+{# Font Awesum #}
+<script defer src="https://use.fontawesome.com/releases/v5.7.2/js/all.js" integrity="sha384-0pzryjIRos8mFBWMzSSZApWtPl/5++eIfzYmTgBBmXYdhvxPc+XcFEk+zJwDgWbP" crossorigin="anonymous"></script>
+{# Moment#}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js" integrity="sha256-4iQZ6BVL4qNKlQ27TExEhBN1HFPvAvAMbFavKKosSWQ=" crossorigin="anonymous"></script>
+{# FullCalendar #}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.0/fullcalendar.js" integrity="sha256-qvPuuRTvNHTt0G2JBmvG1jAORbJm5xmxA+6UW/ZSVf8=" crossorigin="anonymous"></script>
+{# Ours #}
+{{ encore_entry_script_tags('app') }}
+{% block javascripts %}{% endblock %}
+</body>
+</html>

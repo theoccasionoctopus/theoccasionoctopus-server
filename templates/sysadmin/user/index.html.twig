@@ -1,0 +1,27 @@
+{%  extends "sysadmin/base.html.twig" %}
+
+
+{% block body %}
+
+
+    <div class="content">
+
+        <table class="table">
+            <tr>
+                <th>Id</th>
+                <th>Email</th>
+                <th>Title</th>
+                <th>Locked</th>
+            </tr>
+            {%  for user in users %}
+                <tr>
+                    <td>{{  user.id }}</td>
+                    <td>{{  user.email }}</td>
+                    <td>{{  user.title }}</td>
+                    <td>{%  if user.locked %}Locked{%  else %}-{%  endif %}</td>
+                </tr>
+            {%  endfor %}
+        </table>
+    </div>
+
+{% endblock %}

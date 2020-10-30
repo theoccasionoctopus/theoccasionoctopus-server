@@ -1,0 +1,39 @@
+{%  extends "account/public/base.html.twig" %}
+
+{% block body %}
+
+
+    <div class="content">
+        <div>
+            <h2>{{  tag.title }}</h2>
+            <p>{{  tag.description | nl2br }}</p>
+            {%  include '/common/showExtraFields.html.twig' with { 'entity':tag } %}
+        </div>
+
+        <h3>Upcoming Events</h3>
+
+        <ul class="mainListEvents">
+
+            {% for event in events %}
+
+                <li class="event">
+                    <h2>{{  event.title }}</h2>
+                    <p>{{  event.description }}</p>
+                    {%  include '/common/eventStartEndLine.html.twig' with { 'start':event.start, 'end':event.end, 'timezone': event.timezone.code } %}
+                    <a class="button" href="{{ path('account_public_event_show_event',{'account_username':account.username,'event_id': event.id }) }}">Details</a>
+                </li>
+
+
+            {%  else %}
+
+                <p>No upcoming events ....</p>
+
+            {%  endfor %}
+
+        </ul>
+
+        <a class="button" href="{{ url('api1_account_tags_show_tag_json',{'account_id':account.id ,'tag_id':tag.id}) }}">Export JSON</a>
+
+    </div>
+
+{% endblock %}

@@ -1,0 +1,47 @@
+{%  extends "account/manage/base.html.twig" %}
+
+{% block body %}
+
+
+    <div class="content">
+
+        <h2>{{  tag.title }}</h2>
+        <p>{{  tag.description | nl2br }}</p>
+        {%  include '/common/showExtraFields.html.twig' with { 'entity':tag } %}
+        <p>{% if tag.privacy == 10000 %}<i class="fas fa-lock"></i> Private{%  else %}<i class="fas fa-globe-europe"></i> Public{%  endif %}</p>
+
+
+        <a href="{{ path('account_manage_tag_edit_tag_details',{'account_username':account.username, 'tag_id': tag.id}) }}" class="button" role="button">Edit Details</a>
+
+
+        <h3>Upcoming Events</h3>
+
+        <ul class="mainListEvents">
+
+            {% for event in events %}
+
+                <li class="event">
+                    {%  if event.deleted %}
+                        <h2>DELETED</h2>
+                    {%  elseif event.cancelled %}
+                        <h2>CANCELLED</h2>
+                    {%  endif %}
+                    <h2>{{  event.title }}</h2>
+                    <p>{{  event.description | nl2br }}</p>
+                    {%  include '/common/eventStartEndLine.html.twig' with { 'start':event.start, 'end':event.end, 'timezone': event.timezone.code } %}
+                    <a class="button" href="{{ path('account_manage_event_show_event',{'account_username':account.username,'event_id': event.id }) }}">Details</a>
+                    <p>{% if event.privacy == 10000 %}<i class="fas fa-lock"></i> Private{%  else %}<i class="fas fa-globe-europe"></i> Public{%  endif %}</p>
+                </li>
+
+            {%  else %}
+
+                <p>No upcoming events ....</p>
+
+            {%  endfor %}
+
+        </ul>
+
+    </div>
+
+
+{% endblock %}

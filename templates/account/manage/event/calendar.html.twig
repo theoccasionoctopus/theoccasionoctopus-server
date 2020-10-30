@@ -1,0 +1,67 @@
+{%  extends "account/manage/base.html.twig" %}
+
+
+{% block body %}
+
+
+    <div class="content">
+        {%  include 'common/eventViewSwitcher.html.twig' with {'selected':'calendar', 'agendaURL':path('account_manage_event',{'account_username':account.username }), 'calendarURL':path('account_manage_event_calendar',{'account_username':account.username }) } %}
+
+        <div id="calendarLoading">CALENDAR IS LOADING .......</div>
+
+    </div>
+
+    <div id="calendar"></div>
+
+    <div class="content">
+        <a class="button" href="#" onclick=" $('#calendar').fullCalendar('prev'); return false;">PREV</a>
+        <a class="button" href="#" onclick=" $('#calendar').fullCalendar('next'); return false;">NEXT</a>
+        <a class="button" href="{{ path('account_manage_event_new',{'account_username':account.username}) }}" role="button">New Event</a>
+    </div>
+
+{% endblock %}
+
+{% block javascripts %}
+    <script>
+        $(function() {
+            $('#calendar').fullCalendar({
+                header: {
+                    left: '',
+                    center: 'title',
+                    right: ''
+                },
+                editable: false,
+                eventSources: [{
+                    'url': '{{ path('account_manage_event_calendar_data',{'account_username':account.username}) }}'
+                }],
+                eventClick: function(calEvent, jsEvent, view) {
+                    {# A reconstruction of the account_manage_event_show_event route - this comment specially meant so I find this code if searching for this route. #}
+                    window.location.href = '/a/{{ account.username }}/manage/event/details/' + calEvent.id;
+                },
+                loading: function(isLoading, view) {
+                    if (isLoading) {
+                        $('#calendarLoading').show();
+                    } else {
+                        $('#calendarLoading').hide();
+                    }
+                },
+                dayRender: function( date, cell ) {
+                    if (date.format('YYYY-MM-DD') == '{{ now|date('Y-m-d') }}') {
+                        $(cell).addClass('fc-state-highlight-now');
+                    } else {
+                        $(cell).removeClass('fc-state-highlight-now');
+                    }
+                },
+                firstDay: 1
+            })
+        });
+    </script>
+{% endblock %}
+
+{% block stylesheets %}
+    <style>
+        .fc .fc-state-highlight-now {
+            background: lightblue !important;
+        }
+    </style>
+{% endblock %}

@@ -1,0 +1,16 @@
+{%  extends "base.html.twig" %}
+
+
+{% block body %}
+
+
+    <div class="content">
+        <ul>
+            {%  for timezone in timezones %}
+                <li><a href="{{  path('set_timezone') }}?set_timezone={{  timezone.code|url_encode }}">{{  timezone.code }}</a></li>
+            {%  endfor %}
+        </ul>
+
+    </div>
+
+{% endblock %}

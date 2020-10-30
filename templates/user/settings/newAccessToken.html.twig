@@ -1,0 +1,24 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}User Settings{% endblock %}
+
+{% block subbanner %}
+    <h2>
+        <a class="p-2 text-dark" href="{{ path('user_settings') }}">User Settings</a>
+    </h2>
+{% endblock %}
+
+{% block body %}
+
+
+    <div class="content">
+        {{ form_start(form) }}
+        {{ form_errors(form) }}
+        {{ form_row(form.write) }}
+        {{ form_row(form.note) }}
+
+        <button type="submit" class="button">Save</button>
+        {{ form_end(form) }}
+    </div>
+
+{%  endblock %}

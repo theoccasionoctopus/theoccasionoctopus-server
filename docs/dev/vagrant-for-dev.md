@@ -1,0 +1,71 @@
+# Vagrant for Developers
+
+
+## If first time to run dev box
+
+Connect with:
+
+    vagrant ssh
+
+Put
+
+```
+MAILER_URL=smtp://localhost:1025
+MAILER_FROM_EMAIL="devinstance@example.com"
+MAILER_FROM_NAME="Dev Instance"
+DATABASE_URL=postgresql://app:password@127.0.0.1:5432/app?serverVersion=10&charset=utf8
+INSTANCE_NAME="Dev Instance"
+```
+
+into `.env.local`, then run:
+
+    yarn encore dev
+    php bin/console   doctrine:migrations:migrate 
+    php bin/console theocasionoctupus:load-country-data
+
+
+
+## Rsync issues
+
+Use 
+
+    vagrant rsync
+
+Use 
+
+    vagrant rsync-auto
+    
+    
+Copy changed files back
+    
+    scp -P 2222 vagrant@localhost:/vagrant/composer.json .
+    scp -P 2222 vagrant@localhost:/vagrant/composer.lock .
+    scp -P 2222 vagrant@localhost:/vagrant/package.json .
+    scp -P 2222 vagrant@localhost:/vagrant/yarn.lock .
+    scp -P 2222 vagrant@localhost:/vagrant/symfony.lock .
+    scp -P 2222 -r vagrant@localhost:/vagrant/migrations .
+    scp -P 2222 -r vagrant@localhost:/vagrant/config .
+        
+## Test
+
+Put
+
+    DATABASE_URL=postgresql://apptest:passwordtest@127.0.0.1:5432/apptest?serverVersion=10&charset=utf8
+    
+into `.env.test.local`
+
+Then run
+
+    ./bin/phpunit
+
+## Drop the database and start again
+
+Run:
+
+    sudo su --login -c "psql -c \"DROP DATABASE app\"" postgres
+    sudo su --login -c "psql -c \"CREATE DATABASE app WITH OWNER app ENCODING 'UTF8'  LC_COLLATE='en_GB.UTF-8' LC_CTYPE='en_GB.UTF-8'  TEMPLATE=template0 ;\"" postgres
+    php bin/console   doctrine:migrations:migrate 
+    php bin/console theocasionoctupus:load-country-data
+ 
+ 
+ 

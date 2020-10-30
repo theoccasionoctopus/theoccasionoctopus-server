@@ -1,0 +1,18 @@
+{%  extends "account/manage/base.html.twig" %}
+
+{% block title %}New Tag{% endblock %}
+
+{% block body %}
+
+    <div class="content">
+        {{ form_start(form) }}
+        {{ form_errors(form) }}
+        {{ form_row(form.title) }}
+        {{ form_row(form.description) }}
+        {{ form_row(form.privacy) }}
+
+        <button type="submit" class="button">Save</button>
+        {{ form_end(form) }}
+    </div>
+
+{%  endblock %}

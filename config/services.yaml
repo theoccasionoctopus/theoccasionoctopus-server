@@ -1,0 +1,67 @@
+# This file is the entry point to configure your own services.
+# Files in the packages/ subdirectory configure your dependencies.
+
+# Put parameters here that don't need to change on each machine where the app is deployed
+# https://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
+parameters:
+    locale: 'en'
+    app.user_register_instance_password: '%env(USER_REGISTER_INSTANCE_PASSWORD)%'
+    app.instance_name_default: 'Change My Name Using INSTANCE_NAME'
+    app.instance_name: '%env(default::INSTANCE_NAME)%'
+    app.instance_url: '%env(default::INSTANCE_URL)%'
+    app.mailer_from_email: '%env(default::MAILER_FROM_EMAIL)%'
+    app.mailer_from_name: '%env(default::MAILER_FROM_NAME)%'
+
+
+services:
+    # default configuration for services in *this* file
+    _defaults:
+        autowire: true      # Automatically injects dependencies in your services.
+        autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
+
+    # makes classes in src/ available to be used as services
+    # this creates a service per class whose id is the fully-qualified class name
+    App\:
+        resource: '../src/'
+        exclude:
+            - '../src/DependencyInjection/'
+            - '../src/Entity/'
+            - '../src/Kernel.php'
+            - '../src/Tests/'
+
+    # controllers are imported separately to make sure services can be injected
+    # as action arguments even if you don't extend any base controller class
+    App\Controller\:
+        resource: '../src/Controller/'
+        tags: ['controller.service_arguments']
+
+    # add more service definitions when explicit configuration is needed
+    # please note that last definitions always *replace* previous ones
+
+    app.historyWorkerService:
+        class: App\Service\HistoryWorker\HistoryWorkerService
+        public: true
+
+    app.eventToEventOccurrenceService:
+        class: App\Service\EventToEventOccurrence\EventToEventOccurrenceService
+        public: true
+
+    app.linkifyextenson:
+        class: App\Twig\LinkifyExtension:
+
+    app.remoteServer:
+        class: App\Service\RemoteServer\RemoteServerService
+        public: true
+
+    app.remoteAccount:
+        class: App\Service\RemoteAccount\RemoteAccountService
+        public: true
+
+    app.remoteUserContent:
+        class: App\Service\RemoteUserContent\RemoteUserContentService
+        public: true
+
+    app.import:
+        class: App\Service\Import\ImportService
+        public: true
+

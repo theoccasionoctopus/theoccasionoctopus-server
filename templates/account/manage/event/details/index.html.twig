@@ -1,0 +1,92 @@
+{%  extends "account/manage/base.html.twig" %}
+
+{% block body %}
+
+
+    <div class="content">
+
+        {%  if event.deleted %}
+            <h2>DELETED</h2>
+        {%  elseif event.cancelled %}
+            <h2>CANCELLED</h2>
+        {%  endif %}
+        <h2>{{  event.title }}</h2>
+        <p>{{  event.description | nl2br | linkify }}</p>
+        {%  include '/common/showExtraFields.html.twig' with { 'entity':event } %}
+        {% if event.url %}
+            <p>URL: <a href="{{ event.url }}">{{ event.url }}</a></p>
+        {% endif %}
+        {% if event.urlTickets %}
+            <p>Tickets URL: <a href="{{ event.urlTickets }}">{{ event.urlTickets }}</a></p>
+        {% endif %}
+        {% for tag in currentTags %}
+            <a class="button" href="{{ path('account_manage_tag_show_tag',{'account_username':account.username,'tag_id': tag.id }) }}">Tag: {{  tag.title }}</a>
+        {% endfor %}
+        {%  if eventOccurrence %}
+            {%  if event.timezone.code == userTimeZone %}
+                {%  include '/common/eventStartEndLine.html.twig' with { 'start':eventOccurrence.start, 'end':eventOccurrence.end, 'timezone': event.timezone.code } %}
+            {%  else %}
+                {%  include '/common/eventStartEndLine.html.twig' with { 'start':eventOccurrence.start, 'end':eventOccurrence.end, 'timezone': event.timezone.code, 'showTimeZone': true } %}
+                {%  include '/common/eventStartEndLine.html.twig' with { 'start':eventOccurrence.start(userTimeZone), 'end':eventOccurrence.end(userTimeZone), 'timezone': userTimeZone, 'showTimeZone': true } %}
+            {%  endif %}
+        {%  else %}
+            {%  if event.timezone.code == userTimeZone %}
+                {%  include '/common/eventStartEndLine.html.twig' with { 'start':event.start, 'end':event.end, 'timezone': event.timezone.code } %}
+            {%  else %}
+                {%  include '/common/eventStartEndLine.html.twig' with { 'start':event.start, 'end':event.end, 'timezone': event.timezone.code, 'showTimeZone': true } %}
+                {%  include '/common/eventStartEndLine.html.twig' with { 'start':event.start(userTimeZone), 'end':event.end(userTimeZone), 'timezone': userTimeZone, 'showTimeZone': true } %}
+            {%  endif %}
+        {%  endif %}
+
+        <div>
+            {{ event.timezone.title }}
+        </div>
+        <div>
+            {{ event.country.title }}
+        </div>
+        <p>{% if event.privacy == 10000 %}<i class="fas fa-lock"></i> Private{%  else %}<i class="fas fa-globe-europe"></i> Public{%  endif %}</p>
+
+
+        {%  if event.hasReoccurence %}
+
+            <h3>Reoccurs</h3>
+
+            <p>This event is a part of a series</p>
+
+            <a class="button" href="{{ path('account_manage_event_edit_show_event_series',{'account_username':account.username,'event_id': event.id }) }}">View Series</a>
+
+
+        {%  endif  %}
+
+
+        {%  if eventHasImports %}
+
+            <h3>Source</h3>
+
+            {% for eventHasImport in eventHasImports %}
+                <p>
+                    This was imported from <a href="{{ eventHasImport.import.url }}" target="_blank">{{ eventHasImport.import.title }}</a>
+                </p>
+                <p>{{  eventHasImport.import.description | nl2br | linkify }}</p>
+            {% endfor %}
+
+        {%  endif %}
+
+        <a class="button" href="{{ path('account_manage_event_edit_event_details',{'account_username':account.username,'event_id': event.id }) }}">Edit Details</a>
+        <a class="button" href="{{ path('account_manage_event_edit_event_tags',{'account_username':account.username,'event_id': event.id }) }}">Edit Tags</a>
+
+        {%  if event.deleted %}
+        {%  elseif event.cancelled %}
+            <a class="button" href="{{ path('account_manage_event_edit_event_delete',{'account_username':account.username,'event_id': event.id }) }}">Delete Event</a>
+        {%  else %}
+            <a class="button" href="{{ path('account_manage_event_edit_event_cancel',{'account_username':account.username,'event_id': event.id }) }}">Cancel/Delete Event</a>
+        {%  endif %}
+
+    </div>
+
+{% endblock %}
+
+{% block javascripts %}
+
+{% endblock %}
+

@@ -1,0 +1,31 @@
+{%  extends "account/manage/base.html.twig" %}
+
+{% block title %}Edit Details Event{% endblock %}
+
+{% block body %}
+
+
+    <div class="content">
+        {{ form_start(form) }}
+        {{ form_errors(form) }}
+        {{ form_row(form.title) }}
+        {{ form_row(form.description) }}
+        {%  for edit_extra_field in edit_extra_fields %}
+            {{ form_row(form[edit_extra_field]) }}
+        {%  endfor %}
+        {{ form_row(form.new_extra_field_key) }}
+        {{ form_row(form.new_extra_field_value) }}
+        {{ form_row(form.url) }}
+        {{ form_row(form.url_tickets) }}
+        {{ form_row(form.start_at) }}
+        {{ form_row(form.end_at) }}
+        {{ form_row(form.rrule) }}
+        {{ form_row(form.country) }}
+        {{ form_row(form.timezone) }}
+        {{ form_row(form.privacy) }}
+
+        <button type="submit" class="button">Save</button>
+        {{ form_end(form) }}
+    </div>
+
+{%  endblock %}

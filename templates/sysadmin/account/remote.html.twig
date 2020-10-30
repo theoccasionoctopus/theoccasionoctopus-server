@@ -1,0 +1,31 @@
+{%  extends "sysadmin/base.html.twig" %}
+
+
+{% block body %}
+
+
+    <div class="content">
+        <table class="table">
+            <tr>
+                <th>Id</th>
+                <th>Server</th>
+                <th>Title</th>
+                <th></th>
+            </tr>
+            {%  for account in accounts %}
+                <tr>
+                    <td>{{  account.id }}</td>
+                    <td>
+                        <a href="{{  account.accountRemote.remoteServer.url }}">{{  account.accountRemote.remoteServer.title }}</a>
+                    </td>
+                    <td>{{  account.title }}</td>
+                    <td>
+                        <a href="{{ account.accountRemote.humanURL }}" class="button" role="button" target="_blank">View Human Page</a>
+                    </td>
+                </tr>
+            {%  endfor %}
+        </table>
+    </div>
+
+
+{% endblock %}

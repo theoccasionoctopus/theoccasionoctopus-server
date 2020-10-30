@@ -1,0 +1,28 @@
+{%  extends "sysadmin/base.html.twig" %}
+
+
+{% block body %}
+
+
+    <div class="content">
+        <table class="table">
+            <tr>
+                <th>Id</th>
+                <th>Username</th>
+                <th>Title</th>
+                <th></th>
+            </tr>
+            {%  for account in accounts %}
+                <tr>
+                    <td>{{  account.id }}</td>
+                    <td>{{  account.username }}</td>
+                    <td>{{  account.title }}</td>
+                    <td>
+                        <a href="{{ path('account_public',{'account_username':account.username}) }}" class="button" role="button">View Public</a>
+                    </td>
+                </tr>
+            {%  endfor %}
+        </table>
+    </div>
+
+{% endblock %}

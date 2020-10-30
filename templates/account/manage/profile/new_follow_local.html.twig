@@ -1,0 +1,26 @@
+{%  extends "account/manage/base.html.twig" %}
+
+{% block body %}
+
+
+    <div class="content">
+
+
+        {%  if accounts_to_follow %}
+
+            {%  for account_to_follow in accounts_to_follow %}
+                <div>
+
+                    {{  account_to_follow.username }} / {{  account_to_follow.title }}
+                    <form action="#" method="post">
+                        <input type="hidden" name="action" value="follow">
+                        <input type="hidden" name="guid" value="{{  account_to_follow.id }}">
+                        <input type="submit" value="Follow">
+                    </form>
+                </div>
+            {%  endfor %}
+        {%  endif %}
+
+    </div>
+
+{% endblock %}
