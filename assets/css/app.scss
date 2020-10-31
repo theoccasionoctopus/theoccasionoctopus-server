@@ -92,6 +92,15 @@ footer {
 }
 
 
+.fullWidthNotice {
+  background-color: black;
+  padding: 15px 0;
+  h3 {
+    font-size: 2rem;
+    color: white;
+  }
+}
+
 p {
   line-height: 1.5;
 }
@@ -171,6 +180,11 @@ table.table {
   li.event {
     padding: 10px;
     border-bottom: 1px solid #8c8c8c;
+    .cancelled, .deleted {
+      padding: 5px;
+      background-color: black;
+      color: white;
+    }
   }
 }
 

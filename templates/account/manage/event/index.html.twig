@@ -14,12 +14,12 @@
             {% for eventOccurrence in eventOccurrences %}
 
                 <li class="event">
-                        {%  if eventOccurrence.event.deleted %}
-                            <h2>DELETED</h2>
-                        {%  elseif eventOccurrence.event.cancelled %}
-                            <h2>CANCELLED</h2>
-                        {%  endif %}
                     <h2>{{  eventOccurrence.event.title }}</h2>
+                    {%  if eventOccurrence.event.deleted %}
+                        <div class="deleted">Deleted!</div>
+                    {%  elseif eventOccurrence.event.cancelled %}
+                        <div class="cancelled">Cancelled!</div>
+                    {%  endif %}
                     <p>{{  eventOccurrence.event.description | nl2br }}</p>
                     {%  include '/common/eventStartEndLine.html.twig' with { 'start':eventOccurrence.start, 'end':eventOccurrence.end, 'timezone': eventOccurrence.event.timezone.code } %}
                     <a class="button"

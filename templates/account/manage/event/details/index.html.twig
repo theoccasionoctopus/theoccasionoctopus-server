@@ -5,12 +5,25 @@
 
     <div class="content">
 
-        {%  if event.deleted %}
-            <h2>DELETED</h2>
-        {%  elseif event.cancelled %}
-            <h2>CANCELLED</h2>
-        {%  endif %}
         <h2>{{  event.title }}</h2>
+
+    </div>
+
+    {%  if event.deleted %}
+        <div class="fullWidthNotice">
+            <div class="content">
+                <h3>Deleted!</h3>
+            </div>
+        </div>
+    {%  elseif event.cancelled %}
+        <div class="fullWidthNotice">
+            <div class="content">
+                <h3>Cancelled!</h3>
+            </div>
+        </div>
+    {%  endif %}
+
+    <div class="content">
         <p>{{  event.description | nl2br | linkify }}</p>
         {%  include '/common/showExtraFields.html.twig' with { 'entity':event } %}
         {% if event.url %}
