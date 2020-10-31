@@ -44,6 +44,8 @@ class AccountManageEventListController extends AccountManageController
 
         $this->build($account_username);
 
+        // TODO use EventListFilterParams
+
         return $this->render('account/manage/event/calendar.html.twig', $this->getTemplateVariables([
             'account'=> $this->account,
             'now' =>  new \DateTime(),
@@ -65,6 +67,7 @@ class AccountManageEventListController extends AccountManageController
         $repositoryQuery->setAccountEvents($this->account);
         $repositoryQuery->setFrom($from);
         $repositoryQuery->setTo($to);
+        $repositoryQuery->setShowDeleted(False);
 
         $events = $repositoryQuery->getEvents();
 

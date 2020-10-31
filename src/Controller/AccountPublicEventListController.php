@@ -41,6 +41,8 @@ class AccountPublicEventListController extends AccountPublicController
 
         $this->setUpAccountPublic($account_username, $request);
 
+        // TODO use EventListFilterParams
+
         return $this->render('account/public/event/calendar.html.twig', $this->getTemplateVariables([
             'account'=> $this->account,
             'now' =>  new \DateTime(),
@@ -63,6 +65,7 @@ class AccountPublicEventListController extends AccountPublicController
         $repositoryQuery->setPublicOnly();
         $repositoryQuery->setFrom($from);
         $repositoryQuery->setTo($to);
+        $repositoryQuery->setShowDeleted(False);
 
         $events = $repositoryQuery->getEvents();
 
