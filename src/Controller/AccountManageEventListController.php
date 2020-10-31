@@ -26,7 +26,7 @@ class AccountManageEventListController extends AccountManageController
 
 
         $params = new EventListFilterParams($this->getDoctrine(), $this->account);
-        $params->build($_GET);
+        $params->build($request->query);
 
         $eventOccurrences = $params->getRepositoryQuery()->getEventOccurrences();
 

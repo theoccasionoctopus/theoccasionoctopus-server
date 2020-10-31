@@ -23,7 +23,7 @@ class AccountPublicEventListController extends AccountPublicController
 
 
         $params = new EventListFilterParams($this->getDoctrine(), $this->account);
-        $params->build($_GET);
+        $params->build($request->query);
 
         $params->getRepositoryQuery()->setPublicOnly();
         $eventOccurrences = $params->getRepositoryQuery()->getEventOccurrences();

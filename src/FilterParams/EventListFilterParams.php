@@ -8,6 +8,7 @@ use App\RepositoryQuery\EventRepositoryQuery;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\HttpFoundation\InputBag;
 
 class EventListFilterParams
 {
@@ -32,22 +33,22 @@ class EventListFilterParams
     }
 
 
-    public function build($data)
+    public function build(InputBag $data)
     {
 
-        if (isset($data['eventListFilterDataSubmitted'])) {
+        if ($data->has('eventListFilterDataSubmitted')) {
 
             // From
-            $fromNow = isset($data['fromNow']) ? $data['fromNow'] : 0;
+            $fromNow = $data->get('fromNow', Null);
             if (!$fromNow) {
                 $this->fromNow = false;
             }
 
             // Deleted
-            $this->showDeleted = isset($data['showDeleted']);
+            $this->showDeleted = $data->has('showDeleted');
 
             // Cancelled
-            $this->showCancelled = isset($data['showCancelled']);
+            $this->showCancelled = $data->has('showCancelled');
 
         }
 
