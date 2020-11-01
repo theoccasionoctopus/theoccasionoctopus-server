@@ -9,7 +9,7 @@
 
         <div>Default Country: {{  account.accountLocal.defaultCountry.title }}</div>
 
-        <div>Default Privacy: {%  if account.accountLocal.defaultPrivacy == 0 %}Public{%  else %}Private{%  endif %}</div>
+        <div>Default Privacy: {%  if account.accountLocal.defaultPrivacy == 0 %}<i class="fas fa-globe-europe"></i> Public{%  else %}<i class="fas fa-lock"></i> Private{%  endif %}</div>
 
         <div>Years Behind: {{ account.yearsBehind }}</div>
         <div>Years Ahead: {{ account.yearsAhead }}</div>

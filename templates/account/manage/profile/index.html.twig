@@ -7,17 +7,19 @@
 
         {%  if accounts_following %}
 
-            {%  for account_following in accounts_following %}
-                <div>
-                    {%  if account_following.AccountLocal %}
-                        {{  account_following.username }} / {{  account_following.title }}
-                        <a href="{{ path('account_public',{'account_username':account_following.username}) }}" class="button" role="button">View</a>
-                    {%  elseif account_following.AccountRemote %}
-                        {{  account_following.title }} on {{ account_following.accountRemote.remoteServer.title }}
-                        <a href="{{ account_following.accountRemote.humanURL }}" class="button" role="button" target="_blank">View</a>
-                    {%  endif %}
-                </div>
-            {%  endfor %}
+            <ul class="mainListAccounts">
+                {%  for account_following in accounts_following %}
+                    <li class="account">
+                        {%  if account_following.AccountLocal %}
+                            <i class="fas fa-user"></i> {{  account_following.title }} ({{  account_following.username }})
+                            <a href="{{ path('account_public',{'account_username':account_following.username}) }}" class="button" role="button">View</a>
+                        {%  elseif account_following.AccountRemote %}
+                            <i class="fas fa-user"></i> {{  account_following.title }} on <i class="fas fa-database"></i> {{ account_following.accountRemote.remoteServer.title }}
+                            <a href="{{ account_following.accountRemote.humanURL }}" class="button" role="button" target="_blank">View</a>
+                        {%  endif %}
+                    </li>
+                {%  endfor %}
+            </ul>
         {%  endif %}
 
 

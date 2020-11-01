@@ -8,6 +8,7 @@
     <div class="content">
         {{ form_start(form) }}
         {{ form_errors(form) }}
+        <h4>What?</h4>
         {{ form_row(form.title) }}
         {{ form_row(form.description) }}
         {%  for edit_extra_field in edit_extra_fields %}
@@ -17,11 +18,14 @@
         {{ form_row(form.new_extra_field_value) }}
         {{ form_row(form.url) }}
         {{ form_row(form.url_tickets) }}
+        <h4>Where?</h4>
+        {{ form_row(form.country) }}
+        <h4>When?</h4>
+        {{ form_row(form.timezone) }}
         {{ form_row(form.start_at) }}
         {{ form_row(form.end_at) }}
         {{ form_row(form.rrule) }}
-        {{ form_row(form.country) }}
-        {{ form_row(form.timezone) }}
+        <h4>Who?</h4>
         {{ form_row(form.privacy) }}
 
         <button type="submit" class="button">Save</button>

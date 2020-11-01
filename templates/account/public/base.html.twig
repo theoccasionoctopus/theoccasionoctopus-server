@@ -2,12 +2,12 @@
 
 {% block subbanner %}
     <h2>
-        <a href="{{ path('account_public',{'account_username':account.username}) }}">{{  account.title }}</a>
+        <a href="{{ path('account_public',{'account_username':account.username}) }}"><i class="fas fa-user"></i> {{  account.title }}</a>
     </h2>
     <nav>
-        <a href="{{ path('account_public_event',{'account_username':account.username}) }}">Events</a>
-        <a href="{{ path('account_public_tag',{'account_username':account.username}) }}">Tags</a>
-        <a href="{{ path('account_public_profile',{'account_username':account.username}) }}">Profile</a>
+        <a href="{{ path('account_public_event',{'account_username':account.username}) }}"><i class="fas fa-calendar"></i> Events</a>
+        <a href="{{ path('account_public_tag',{'account_username':account.username}) }}"><i class="fas fa-tags"></i> Tags</a>
+        <a href="{{ path('account_public_profile',{'account_username':account.username}) }}"><i class="fas fa-user"></i> Profile</a>
     </nav>
 {% endblock %}
 

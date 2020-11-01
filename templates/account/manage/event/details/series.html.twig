@@ -3,6 +3,25 @@
 {% block body %}
 
 
+
+    <div class="content">
+        <h2>{{  event.title }}</h2>
+    </div>
+
+    {%  if event.deleted %}
+        <div class="fullWidthNotice">
+            <div class="content">
+                <h3>Deleted!</h3>
+            </div>
+        </div>
+    {%  elseif event.cancelled %}
+        <div class="fullWidthNotice">
+            <div class="content">
+                <h3>Cancelled!</h3>
+            </div>
+        </div>
+    {%  endif %}
+
     <div class="content">
 
         <h3>Reoccurs</h3>

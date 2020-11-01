@@ -2,13 +2,14 @@
 
 {% block subbanner %}
     <h2>
-        <a href="{{ path('account_manage',{'account_username':account.username}) }}">{{  account.title }}</a>
+        <a href="{{ path('account_manage',{'account_username':account.username}) }}"><i class="fas fa-user"></i> {{  account.title }}</a>
     </h2>
     <nav>
-        <a href="{{ path('account_manage_event',{'account_username':account.username}) }}">Events</a>
-        <a href="{{ path('account_manage_discover_event',{'account_username':account.username}) }}">Discover</a>
-        <a href="{{ path('account_manage_tag',{'account_username':account.username}) }}">Tags</a>
-        <a href="{{ path('account_manage_profile',{'account_username':account.username}) }}">Profile</a>
-        <a href="{{ path('account_manage_settings',{'account_username':account.username}) }}"><i class="fa fa-cog" aria-hidden="true"></i></a>
+        <a href="{{ path('account_manage_event',{'account_username':account.username}) }}"><i class="fas fa-calendar"></i> Events</a>
+        <a href="{{ path('account_manage_event_new',{'account_username':account.username}) }}">(<i class="fas fa-plus"></i>)</a>
+        <a href="{{ path('account_manage_discover_event',{'account_username':account.username}) }}"><i class="fas fa-eye"></i> Discover</a>
+        <a href="{{ path('account_manage_tag',{'account_username':account.username}) }}"><i class="fas fa-tags"></i> Tags</a>
+        <a href="{{ path('account_manage_profile',{'account_username':account.username}) }}"><i class="fas fa-user-edit"></i> Profile</a>
+        <a href="{{ path('account_manage_settings',{'account_username':account.username}) }}">(<i class="fa fa-cog" aria-hidden="true"></i>)</a>
     </nav>
 {% endblock %}

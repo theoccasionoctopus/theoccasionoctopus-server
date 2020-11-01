@@ -4,7 +4,7 @@
 
 {% block subbanner %}
     <h2>
-        <a class="p-2 text-dark" href="{{ path('user_settings') }}">User Settings</a>
+        <a class="p-2 text-dark" href="{{ path('user_settings') }}"><i class="fa fa-cog" aria-hidden="true"></i> User Settings</a>
     </h2>
 {% endblock %}
 
@@ -27,11 +27,11 @@
                 </tr>
                 {%  for account in accounts_user_can_manage %}
                     <tr>
-                        <td>{{  account.title }}</td>
+                        <td><a href="{{ path('account_manage',{'account_username':account.username}) }}"><i class="fas fa-user"></i> {{  account.title }}</a></td>
                         <td>{{  account.accountLocal.username }}</td>
                         <td>
                             <a href="{{ path('account_manage',{'account_username':account.username}) }}" class="button" role="button">Visit</a>
-                            <a href="{{ path('account_manage_settings',{'account_username':account.username}) }}" class="button" role="button">Settings</a>
+                            <a href="{{ path('account_manage_settings',{'account_username':account.username}) }}" class="button" role="button"><i class="fa fa-cog" aria-hidden="true"></i> Settings</a>
                         </td>
                     </tr>
                 {%  endfor %}
@@ -39,11 +39,11 @@
 
         {%  endif %}
 
-        <a href="{{ path('register_account') }}" class="button" role="button">Create a new account</a>
+        <a href="{{ path('register_account') }}" class="button" role="button"><i class="fas fa-plus"></i> Create a new account</a>
 
         <h3>User Settings</h3>
 
-        <a href="{{ path('user_settings_access_token') }}" class="button" role="button">Access Tokens</a>
+        <a href="{{ path('user_settings_access_token') }}" class="button" role="button"><i class="fas fa-key"></i> API Access Tokens</a>
 
         {# TODO upcoming email managment #}
 

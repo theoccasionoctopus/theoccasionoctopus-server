@@ -22,13 +22,12 @@
                     {% else %}
                     <a class="text-dark" href="{{ path('index') }}">
                         {% endif %}
-                        {{  instance_name }}
+                        <i class="fas fa-calendar"></i> {{  instance_name }}
                     </a>
             </h1>
             <nav>
                 {% if app.user %}
-                    Hello {{ app.user.title }}
-                    <a href="{{ path('user_settings') }}"><i class="fas fa-user-cog"></i></a>
+                    <a href="{{ path('user_settings') }}">Hello {{ app.user.title }} <i class="fas fa-user-cog"></i></a>
                     <a href="{{ path('logout') }}">Logout</a>
                 {% else %}
                     <a href="{{ path('login') }}">Login</a>
@@ -49,19 +48,19 @@
 
     <footer>
         <div class="content">
-            <p>{% if userTimeZone is defined %}Currently: {{  userTimeZone }} {%  endif %}(<a href="{{  path('set_timezone') }}">Change TimeZone</a>)</p>
+            <p>{% if userTimeZone is defined %}Currently: {{  userTimeZone }} {%  endif %}(<a href="{{  path('set_timezone') }}"><i class="fas fa-clock"></i> Change TimeZone</a>)</p>
             {% if app.user %}
                 <p><a  href="{{ path('user_settings') }}"><i class="fas fa-user-cog"></i> Your User Settings</a></p>
                 {%  if accounts_user_can_manage|length > 1 %}
                     <p >
                         Switch to account:
                         {%  for account in accounts_user_can_manage %}
-                            <a href="{{ path('account_manage',{'account_username':account.username}) }}">{{  account.title }}</a>
+                            <a href="{{ path('account_manage',{'account_username':account.username}) }}"><i class="fas fa-user"></i> {{  account.title }}</a>
                         {%  endfor %}
                     </p>
                 {%  endif %}
             {%  endif %}
-            <p>{{  instance_name }} powered by <a href="https://www.theoccasionoctopus.net/">The Occasion Octopus software</a> (Open Source)</p>
+            <p>{{  instance_name }} is powered by <a href="https://www.theoccasionoctopus.net/">The Occasion Octopus software</a> (Open Source) <i class="far fa-grin-hearts"></i></p>
         </div>
     </footer>
 

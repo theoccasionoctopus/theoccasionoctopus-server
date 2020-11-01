@@ -4,7 +4,7 @@
 
 {% block subbanner %}
     <h2>
-        <a class="p-2 text-dark" href="{{ path('user_settings') }}">User Settings</a>
+        <a class="p-2 text-dark" href="{{ path('user_settings') }}"><i class="fa fa-cog" aria-hidden="true"></i> User Settings</a>
     </h2>
 {% endblock %}
 
@@ -28,7 +28,7 @@
                     <td>{%  if accessToken.enabled %}Enabled{%  else %}Blocked{%  endif %}</td>
                     <td>
                     {%  if accessToken.account %}
-                        {{  accessToken.account.title }} ({{  accessToken.account.username }})
+                        <i class="fas fa-user"></i> {{  accessToken.account.title }} ({{  accessToken.account.username }})
                     {%  else %}
                         All accounts
                     {%  endif %}
@@ -54,7 +54,7 @@
                 </tr>
                 {%  for account in accounts_user_can_manage %}
                     <tr>
-                        <td>{{  account.title }}</td>
+                        <td><i class="fas fa-user"></i> {{  account.title }}</td>
                         <td>{{  account.username }}</td>
                         <td>{{  account.id }}</td>
                     </tr>

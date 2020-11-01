@@ -5,6 +5,7 @@ html, body {
   padding: 0px;
   margin: 0px;
   background-color: lightgray;
+  background-image: url('/images/background-page.png');
   font-family: Arial, sans-serif;
 }
 
@@ -68,12 +69,14 @@ main {
   margin: 0px;
   padding: 10px 0px;
   background-color: white;
+  background-image: url('/images/background-main.png');
+  background-repeat: no-repeat;
+  background-position: bottom left;
 }
 
 footer {
   text-align: center;
   padding: 50px 0 0 0;
-  background-color: lightgray;
   font-size: 0.8rem;
 }
 
@@ -185,6 +188,15 @@ table.table {
       background-color: black;
       color: white;
     }
+  }
+}
+
+
+.mainListAccounts {
+  list-style-type: none;
+  li.account {
+    padding: 10px;
+    border-bottom: 1px solid #8c8c8c;
   }
 }
 

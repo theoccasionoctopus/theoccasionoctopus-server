@@ -22,10 +22,9 @@
                     {%  include '/common/eventStartEndLine.html.twig' with { 'start':eventOccurrence.start, 'end':eventOccurrence.end, 'timezone': eventOccurrence.event.timezone.code } %}
 
                     {%  if eventOccurrence.event.account.AccountLocal %}
-                        {{  eventOccurrence.event.account.AccountLocal.username }} / {{  account.title }}
-
+                        <i class="fas fa-user"></i> {{  eventOccurrence.event.account.title }} ({{  eventOccurrence.event.account.AccountLocal.username }})
                     {%  elseif eventOccurrence.event.account.AccountRemote %}
-                        REMOTE ACCOUNT
+                        <i class="fas fa-user"></i> {{  eventOccurrence.event.account.title }} on <i class="fas fa-database"></i> {{ eventOccurrence.event.account.accountRemote.remoteServer.title }}
                     {%  endif %}
                     <a class="button"
                             {%  if  eventOccurrence.event.hasReoccurence %}
