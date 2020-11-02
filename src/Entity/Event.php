@@ -242,10 +242,15 @@ class Event
 
     /**
      * @param mixed $description
+     * @return bool Was there any changes?
      */
-    public function setDescription($description)
+    public function setDescription($description): bool
     {
-        $this->description = $description;
+        if ($this->description != $description) {
+            $this->description = $description;
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -407,10 +412,15 @@ class Event
 
     /**
      * @param mixed $cancelled
+     * @return bool Was there any changes?
      */
-    public function setCancelled($cancelled)
+    public function setCancelled($cancelled): bool
     {
-        $this->cancelled = $cancelled;
+        if ($this->cancelled != $cancelled) {
+            $this->cancelled = $cancelled;
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -473,10 +483,15 @@ class Event
 
     /**
      * @param mixed $url
+     * @return bool Was there any changes?
      */
-    public function setUrl($url)
+    public function setUrl($url): bool
     {
-        $this->url = $url;
+        if ($this->url != $url) {
+            $this->url = $url;
+            return true;
+        }
+        return false;
     }
 
     /**

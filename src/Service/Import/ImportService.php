@@ -80,6 +80,9 @@ class ImportService
         $changes = False;
         if ($eventHasImport) {
             $event = $eventHasImport->getEvent();
+        } elseif ($eventData->STATUS == 'CANCELLED') {
+            // It's a new event, but it's cancelled - we don't want to bother importing that at all.
+            return;
         } else {
             $event = new Event();
             $event->setId(Library::GUID());
@@ -104,9 +107,17 @@ class ImportService
             $changes = true;
         }
 
-        // TODO description
+        if ($event->setDescription($eventData->DESCRIPTION)) {
+            $changes = true;
+        }
 
-        // TODO URL
+        if ($event->setUrl($eventData->URL)) {
+            $changes = true;
+        }
+
+        if ($event->setCancelled($eventData->STATUS == 'CANCELLED')) {
+            $changes = true;
+        }
 
         if($eventData->RRULE) {
             if ($event->setRrule($eventData->RRULE)) {
