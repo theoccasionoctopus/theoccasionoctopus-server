@@ -180,6 +180,11 @@ account_manage_settings:
     path: /a/{account_username}/manage/settings
     controller: App\Controller\AccountManageSettingsController::index
 
+account_manage_import_new:
+    path: /a/{account_username}/manage/settings/newImport
+    controller: App\Controller\AccountManageSettingsController::newImport
+
+
 
 # API - Misc
 

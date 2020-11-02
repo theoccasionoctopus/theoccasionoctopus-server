@@ -1,0 +1,22 @@
+{%  extends "account/manage/base.html.twig" %}
+
+{% block body %}
+
+    <div class="content">
+
+
+        <h3>New Import</h3>
+
+        {{ form_start(form) }}
+        {{ form_errors(form) }}
+        {{ form_row(form.title) }}
+        {{ form_row(form.description) }}
+        {{ form_row(form.url) }}
+        {{ form_row(form.privacy) }}
+
+        <button type="submit" class="button">Create</button>
+        {{ form_end(form) }}
+
+    </div>
+
+{% endblock %}
