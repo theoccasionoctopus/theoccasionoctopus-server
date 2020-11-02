@@ -61,7 +61,7 @@ Next install needed packages:
     
     curl -sL https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
     echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
-    apt-get update && apt-get install yarn
+    apt-get update && apt-get install -y yarn
     
 ### Get the app
     
@@ -155,7 +155,20 @@ Run:
     chmod o+rx /home/occ_oct/software/public/
     chown -R www-data:www-data /home/occ_oct/software/var
     systemctl reload apache2
- 
+
+### Set up cron
+
+Edit the cron entries as the occ_oct user.
+
+    su -c "crontab -e" occ_oct
+    
+Add the following entries:
+
+```
+0 6 * * * cd /home/occ_oct/software; ./bin/console theocasionoctupus:download-import-content
+30 6 * * * cd /home/occ_oct/software; ./bin/console theocasionoctupus:download-remote-user-content
+```
+
 ### Congratulations! 
 
 At this stage you should have a site that basically works at the URL you have picked.
@@ -188,7 +201,7 @@ Run:
 
     a2enmod http2
     
-Edit `/etc/apache2/sites-enabled/001-occ-oct-le-ssl.con` and just below the `<VirtualHost *:443>` line add:
+Edit `/etc/apache2/sites-enabled/001-occ-oct-le-ssl.conf` and just below the `<VirtualHost *:443>` line add:
 
     Protocols h2 http/1.1
     
@@ -216,13 +229,13 @@ Create the file `/etc/logrotate.d/occ_oct_app` and set the contents:
 
 ```
 /home/occ_oct/software/var/log/*.log {
-	daily
-	missingok
-	rotate 365
-	compress
-	delaycompress
-	notifempty
-	create 664 www-data www-data
+    daily
+    missingok
+    rotate 365
+    compress
+    delaycompress
+    notifempty
+    create 664 www-data www-data
     su www-data www-data
 }
 ```
@@ -246,9 +259,13 @@ chown occ_oct /home/occ_oct/backup.sh
 chmod 744 /home/occ_oct/backup.sh   
 ```
  
-Edit the crontab for the user `occ_oct` and add:
+Edit the cron entries as the occ_oct user.
+ 
+     su -c "crontab -e" occ_oct
+     
+Add the following entry:
 
-    0 3 * * * /home/occ_oct/backup.sh > /home/occ_oct/backup.log 2>&1
+    0 1 * * * /home/occ_oct/backup.sh > /home/occ_oct/backup.log 2>&1
     
 The directory `/home/occ_oct/backups/` will now contain daily backups of the database.
 
@@ -284,6 +301,7 @@ Log into server and run:
 
 TODO when we start doing releases, update instructions to check out a specific version by git tag
 
+Note the cron entries that should be added (see above) are very likely to change with new version of the software! Check above and edit as needed.
 
 
 
