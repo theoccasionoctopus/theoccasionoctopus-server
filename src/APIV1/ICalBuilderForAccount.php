@@ -31,8 +31,9 @@ class ICalBuilderForAccount
     public function getStart() {
         $txt = Library::getIcalLine('BEGIN','VCALENDAR');
 		$txt .= Library::getIcalLine('VERSION','2.0');
-		$txt .= Library::getIcalLine('PRODID','-//EventNetwork//NONSGML EventNetwork//EN');
-        $txt .= Library::getIcalLine('X-WR-CALNAME', $this->account->getTitle(). " - EventNetwork");
+		$txt .= Library::getIcalLine('PRODID','-//TheOccasionOctopus//NONSGML TheOccasionOctopus//EN');
+        // TODO use site instance in title
+        $txt .= Library::getIcalLine('X-WR-CALNAME', $this->account->getTitle(). " - SITE INSTANCE NAME HERE");
 		return $txt;
 
     }
@@ -77,21 +78,21 @@ class ICalBuilderForAccount
 
         }
 
-        $txt .= Library::getIcalLine('DTSTART',$event->getStartUTC()->format("Ymd")."T".$event->getStartUTC()->format("His")."Z");
-        $txt .= Library::getIcalLine('DTEND',$event->getEndUTC()->format("Ymd")."T".$event->getEndUTC()->format("His")."Z");
+        $txt .= Library::getIcalLine('DTSTART',$event->getStart('UTC')->format("Ymd")."T".$event->getStart('UTC')->format("His")."Z");
+        $txt .= Library::getIcalLine('DTEND',$event->getEnd('UTC')->format("Ymd")."T".$event->getEnd('UTC')->format("His")."Z");
 
         /** @var History $eventLastUpdatedHistory */
         $eventLastUpdatedHistory = $this->container->get('doctrine')->getRepository(History::class)->getLastHistoryForEvent($event);
         if ($eventLastUpdatedHistory) {
             $txt .= Library::getIcalLine(
                 'LAST-MODIFIED',
-                $eventLastUpdatedHistory->getCreated()->format("Ymd") . "T" .$eventLastUpdatedHistory->getCreated()->format("His") . "Z"
+                $eventLastUpdatedHistory->getCreated('UTC')->format("Ymd") . "T" .$eventLastUpdatedHistory->getCreated('UTC')->format("His") . "Z"
             );
             // 1557662400 is a magic number - it's the timestamp at the time we registered the domain.
             // Since we can't have any values less than that, we will reduce SEQUENCE by that to keep SEQUENCE reasonably small.
             $txt .= Library::getIcalLine(
                 'SEQUENCE',
-                $eventLastUpdatedHistory->getCreated()->getTimestamp() - 1557662400
+                $eventLastUpdatedHistory->getCreated('UTC')->getTimestamp() - 1557662400
             );
         } else {
             $txt .= Library::getIcalLine('SEQUENCE', 0);

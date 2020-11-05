@@ -101,5 +101,16 @@ class History
         $this->created = time();
     }
 
+    /**
+     * @return mixed
+     */
+    public function getCreated($timezone = 'UTC')
+    {
+        $dt = new \DateTime('', new \DateTimeZone($timezone));
+        $dt->setTimestamp($this->created);
+        return $dt;
+    }
+
+
 
 }
