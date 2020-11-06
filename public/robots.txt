@@ -1,0 +1,4 @@
+# If you want to stop your site appearing in search engines, do NOT add:
+# Disallow: /
+# That may also stop people importing iCal feeds into their personal calendar software.
+# There are other options in the app to control this. TODO options, and link to docs here
