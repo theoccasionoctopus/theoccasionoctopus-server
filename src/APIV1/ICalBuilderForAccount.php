@@ -71,6 +71,7 @@ class ICalBuilderForAccount
                 UrlGeneratorInterface::ABSOLUTE_URL
             );
 
+            // TODO Change to site instance name
             $description = $event->getDescription()."\n\n\n----\nPowered by The Occasion Octopus\n".$url;
             $txt .= Library::getIcalLine('DESCRIPTION',$description);
 
@@ -88,18 +89,20 @@ class ICalBuilderForAccount
                 'LAST-MODIFIED',
                 $eventLastUpdatedHistory->getCreated('UTC')->format("Ymd") . "T" .$eventLastUpdatedHistory->getCreated('UTC')->format("His") . "Z"
             );
-            // 1557662400 is a magic number - it's the timestamp at the time we registered the domain.
+            $txt .= Library::getIcalLine(
+                'DTSTAMP',
+                $eventLastUpdatedHistory->getCreated('UTC')->format("Ymd") . "T" .$eventLastUpdatedHistory->getCreated('UTC')->format("His") . "Z"
+            );
+            // 1602183673 is a magic number - it's the timestamp at the time we registered the domain for this software.
             // Since we can't have any values less than that, we will reduce SEQUENCE by that to keep SEQUENCE reasonably small.
             $txt .= Library::getIcalLine(
                 'SEQUENCE',
-                $eventLastUpdatedHistory->getCreated('UTC')->getTimestamp() - 1557662400
+                $eventLastUpdatedHistory->getCreated('UTC')->getTimestamp() - 1602183673
             );
         } else {
             $txt .= Library::getIcalLine('SEQUENCE', 0);
+            $txt .= Library::getIcalLine('DTSTAMP','20201008T190113Z');
         }
-
-
-        // TODO add a DTSTAMP
 
         $txt .= Library::getIcalLine('END','VEVENT');
 

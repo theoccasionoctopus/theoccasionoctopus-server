@@ -102,9 +102,9 @@ class History
     }
 
     /**
-     * @return mixed
+     * @return \DateTime
      */
-    public function getCreated($timezone = 'UTC')
+    public function getCreated($timezone = 'UTC'): \DateTime
     {
         $dt = new \DateTime('', new \DateTimeZone($timezone));
         $dt->setTimestamp($this->created);
