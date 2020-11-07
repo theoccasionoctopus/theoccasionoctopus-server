@@ -22,6 +22,9 @@
             </ul>
         {%  endif %}
 
+        <p>
+            <i class="fas fa-globe-europe"></i> Public (<a href="{{ path('account_public_profile',{'account_username':account.username }) }}">See public view</a>)
+        </p>
 
         <a href="{{ path('account_manage_new_follow_local',{'account_username':account.username}) }}" class="button" role="button">Follow Another Account on this server</a>
         <a href="{{ path('account_manage_new_follow_remote',{'account_username':account.username}) }}" class="button" role="button">Follow Another Account on another server</a>

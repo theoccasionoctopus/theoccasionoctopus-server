@@ -8,8 +8,14 @@
         <h2>{{  tag.title }}</h2>
         <p>{{  tag.description | nl2br }}</p>
         {%  include '/common/showExtraFields.html.twig' with { 'entity':tag } %}
-        <p>{% if tag.privacy == 10000 %}<i class="fas fa-lock"></i> Private{%  else %}<i class="fas fa-globe-europe"></i> Public{%  endif %}</p>
 
+        <p>
+            {% if tag.privacy == 10000 %}
+                <i class="fas fa-lock"></i> Private
+            {%  else %}
+                <i class="fas fa-globe-europe"></i> Public (<a href="{{ path('account_public_tag_show_tag',{'account_username':account.username,'tag_id': tag.id }) }}">See public view</a>)
+            {%  endif %}
+        </p>
 
         <a href="{{ path('account_manage_tag_edit_tag_details',{'account_username':account.username, 'tag_id': tag.id}) }}" class="button" role="button">Edit Details</a>
 

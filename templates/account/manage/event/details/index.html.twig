@@ -57,7 +57,13 @@
         <div>
             {{ event.country.title }}
         </div>
-        <p>{% if event.privacy == 10000 %}<i class="fas fa-lock"></i> Private{%  else %}<i class="fas fa-globe-europe"></i> Public{%  endif %}</p>
+        <p>
+            {% if event.privacy == 10000 %}
+                <i class="fas fa-lock"></i> Private
+            {%  else %}
+                <i class="fas fa-globe-europe"></i> Public (<a href="{{ path('account_public_event_show_event',{'account_username':account.username,'event_id': event.id }) }}">See public view</a>)
+            {%  endif %}
+        </p>
 
 
         {%  if event.hasReoccurence %}
