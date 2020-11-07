@@ -17,13 +17,14 @@
             {{ form_errors(form) }}
             <h4>About</h4>
             {{ form_row(form.title) }}
-            <h4>Username</h4>
             {{ form_row(form.username) }}
             <h4>Default Privacy</h4>
             {{ form_row(form.default_privacy) }}
+            <p>(Basic details of your account are always public, but you can choose to make individual events public or private later. This just sets some good default options for you.)</p>
             <h4>Where is this?</h4>
             {{ form_row(form.default_country) }}
             {{ form_row(form.default_timezone) }}
+            <p>(You can change this later for each event. This just sets some good default options for you.)</p>
 
             {{ form_rest(form) }}
 
