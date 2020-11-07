@@ -1,5 +1,7 @@
 {%  extends "account/public/base.html.twig" %}
 
+{% block account_public_to_manage_url %}{{ path('account_manage_tag',{'account_username':account.username}) }}{% endblock %}
+
 {% block body %}
 
 

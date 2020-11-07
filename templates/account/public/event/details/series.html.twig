@@ -1,5 +1,7 @@
 {%  extends "account/public/base.html.twig" %}
 
+{% block account_public_to_manage_url %}{{ path('account_manage_event_edit_show_event_series',{'account_username':account.username,'event_id':event.id}) }}{% endblock %}
+
 {% block body %}
 
 
