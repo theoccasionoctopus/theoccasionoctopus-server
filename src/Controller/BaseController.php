@@ -25,6 +25,9 @@ abstract class BaseController extends AbstractController
 
         // TODO all controllers need to call this so it's set up correctly, and that needs to be checked
 
+        // Instance Default
+        $this->userTimeZoneCode = $this->getParameter('app.default_timezone_code');
+
         // Is it set in a cookie?
         $code = $request->cookies->get('timezone');
         if ($code) {

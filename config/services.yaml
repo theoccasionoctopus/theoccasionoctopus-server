@@ -11,6 +11,8 @@ parameters:
     app.instance_url: '%env(default::INSTANCE_URL)%'
     app.mailer_from_email: '%env(default::MAILER_FROM_EMAIL)%'
     app.mailer_from_name: '%env(default::MAILER_FROM_NAME)%'
+    app.default_country_code: '%env(default::DEFAULT_COUNTRY)%'
+    app.default_timezone_code: '%env(default::DEFAULT_TIMEZONE)%'
 
 
 services:

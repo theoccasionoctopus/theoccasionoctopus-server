@@ -44,6 +44,14 @@ class NewAccountController extends BaseController
 
         $accountLocal = new AccountLocal();
         $accountLocal->setAccount($account);
+        $accountLocal->setDefaultCountry(
+            $this->getDoctrine()->getRepository(Country::class)
+                ->findOneBy(array('iso3166_two_char'=>$this->getParameter('app.default_country_code')))
+        );
+        $accountLocal->setDefaultTimezone(
+            $this->getDoctrine()->getRepository(TimeZone::class)
+                ->findOneBy(array('code'=>$this->getParameter('app.default_timezone_code')))
+        );
 
         $form = $this->createForm(AccountRegisterType::class, $accountLocal);
 
@@ -57,8 +65,6 @@ class NewAccountController extends BaseController
             $account->setTitle($form->get('title')->getData());
             $entityManager->persist($account);
 
-            $accountLocal->setDefaultCountry($this->getDoctrine()->getRepository(Country::class)->findOneBy(array('iso3166_two_char'=>'GB')));
-            $accountLocal->setDefaultTimezone($this->getDoctrine()->getRepository(TimeZone::class)->findOneBy(array('code'=>'Europe/London')));
             $entityManager->persist($accountLocal);
 
             $userManagesAccount = new UserManageAccount();

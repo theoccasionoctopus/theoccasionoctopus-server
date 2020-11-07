@@ -12,11 +12,19 @@
 
 
     <div class="content">
+        <h3>Create your account</h3>
         {{ form_start(form) }}
             {{ form_errors(form) }}
+            <h4>About</h4>
             {{ form_row(form.title) }}
+            <h4>Username</h4>
             {{ form_row(form.username) }}
+            <h4>Default Privacy</h4>
             {{ form_row(form.default_privacy) }}
+            <h4>Where is this?</h4>
+            {{ form_row(form.default_country) }}
+            {{ form_row(form.default_timezone) }}
+
             {{ form_rest(form) }}
 
             <button type="submit" class="button">Register!</button>
