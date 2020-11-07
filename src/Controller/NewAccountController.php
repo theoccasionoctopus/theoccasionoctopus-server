@@ -80,6 +80,11 @@ class NewAccountController extends BaseController
             // ... do any other work - like sending them an email, etc
             // maybe set a "flash" success message for the user
 
+
+            $this->addFlash(
+                'success',
+                'Welcome to your new account'
+            );
             return $this->redirectToRoute('account_manage', ['account_username' => $accountLocal->getUsername()  ]);
 
         }

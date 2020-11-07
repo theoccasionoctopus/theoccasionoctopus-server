@@ -55,11 +55,12 @@ class UserController extends BaseController
                 $entityManager->persist($user);
                 $entityManager->flush();
 
-
-                // TODO A Flash message saying success!
-
                 // TODO Log user in ourselves?
 
+                $this->addFlash(
+                    'success',
+                    'Welcome! You can now log in.'
+                );
                 return $this->redirectToRoute('login');
             }
         }

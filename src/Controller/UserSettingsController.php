@@ -86,6 +86,10 @@ class UserSettingsController extends BaseController
             $doctrine->getManager()->flush();
 
             // redirect
+            $this->addFlash(
+                'success',
+                'API Token created!'
+            );
             return $this->redirectToRoute('user_settings_access_token');
         }
 

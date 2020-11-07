@@ -57,6 +57,10 @@ class AccountManageEventNewController extends AccountManageController
             $historyWorkerService->persistHistoryWorker($historyWorker);
 
             // redirect
+            $this->addFlash(
+                'success',
+                'Event created!'
+            );
             return $this->redirectToRoute('account_manage_event_show_event', ['account_username' => $this->account->getUsername(),'event_id' => $event->getId() ]);
         }
 

@@ -136,6 +136,10 @@ class AccountManageEventDetailsController extends  AccountManageController {
             $historyWorkerService->persistHistoryWorker($historyWorker);
 
             // redirect
+            $this->addFlash(
+                'success',
+                'Event edited!'
+            );
             return $this->redirectToRoute('account_manage_event_show_event', ['account_username' => $this->account->getUsername(),'event_id' => $this->event->getId() ]);
         }
 
@@ -203,6 +207,10 @@ class AccountManageEventDetailsController extends  AccountManageController {
             $historyWorkerService->persistHistoryWorker($historyWorker);
 
             // redirect
+            $this->addFlash(
+                'success',
+                'Tags edited!'
+            );
             return $this->redirectToRoute('account_manage_event_show_event', ['account_username' => $this->account->getUsername(),'event_id' => $this->event->getId() ]);
 
 
@@ -223,7 +231,7 @@ class AccountManageEventDetailsController extends  AccountManageController {
         $this->buildEvent($account_username, $event_id);
 
 
-        # @TODO check below is POST too,
+        # TODO check below is POST too, and CSFR
         if ($request->get('action') == 'cancel') {
 
             $this->event->setCancelled(true);
@@ -234,6 +242,10 @@ class AccountManageEventDetailsController extends  AccountManageController {
             $historyWorkerService->persistHistoryWorker($historyWorker);
 
             // redirect
+            $this->addFlash(
+                'success',
+                'Event cancelled!'
+            );
             return $this->redirectToRoute('account_manage_event_show_event', ['account_username' => $this->account->getUsername(),'event_id' => $this->event->getId() ]);
         }
 
@@ -261,6 +273,10 @@ class AccountManageEventDetailsController extends  AccountManageController {
             $historyWorkerService->persistHistoryWorker($historyWorker);
 
             // redirect
+            $this->addFlash(
+                'success',
+                'Event deleted!'
+            );
             return $this->redirectToRoute('account_manage_event_show_event', ['account_username' => $this->account->getUsername(),'event_id' => $this->event->getId() ]);
         }
 

@@ -94,6 +94,22 @@ footer {
   border-radius: 4px;
 }
 
+.flashSuccess {
+  margin: 10px;
+  padding: 10px;
+  border: green solid 3px;
+  background-color: lightgreen;
+  border-radius: 4px;
+}
+
+.flashNotice {
+  margin: 10px;
+  padding: 10px;
+  border: #999 solid 3px;
+  background-color: #ccc;
+  border-radius: 4px;
+}
+
 
 .fullWidthNotice {
   background-color: black;

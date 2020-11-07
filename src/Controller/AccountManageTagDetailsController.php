@@ -75,6 +75,10 @@ class AccountManageTagDetailsController extends AccountManageController
             $historyWorkerService->persistHistoryWorker($historyWorker);
 
             // redirect
+            $this->addFlash(
+                'success',
+                'Tag edited!'
+            );
             return $this->redirectToRoute('account_manage_tag_show_tag', ['account_username' => $this->account->getUsername(),'tag_id' => $this->tag->getId() ]);
         }
 

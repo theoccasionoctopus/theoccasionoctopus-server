@@ -47,6 +47,10 @@ class AccountManageTagNewController extends AccountManageController
             $historyWorkerService->persistHistoryWorker($historyWorker);
 
             // redirect
+            $this->addFlash(
+                'success',
+                'Tag created!'
+            );
             return $this->redirectToRoute('account_manage_tag', ['account_username'=>$this->account->getUsername()]);
         }
 
