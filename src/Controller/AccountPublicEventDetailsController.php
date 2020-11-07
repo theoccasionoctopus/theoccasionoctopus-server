@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\EventHasImport;
+use App\Entity\EventHasSourceEvent;
 use App\Entity\EventOccurrence;
 use App\Entity\Tag;
 use App\Library;
@@ -42,6 +43,7 @@ class AccountPublicEventDetailsController extends AccountPublicController
 
         $currentTags = $doctrine->getRepository(Tag::class)->findPublicByEvent($this->event);
         $eventHasImports = $doctrine->getRepository(EventHasImport::class)->findByEvent($this->event);
+        $eventHasSourceEvents = $doctrine->getRepository(EventHasSourceEvent::class)->findByEvent($this->event);
 
         $eventOccurrence = Null;
         if ($this->event->hasReoccurence() && $request->query->get('startutc')) {
@@ -57,6 +59,7 @@ class AccountPublicEventDetailsController extends AccountPublicController
             'event' => $this->event,
             'currentTags' => $currentTags,
             'eventHasImports' => $eventHasImports,
+            'eventHasSourceEvents' => $eventHasSourceEvents,
             'eventOccurrence' => $eventOccurrence,
         ]));
 

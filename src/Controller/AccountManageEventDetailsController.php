@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Event;
 use App\Entity\EventHasImport;
+use App\Entity\EventHasSourceEvent;
 use App\Entity\EventHasTag;
 use App\Entity\EventOccurrence;
 use App\Entity\Tag;
@@ -44,6 +45,8 @@ class AccountManageEventDetailsController extends  AccountManageController {
 
         $eventHasImports = $doctrine->getRepository(EventHasImport::class)->findByEvent($this->event);
 
+        $eventHasSourceEvents = $doctrine->getRepository(EventHasSourceEvent::class)->findByEvent($this->event);
+
         $eventOccurrence = Null;
         if ($this->event->hasReoccurence() && $request->query->get('startutc')) {
             $bits = explode('-',$request->query->get('startutc'));
@@ -58,6 +61,7 @@ class AccountManageEventDetailsController extends  AccountManageController {
             'event' => $this->event,
             'currentTags' => $currentTags,
             'eventHasImports' => $eventHasImports,
+            'eventHasSourceEvents' => $eventHasSourceEvents,
             'eventOccurrence' => $eventOccurrence,
         ]));
 

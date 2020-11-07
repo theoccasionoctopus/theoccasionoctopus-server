@@ -69,7 +69,7 @@
 
         {%  endif  %}
 
-        {%  if eventHasImports %}
+        {%  if eventHasImports or eventHasSourceEvents  %}
 
             <h3>Source</h3>
 
@@ -80,7 +80,25 @@
                 <p>{{  eventHasImport.import.description | nl2br | linkify }}</p>
             {% endfor %}
 
-            {%  endif %}
+            {% for eventHasSourceEvent in eventHasSourceEvents %}
+
+                <p>
+                    This event was taken from account
+                    {%  if eventHasSourceEvent.sourceEvent.account.getAccountLocal() %}
+                        <i class="fas fa-user"></i> {{  eventHasSourceEvent.sourceEvent.account.title }} ({{  eventHasSourceEvent.sourceEvent.account.accountLocal.username }})
+                        {%  if eventHasSourceEvent.sourceEvent.privacy == 0 %}
+                            <a href="{{ path('account_public_event_show_event',{'account_username':eventHasSourceEvent.sourceEvent.account.accountLocal.username,'event_id':eventHasSourceEvent.sourceEvent.id}) }}" class="button" role="button">View</a>
+                        {%  else %}
+                            <a href="{{ path('account_public',{'account_username':eventHasSourceEvent.sourceEvent.account.accountLocal.username}) }}" class="button" role="button">View</a>
+                        {%  endif %}
+                    {%  else %}
+                        TODO A REMOTE ACCOUNT
+                    {%  endif %}
+                </p>
+
+            {% endfor %}
+
+        {%  endif %}
 
         <a class="button" href="{{ url('api1_account_events_show_event_json',{'account_id':account.id ,'event_id':event.id}) }}">Export JSON</a>
 
