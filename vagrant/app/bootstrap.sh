@@ -23,8 +23,10 @@ chown www-data:www-data  /logs
 #--------------------------------------------  Composer
 
 mkdir -p /bin
-wget -O /bin/composer.phar -q https://getcomposer.org/composer.phar
-chmod a+x /bin/composer.phar
+cd /bin
+php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
+php composer-setup.php
+php -r "unlink('composer-setup.php');"
 
 cd /vagrant
 php /bin/composer.phar install

@@ -52,16 +52,19 @@ Next install needed packages:
     apt-get update
     DEBIAN_FRONTEND=noninteractive apt-get install -y postgresql apache2 php-mbstring php-gd php php-curl php-pgsql git php-intl curl zip php7.4-fpm php-zip php-xml php-zip certbot python3-certbot-apache
     
-    mkdir -p /bin
-    wget -O /bin/composer.phar -q https://getcomposer.org/composer.phar
-    chmod a+x /bin/composer.phar
-
     curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash -
     apt-get install -y nodejs
     
     curl -sL https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
     echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
     apt-get update && apt-get install -y yarn
+    
+To install composer, run:
+
+    mkdir -p /bin
+    cd /bin    
+    
+Then go to https://getcomposer.org/download/ and copy and paste the script commands from there.
     
 ### Get the app
     
