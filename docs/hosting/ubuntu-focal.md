@@ -90,7 +90,6 @@ Create `/home/occ_oct/software/.env.local` with the contents (edited as appropri
 ```
 MAILER_URL=smtp://localhost:1025
 MAILER_FROM_EMAIL="theoccocc@example.com"
-MAILER_FROM_NAME="My Instance Name"
 DATABASE_URL=postgresql://occ_oct_app:ENTER-PASSWORD-HERE@127.0.0.1:5432/occ_oct_app?serverVersion=12&charset=utf8
 INSTANCE_NAME="My Instance Name"
 INSTANCE_URL="https://mytestserver.net"

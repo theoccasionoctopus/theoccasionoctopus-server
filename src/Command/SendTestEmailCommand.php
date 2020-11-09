@@ -55,7 +55,7 @@ class SendTestEmailCommand extends Command
             );
 
         $message->setFrom(
-            [$this->container->getParameter('app.mailer_from_email')=>$this->container->getParameter('app.mailer_from_name')]
+            [$this->container->getParameter('app.mailer_from_email')=>$this->container->getParameter('app.instance_name')]
         )
             ->setTo($input->getArgument('email'))
             ->setBody(
