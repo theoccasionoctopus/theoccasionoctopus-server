@@ -194,4 +194,46 @@ class Account
         $this->created = time();
     }
 
+    /**
+     * @return mixed
+     */
+    public function getLimitNumberOfEvents()
+    {
+        return $this->limitNumberOfEvents;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getLimitNumberOfEventOccurrences()
+    {
+        return $this->limitNumberOfEventOccurrences;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getLimitNumberOfTags()
+    {
+        return $this->limitNumberOfTags;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getLimitNumberOfAccountsFollowing()
+    {
+        return $this->limitNumberOfAccountsFollowing;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getLimitNumberOfImports()
+    {
+        return $this->limitNumberOfImports;
+    }
+
+
+
 }

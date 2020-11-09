@@ -18,6 +18,7 @@
                     <td>{{  account.username }}</td>
                     <td>{{  account.title }}</td>
                     <td>
+                        <a href="{{ path('sysadmin_account_local_show_account',{'account_id':account.id}) }}" class="button" role="button">Sysadmin</a>
                         <a href="{{ path('account_public',{'account_username':account.username}) }}" class="button" role="button">View Public</a>
                     </td>
                 </tr>

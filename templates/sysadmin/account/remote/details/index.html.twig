@@ -1,0 +1,81 @@
+{%  extends "sysadmin/base.html.twig" %}
+
+
+{% block body %}
+
+
+    <div class="content">
+
+        <table class="table">
+            <tr>
+                <th>Id</th>
+                <td>{{  account.id }}</td>
+            </tr>
+            <tr>
+                <th></th>
+                <td><h4>User Info</h4></td>
+            </tr>
+            <tr>
+                <th>Account Title</th>
+                <td>{{  account.title }}</td>
+            </tr>
+            <tr>
+                <th>Human Page</th>
+                <td>
+                    {{  accountRemote.humanURL }}
+                    <a href="{{ accountRemote.humanURL }}" class="button" role="button" target="_blank">View</a>
+                </td>
+            </tr>
+            <tr>
+                <th></th>
+                <td><h4>Remote Server</h4></td>
+            </tr>
+            <tr>
+                <th>Remote Server URL</th>
+                <td>
+                    {{  accountRemote.remoteServer.getURL }}
+                    <a href="{{ accountRemote.remoteServer.getURL }}" class="button" role="button" target="_blank">View</a>
+                </td>
+            </tr>
+            <tr>
+                <th>Remote Server Title</th>
+                <td>{{  accountRemote.remoteServer.title }}</td>
+            </tr>
+            <tr>
+                <th></th>
+                <td><h4>Local Settings</h4></td>
+            </tr>
+            <tr>
+                <th>years_behind</th>
+                <td>{{  account.yearsBehind }}</td>
+            </tr>
+            <tr>
+                <th>years_ahead</th>
+                <td>{{  account.yearsAhead  }}</td>
+            </tr>
+            <tr>
+                <th>limitNumberOfEvents</th>
+                <td>{{  account.limitNumberOfEvents }}</td>
+            </tr>
+            <tr>
+                <th>limitNumberOfEventOccurrences</th>
+                <td>{{  account.limitNumberOfEventOccurrences }}</td>
+            </tr>
+            <tr>
+                <th>limitNumberOfTags</th>
+                <td>{{  account.limitNumberOfTags }}</td>
+            </tr>
+            <tr>
+                <th>limitNumberOfAccountsFollowing</th>
+                <td>{{  account.limitNumberOfAccountsFollowing }}</td>
+            </tr>
+            <tr>
+                <th>limitNumberOfImports</th>
+                <td>{{  account.limitNumberOfImports }}</td>
+            </tr>
+        </table>
+
+
+    </div>
+
+{% endblock %}

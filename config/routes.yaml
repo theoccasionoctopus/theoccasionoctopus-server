@@ -280,10 +280,22 @@ sysadmin_user:
     path: /sysadmin/user
     controller: App\Controller\SysAdminUserListController::index
 
+sysadmin_user_show_user:
+    path: /sysadmin/user/{user_id}
+    controller: App\Controller\SysAdminUserShowController::index
+
 sysadmin_account_local:
     path: /sysadmin/account/local
     controller: App\Controller\SysAdminAccountListController::local
 
+sysadmin_account_local_show_account:
+    path: /sysadmin/account/local/{account_id}
+    controller: App\Controller\SysAdminAccountLocalShowController::index
+
 sysadmin_account_remote:
     path: /sysadmin/account/remote
     controller: App\Controller\SysAdminAccountListController::remote
+
+sysadmin_account_remote_show_account:
+    path: /sysadmin/account/remote/{account_id}
+    controller: App\Controller\SysAdminAccountRemoteShowController::index

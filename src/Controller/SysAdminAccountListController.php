@@ -14,11 +14,12 @@ class SysAdminAccountListController extends SysAdminBaseController
 
     public function local(Request $request)
     {
+        $this->setUp($request);
 
         $doctrine = $this->getDoctrine();
         $repository = $doctrine->getRepository(Account::class);
 
-        return $this->render('sysadmin/account/local.html.twig', $this->getTemplateVariables([
+        return $this->render('sysadmin/account/local/index.html.twig', $this->getTemplateVariables([
             'accounts'=>$repository->findAllLocal(),
         ]));
 
@@ -26,11 +27,12 @@ class SysAdminAccountListController extends SysAdminBaseController
 
     public function remote(Request $request)
     {
+        $this->setUp($request);
 
         $doctrine = $this->getDoctrine();
         $repository = $doctrine->getRepository(Account::class);
 
-        return $this->render('sysadmin/account/remote.html.twig', $this->getTemplateVariables([
+        return $this->render('sysadmin/account/remote/index.html.twig', $this->getTemplateVariables([
             'accounts'=>$repository->findAllRemote(),
         ]));
 

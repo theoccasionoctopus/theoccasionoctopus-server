@@ -1,0 +1,86 @@
+{%  extends "sysadmin/base.html.twig" %}
+
+
+{% block body %}
+
+
+    <div class="content">
+
+        <table class="table">
+            <tr>
+                <th>Id</th>
+                <td>{{  account.id }}</td>
+            </tr>
+            <tr>
+                <th></th>
+                <td><h4>Information</h4></td>
+            </tr>
+            <tr>
+                <th>Username</th>
+                <td>{{  accountLocal.username }}</td>
+            </tr>
+            <tr>
+                <th>Title</th>
+                <td>{{  account.title }}</td>
+            </tr>
+            <tr>
+                <th></th>
+                <td><h4>Local Settings</h4></td>
+            </tr>
+            <tr>
+                <th>Default Privacy</th>
+                <td>
+                    {% if accountLocal.defaultPrivacy == 10000 %}
+                        <i class="fas fa-lock"></i> Private
+                    {%  else %}
+                        <i class="fas fa-globe-europe"></i> Public
+                    {%  endif %}
+                </td>
+            </tr>
+            <tr>
+                <th>Default Timezone</th>
+                <td>{{  accountLocal.defaultTimezone.title }}</td>
+            </tr>
+            <tr>
+                <th>Default Country</th>
+                <td>{{  accountLocal.defaultCountry.title }}</td>
+            </tr>
+            <tr>
+                <th>years_behind</th>
+                <td>{{  account.yearsBehind }}</td>
+            </tr>
+            <tr>
+                <th>years_ahead</th>
+                <td>{{  account.yearsAhead  }}</td>
+            </tr>
+            <tr>
+                <th></th>
+                <td><h4>Limits</h4></td>
+            </tr>
+            <tr>
+                <th>limitNumberOfEvents</th>
+                <td>{{  account.limitNumberOfEvents }}</td>
+            </tr>
+            <tr>
+                <th>limitNumberOfEventOccurrences</th>
+                <td>{{  account.limitNumberOfEventOccurrences }}</td>
+            </tr>
+            <tr>
+                <th>limitNumberOfTags</th>
+                <td>{{  account.limitNumberOfTags }}</td>
+            </tr>
+            <tr>
+                <th>limitNumberOfAccountsFollowing</th>
+                <td>{{  account.limitNumberOfAccountsFollowing }}</td>
+            </tr>
+            <tr>
+                <th>limitNumberOfImports</th>
+                <td>{{  account.limitNumberOfImports }}</td>
+            </tr>
+        </table>
+
+        <a href="{{ path('account_public',{'account_username':account.username}) }}" class="button" role="button">View Public</a>
+
+    </div>
+
+{% endblock %}

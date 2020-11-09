@@ -20,6 +20,7 @@
                     </td>
                     <td>{{  account.title }}</td>
                     <td>
+                        <a href="{{ path('sysadmin_account_remote_show_account',{'account_id':account.id}) }}" class="button" role="button">Sysadmin</a>
                         <a href="{{ account.accountRemote.humanURL }}" class="button" role="button" target="_blank">View Human Page</a>
                     </td>
                 </tr>

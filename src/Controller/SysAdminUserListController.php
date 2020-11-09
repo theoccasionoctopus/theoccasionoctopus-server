@@ -13,6 +13,7 @@ class SysAdminUserListController extends SysAdminBaseController
 {
     public function index(Request $request)
     {
+        $this->setUp($request);
 
         $doctrine = $this->getDoctrine();
         $repository = $doctrine->getRepository(User::class);

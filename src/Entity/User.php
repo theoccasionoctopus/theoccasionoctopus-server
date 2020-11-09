@@ -222,4 +222,25 @@ class User implements UserInterface
         $this->locked = $locked;
     }
 
+    /**
+     * @return mixed
+     */
+    public function getLimitNumberOfAccountsManage()
+    {
+        return $this->limitNumberOfAccountsManage;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getLimitNumberOfAPIAccessTokens()
+    {
+        return $this->limitNumberOfAPIAccessTokens;
+    }
+
+
+    public function isSysAdmin(): bool {
+        return in_array('ROLE_SYSADMIN', $this->roles);
+    }
+
 }
