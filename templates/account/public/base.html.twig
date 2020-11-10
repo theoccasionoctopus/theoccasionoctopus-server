@@ -1,7 +1,7 @@
 {%  extends "base.html.twig" %}
 
 {% block account_public_to_manage %}
-    {%  if account in accounts_user_can_manage %}
+    {%  if app.user and account in accounts_user_can_manage %}
         <div class="content">
             <div class="flashNotice">
                 This is how the public see this. You are a manager of this account. <a class="button" href="{% block account_public_to_manage_url %}{% endblock %}">Manage</a>
