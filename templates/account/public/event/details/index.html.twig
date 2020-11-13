@@ -4,105 +4,112 @@
 
 {% block body %}
 
+    <div itemscope itemtype="http://schema.org/Event">
 
-    <div class="content">
-        <h2>{{  event.title }}</h2>
-    </div>
-
-    {%  if event.deleted %}
-        <div class="fullWidthNotice">
-            <div class="content">
-                <h3>Deleted!</h3>
-            </div>
+        <div class="content" itemprop="name">
+            <h2>{{  event.title }}</h2>
         </div>
-    {%  elseif event.cancelled %}
-        <div class="fullWidthNotice">
-            <div class="content">
-                <h3>Cancelled!</h3>
-            </div>
-        </div>
-    {%  endif %}
-    
-    <div class="content">
-        <p>{{  event.description | nl2br | linkify }}</p>
-        {%  include '/common/showExtraFields.html.twig' with { 'entity':event } %}
-        {% if event.url %}
-            <p>URL: <a href="{{ event.url }}">{{ event.url }}</a></p>
-        {% endif %}
-        {% if event.urlTickets %}
-            <p>Tickets URL: <a href="{{ event.urlTickets }}">{{ event.urlTickets }}</a></p>
-        {% endif %}
-        {% for tag in currentTags %}
-            <a class="button" href="{{ path('account_public_tag_show_tag',{'account_username':account.username,'tag_id': tag.id }) }}">Tag: {{  tag.title }}</a>
-        {% endfor %}
 
-        {%  if eventOccurrence %}
-            {%  if event.timezone.code == userTimeZone %}
-                {%  include '/common/eventStartEndLine.html.twig' with { 'start':eventOccurrence.start, 'end':eventOccurrence.end, 'timezone': event.timezone.code } %}
-            {%  else %}
-                {%  include '/common/eventStartEndLine.html.twig' with { 'start':eventOccurrence.start, 'end':eventOccurrence.end, 'timezone': event.timezone.code, 'showTimeZone': true } %}
-                {%  include '/common/eventStartEndLine.html.twig' with { 'start':eventOccurrence.start(userTimeZone), 'end':eventOccurrence.end(userTimeZone), 'timezone': userTimeZone, 'showTimeZone': true } %}
-            {%  endif %}
+        {%  if event.deleted %}
+            <meta itemprop="eventStatus" content="https://schema.org/EventCancelled" />
+            <div class="fullWidthNotice">
+                <div class="content">
+                    <h3>Deleted!</h3>
+                </div>
+            </div>
+        {%  elseif event.cancelled %}
+            <meta itemprop="eventStatus" content="https://schema.org/EventCancelled" />
+            <div class="fullWidthNotice">
+                <div class="content">
+                    <h3>Cancelled!</h3>
+                </div>
+            </div>
         {%  else %}
-            {%  if event.timezone.code == userTimeZone %}
-                {%  include '/common/eventStartEndLine.html.twig' with { 'start':event.start, 'end':event.end, 'timezone': event.timezone.code } %}
+            <meta itemprop="eventStatus" content="https://schema.org/EventScheduled" />
+        {%  endif %}
+
+        <div class="content">
+            <p itemprop="description">{{  event.description | nl2br | linkify }}</p>
+            {%  include '/common/showExtraFields.html.twig' with { 'entity':event } %}
+            {% if event.url %}
+                <p>URL: <a href="{{ event.url }}" itemprop="url">{{ event.url }}</a></p>
+            {% endif %}
+            {% if event.urlTickets %}
+                <p>Tickets URL: <a href="{{ event.urlTickets }}">{{ event.urlTickets }}</a></p>
+            {% endif %}
+            {% for tag in currentTags %}
+                <a class="button" href="{{ path('account_public_tag_show_tag',{'account_username':account.username,'tag_id': tag.id }) }}">Tag: {{  tag.title }}</a>
+            {% endfor %}
+
+            {%  if eventOccurrence %}
+                {%  if event.timezone.code == userTimeZone %}
+                    {%  include '/common/eventStartEndLine.html.twig' with { 'start':eventOccurrence.start, 'end':eventOccurrence.end, 'timezone': event.timezone.code } %}
+                {%  else %}
+                    {%  include '/common/eventStartEndLine.html.twig' with { 'start':eventOccurrence.start, 'end':eventOccurrence.end, 'timezone': event.timezone.code, 'showTimeZone': true } %}
+                    {%  include '/common/eventStartEndLine.html.twig' with { 'start':eventOccurrence.start(userTimeZone), 'end':eventOccurrence.end(userTimeZone), 'timezone': userTimeZone, 'showTimeZone': true } %}
+                {%  endif %}
             {%  else %}
-                {%  include '/common/eventStartEndLine.html.twig' with { 'start':event.start, 'end':event.end, 'timezone': event.timezone.code, 'showTimeZone': true } %}
-                {%  include '/common/eventStartEndLine.html.twig' with { 'start':event.start(userTimeZone), 'end':event.end(userTimeZone), 'timezone': userTimeZone, 'showTimeZone': true } %}
+                {%  if event.timezone.code == userTimeZone %}
+                    {%  include '/common/eventStartEndLine.html.twig' with { 'start':event.start, 'end':event.end, 'timezone': event.timezone.code } %}
+                {%  else %}
+                    {%  include '/common/eventStartEndLine.html.twig' with { 'start':event.start, 'end':event.end, 'timezone': event.timezone.code, 'showTimeZone': true } %}
+                    {%  include '/common/eventStartEndLine.html.twig' with { 'start':event.start(userTimeZone), 'end':event.end(userTimeZone), 'timezone': userTimeZone, 'showTimeZone': true } %}
+                {%  endif %}
             {%  endif %}
-        {%  endif %}
 
-        <div>
-            {{ event.timezone.title }}
-        </div>
-        <div>
-            {{ event.country.title }}
-        </div>
-
-
-        {%  if event.hasReoccurence %}
-
-            <h3>Reoccurs</h3>
-
-            <p>This event is a part of a series</p>
-
-            <a class="button" href="{{ path('account_public_event_show_event_series',{'account_username':account.username,'event_id': event.id }) }}">View Series</a>
+            <div>
+                {{ event.timezone.title }}
+            </div>
+            <div>
+                {{ event.country.title }}
+            </div>
 
 
-        {%  endif  %}
+            {%  if event.hasReoccurence %}
 
-        {%  if eventHasImports or eventHasSourceEvents  %}
+                <h3>Reoccurs</h3>
 
-            <h3>Source</h3>
+                <p>This event is a part of a series</p>
 
-            {% for eventHasImport in eventHasImports %}
-                <p>
-                    This was imported from <a href="{{ eventHasImport.import.url }}" target="_blank">{{ eventHasImport.import.title }}</a>
-                </p>
-                <p>{{  eventHasImport.import.description | nl2br | linkify }}</p>
-            {% endfor %}
+                <a class="button" href="{{ path('account_public_event_show_event_series',{'account_username':account.username,'event_id': event.id }) }}">View Series</a>
 
-            {% for eventHasSourceEvent in eventHasSourceEvents %}
 
-                <p>
-                    This event was taken from account
-                    {%  if eventHasSourceEvent.sourceEvent.account.getAccountLocal() %}
-                        <i class="fas fa-user"></i> {{  eventHasSourceEvent.sourceEvent.account.title }} ({{  eventHasSourceEvent.sourceEvent.account.accountLocal.username }})
-                        {%  if eventHasSourceEvent.sourceEvent.privacy == 0 %}
-                            <a href="{{ path('account_public_event_show_event',{'account_username':eventHasSourceEvent.sourceEvent.account.accountLocal.username,'event_id':eventHasSourceEvent.sourceEvent.id}) }}" class="button" role="button">View</a>
+            {%  endif  %}
+
+            {%  if eventHasImports or eventHasSourceEvents  %}
+
+                <h3>Source</h3>
+
+                {% for eventHasImport in eventHasImports %}
+                    <p>
+                        This was imported from <a href="{{ eventHasImport.import.url }}" target="_blank">{{ eventHasImport.import.title }}</a>
+                    </p>
+                    <p>{{  eventHasImport.import.description | nl2br | linkify }}</p>
+                {% endfor %}
+
+                {% for eventHasSourceEvent in eventHasSourceEvents %}
+
+                    <p>
+                        This event was taken from account
+                        {%  if eventHasSourceEvent.sourceEvent.account.getAccountLocal() %}
+                            <i class="fas fa-user"></i> {{  eventHasSourceEvent.sourceEvent.account.title }} ({{  eventHasSourceEvent.sourceEvent.account.accountLocal.username }})
+                            {%  if eventHasSourceEvent.sourceEvent.privacy == 0 %}
+                                <a href="{{ path('account_public_event_show_event',{'account_username':eventHasSourceEvent.sourceEvent.account.accountLocal.username,'event_id':eventHasSourceEvent.sourceEvent.id}) }}" class="button" role="button">View</a>
+                            {%  else %}
+                                <a href="{{ path('account_public',{'account_username':eventHasSourceEvent.sourceEvent.account.accountLocal.username}) }}" class="button" role="button">View</a>
+                            {%  endif %}
                         {%  else %}
-                            <a href="{{ path('account_public',{'account_username':eventHasSourceEvent.sourceEvent.account.accountLocal.username}) }}" class="button" role="button">View</a>
+                            TODO A REMOTE ACCOUNT
                         {%  endif %}
-                    {%  else %}
-                        TODO A REMOTE ACCOUNT
-                    {%  endif %}
-                </p>
+                    </p>
 
-            {% endfor %}
+                {% endfor %}
 
-        {%  endif %}
+            {%  endif %}
 
-        <a class="button" href="{{ url('api1_account_events_show_event_json',{'account_id':account.id ,'event_id':event.id}) }}">Export JSON</a>
+            <a class="button" href="{{ url('api1_account_events_show_event_json',{'account_id':account.id ,'event_id':event.id}) }}">Export JSON</a>
+
+        </div>
 
     </div>
 {% endblock %}

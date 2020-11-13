@@ -14,17 +14,21 @@
         <ul class="mainListEvents">
             {% for eventOccurrence in eventOccurrences %}
 
-                <li class="event">
-                    <h2>{{  eventOccurrence.event.title }}</h2>
+                <li class="event" itemscope itemtype="http://schema.org/Event">
+                    <h2 itemprop="name">{{  eventOccurrence.event.title }}</h2>
                     {%  if eventOccurrence.event.deleted %}
+                        <meta itemprop="eventStatus" content="https://schema.org/EventCancelled" />
                         <div class="deleted">Deleted!</div>
                     {%  elseif eventOccurrence.event.cancelled %}
+                        <meta itemprop="eventStatus" content="https://schema.org/EventCancelled" />
                         <div class="cancelled">Cancelled!</div>
+                    {%  else %}
+                        <meta itemprop="eventStatus" content="https://schema.org/EventScheduled" />
                     {%  endif %}
-                    <p>{{  eventOccurrence.event.description }}</p>
+                    <p itemprop="description">{{  eventOccurrence.event.description }}</p>
                     {%  include '/common/eventStartEndLine.html.twig' with { 'start':eventOccurrence.start, 'end':eventOccurrence.end, 'timezone': eventOccurrence.event.timezone.code } %}
 
-                    <a class="button"
+                    <a class="button" itemprop="url"
                             {%  if  eventOccurrence.event.hasReoccurence %}
                                 href="{{ path('account_public_event_show_event',{'account_username':account.username,'event_id': eventOccurrence.event.id }) }}?startutc={{ eventOccurrence.start('UTC')|date("Y-m-d-H-i-s") }}"
                             {%  else  %}
