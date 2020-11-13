@@ -1,5 +1,7 @@
 {%  extends "base.html.twig" %}
 
+{% block robots %}{%  if account.accountLocal.SEOIndexFollow  %}INDEX, FOLLOW{%  else %}NOINDEX, NOFOLLOW{%  endif  %}{% endblock %}
+
 {% block account_public_to_manage %}
     {%  if app.user and account in accounts_user_can_manage %}
         <div class="content">

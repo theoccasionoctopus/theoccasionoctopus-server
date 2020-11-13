@@ -14,8 +14,7 @@
         <div>Years Behind: {{ account.yearsBehind }}</div>
         <div>Years Ahead: {{ account.yearsAhead }}</div>
 
-
-
+        <div>Search Engines: {%  if account.accountLocal.SEOIndexFollow  %}<i class="fas fa-globe-europe"></i> Request to include{%  else %}<i class="fas fa-lock"></i> Request not to list{%  endif %}</div>
 
         <h3>Imports</h3>
 

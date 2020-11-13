@@ -9,7 +9,7 @@
     {# Ours #}
     {% block stylesheets %}{% endblock %}
     {{ encore_entry_link_tags('app') }}
-    <META NAME="ROBOTS" CONTENT="NOINDEX, NOFOLLOW">
+    <META NAME="ROBOTS" CONTENT="{% block robots %}NOINDEX, NOFOLLOW{% endblock %}">
 </head>
 <body>
 

@@ -101,6 +101,7 @@ abstract class BaseWebTestWithDataBase extends WebTestCase
         $accountLocal->setDefaultTimezone($timezone);
         $accountLocal->setDefaultCountry($country);
         $accountLocal->setDefaultPrivacy(0);
+        $accountLocal->setSEOIndexFollow(true);
         $this->entityManager->persist($accountLocal);
 
         $userManageAccount = new UserManageAccount();

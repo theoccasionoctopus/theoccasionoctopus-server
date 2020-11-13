@@ -65,6 +65,7 @@ class NewAccountController extends BaseController
             $account->setTitle($form->get('title')->getData());
             $entityManager->persist($account);
 
+            $accountLocal->setSEOIndexFollow($accountLocal->getDefaultPrivacy() == 0);
             $entityManager->persist($accountLocal);
 
             $userManagesAccount = new UserManageAccount();

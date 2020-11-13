@@ -90,6 +90,7 @@ abstract class BaseTestWithDataBase extends KernelTestCase
         $accountLocal->setDefaultTimezone($timezone);
         $accountLocal->setDefaultCountry($country);
         $accountLocal->setDefaultPrivacy(0);
+        $accountLocal->setSEOIndexFollow(true);
         $this->entityManager->persist($accountLocal);
 
         $this->entityManager->flush();

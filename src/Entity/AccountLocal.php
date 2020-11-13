@@ -57,6 +57,12 @@ class AccountLocal {
      */
     private $default_privacy;
 
+
+    /**
+     * @ORM\Column(name="seo_index_follow", type="boolean", nullable=false, options={"default" : false})
+     */
+    private $seo_index_follow;
+
     /**
      * @return mixed
      */
@@ -144,6 +150,22 @@ class AccountLocal {
     public function setDefaultPrivacy($default_privacy)
     {
         $this->default_privacy = $default_privacy;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getSEOIndexFollow()
+    {
+        return $this->seo_index_follow;
+    }
+
+    /**
+     * @param mixed $seo_index_follow
+     */
+    public function setSEOIndexFollow($seo_index_follow)
+    {
+        $this->seo_index_follow = $seo_index_follow;
     }
 
 
