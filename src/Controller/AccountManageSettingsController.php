@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Import;
+use App\Entity\User;
 use App\FilterParams\EventListFilterParams;
 use App\Form\ImportNewType;
 use App\RepositoryQuery\EventRepositoryQuery;
@@ -30,6 +31,7 @@ class AccountManageSettingsController extends AccountManageController
 
         return $this->render('account/manage/settings/index.html.twig', $this->getTemplateVariables([
             'imports'=>$imports,
+            'usersManage'=>$doctrine->getRepository(User::class)->findCanManageAccount($this->account),
         ]));
 
     }

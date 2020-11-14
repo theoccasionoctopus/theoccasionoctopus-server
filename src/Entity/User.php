@@ -74,6 +74,13 @@ class User implements UserInterface
      */
     private $limitNumberOfAPIAccessTokens = 100;
 
+
+    /**
+     * @ORM\OneToMany(targetEntity="UserManageAccount", mappedBy="user")
+     */
+    private $managesAccount;
+
+
     public function getId(): ?int
     {
         return $this->id;

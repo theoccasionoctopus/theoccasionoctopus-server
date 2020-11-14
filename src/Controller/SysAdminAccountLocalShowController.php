@@ -37,6 +37,7 @@ class SysAdminAccountLocalShowController extends SysAdminBaseController
         return $this->render('sysadmin/account/local/details/index.html.twig', $this->getTemplateVariables([
             'account'=>$account,
             'accountLocal'=>$accountLocal,
+            'usersManage'=>$doctrine->getRepository(User::class)->findCanManageAccount($account),
         ]));
 
     }

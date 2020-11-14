@@ -79,6 +79,29 @@
             </tr>
         </table>
 
+        <h3>Managers</h3>
+
+        <table class="table">
+            <tr>
+                <th>Id</th>
+                <th>Email</th>
+                <th>Title</th>
+                <th>Locked</th>
+                <th></th>
+            </tr>
+            {%  for user in usersManage %}
+                <tr>
+                    <td>{{  user.id }}</td>
+                    <td>{{  user.email }}</td>
+                    <td>{{  user.title }}</td>
+                    <td>{%  if user.locked %}Locked{%  else %}-{%  endif %}</td>
+                    <td>
+                        <a href="{{  url('sysadmin_user_show_user', {user_id: user.id}) }}" class="button" role="button">Sysadmin</a>
+                    </td>
+                </tr>
+            {%  endfor %}
+        </table>
+
         <a href="{{ path('account_public',{'account_username':account.username}) }}" class="button" role="button">View Public</a>
 
     </div>

@@ -56,6 +56,20 @@
             <a class="button" role="button" href="{{ path('account_manage_import_new',{'account_username':account.username}) }}"><i class="fas fa-plus"></i> New Import</a>
         </p>
 
+
+        <h3>Managers</h3>
+
+        <table class="table">
+            <tr>
+                <th>Email</th>
+            </tr>
+            {%  for user in usersManage %}
+                <tr>
+                    <td>{{  user.email }}</td>
+                </tr>
+            {%  endfor %}
+        </table>
+
     </div>
 
 {% endblock %}
