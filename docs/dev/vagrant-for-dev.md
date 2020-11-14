@@ -15,14 +15,21 @@ MAILER_FROM_EMAIL="devinstance@example.com"
 MAILER_FROM_NAME="Dev Instance"
 DATABASE_URL=postgresql://app:password@127.0.0.1:5432/app?serverVersion=10&charset=utf8
 INSTANCE_NAME="Dev Instance"
+INSTANCE_SYSADMIN_EMAIL="sysadmin@example.com"
 ```
 
 into `.env.local`, then run:
 
     yarn encore dev
-    php bin/console   doctrine:migrations:migrate 
+    php bin/console   doctrine:migrations:migrate --no-interaction    
     php bin/console theocasionoctupus:load-country-data
 
+
+## Access
+
+The app should then be available on http://localhost:8080/
+
+You can view all emails sent at http://localhost:8025
 
 
 ## Rsync issues
@@ -46,7 +53,7 @@ Copy changed files back
     scp -P 2222 -r vagrant@localhost:/vagrant/migrations .
     scp -P 2222 -r vagrant@localhost:/vagrant/config .
         
-## Test
+## PHP Tests
 
 Put
 

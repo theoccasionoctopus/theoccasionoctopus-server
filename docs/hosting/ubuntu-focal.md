@@ -50,7 +50,7 @@ Add a user for us to use. Set a random password. You don't need to note it anywh
 Next install needed packages:
 
     apt-get update
-    DEBIAN_FRONTEND=noninteractive apt-get install -y postgresql apache2 php-mbstring php-gd php php-curl php-pgsql git php-intl curl zip php7.4-fpm php-zip php-xml php-zip certbot python3-certbot-apache
+    DEBIAN_FRONTEND=noninteractive apt-get install -y postgresql apache2 php-mbstring php-gd php php-curl php-pgsql git php-intl curl zip php7.4-fpm php-zip php-xml certbot python3-certbot-apache
     
     curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash -
     apt-get install -y nodejs

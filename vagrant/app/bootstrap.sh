@@ -13,7 +13,7 @@ locale-gen
 #--------------------------------------------  Install
 
 apt-get update
-DEBIAN_FRONTEND=noninteractive apt-get install -y postgresql apache2 php-mbstring php-gd php php-curl php-pgsql git php-intl curl zip libapache2-mod-php php-zip php-xml php-zip
+DEBIAN_FRONTEND=noninteractive apt-get install -y postgresql apache2 php7.4-fpm php-mbstring php-gd php php-curl php-pgsql git php-intl curl zip php-zip php-xml
 
 #--------------------------------------------  Logs
 
@@ -34,9 +34,14 @@ php /bin/composer.phar install
 #--------------------------------------------  Apache
 
 cp /vagrant/vagrant/app/apache.conf /etc/apache2/sites-enabled/
-cp /vagrant/vagrant/app/99-custom.ini /etc/php/7.4/apache2/conf.d/
 
 a2enmod rewrite
+a2dismod mpm_prefork
+a2enmod mpm_event proxy_fcgi setenvif
+systemctl start php7.4-fpm
+systemctl enable php7.4-fpm
+a2enconf php7.4-fpm
+
 /etc/init.d/apache2 restart
 
 #--------------------------------------------  Databases
