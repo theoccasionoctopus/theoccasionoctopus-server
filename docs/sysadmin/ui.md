@@ -1,4 +1,4 @@
-# SysAdmin
+# SysAdmin UI
 
 Your user must have ROLE_SYSADMIN; run
 

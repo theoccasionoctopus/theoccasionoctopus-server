@@ -75,4 +75,10 @@ class IndexController extends BaseController
 
     }
 
+    public function contact(Request $request)
+    {
+        $this->setUp($request);
+
+        return $this->render('index/contact.html.twig', $this->getTemplateVariables());
+    }
 }

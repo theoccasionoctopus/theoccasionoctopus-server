@@ -80,7 +80,11 @@
                     </p>
                 {%  endif %}
             {%  endif %}
-            <p>{{  instance_name }} is powered by <a href="https://www.theoccasionoctopus.net/">The Occasion Octopus software</a> (Open Source) <i class="far fa-grin-hearts"></i></p>
+            <p>
+                {{  instance_name }}:
+                <a href="{{ path('contact') }}"><i class="fas fa-envelope"></i> Contact us</a>
+            </p>
+            <p>Powered by <a href="https://www.theoccasionoctopus.net/">The Occasion Octopus software (Open Source)</a> <i class="far fa-grin-hearts"></i></p>
         </div>
     </footer>
 

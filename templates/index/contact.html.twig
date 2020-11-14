@@ -1,0 +1,15 @@
+{%  extends "base.html.twig" %}
+
+
+
+{% block subbanner %}<h2>Contact us</h2>{% endblock %}
+
+{% block body %}
+
+    <div class="content">
+
+        <p>Email us on {{  instance_sysadmin_email|replace({'@':' at ', '.': ' dot '}) }}</p>
+
+    </div>
+
+{% endblock %}
