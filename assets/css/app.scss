@@ -247,5 +247,11 @@ form.styled {
     background-color: blue;
     text-decoration: underline;
   }
-
+  .error {
+    margin: 10px;
+    padding: 10px;
+    border: red solid 3px;
+    background-color: lightcoral;
+    border-radius: 4px;
+  }
 }

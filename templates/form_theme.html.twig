@@ -15,3 +15,12 @@
         <input type="hidden" name="_method" value="{{ method }}" />
     {%- endif -%}
 {%- endblock form_start -%}
+
+{%- block form_errors -%}
+    {%- if errors|length > 0 -%}
+        {%- for error in errors -%}
+            <div  class="error">{{ error.message }}</div>
+        {%- endfor -%}
+    {%- endif -%}
+{%- endblock form_errors -%}
+

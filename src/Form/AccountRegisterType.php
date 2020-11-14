@@ -9,6 +9,9 @@ use App\Entity\User;
 use App\Repository\CountryRepository;
 use App\Repository\TimeZoneRepository;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\FormError;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -49,6 +52,18 @@ class AccountRegisterType extends AbstractType
                 },
             ] )
         ;
+
+        /** @var \closure $myExtraFieldValidator **/
+        $myExtraFieldValidator = function(FormEvent $event) {
+            $form = $event->getForm();
+            $username = $form->get('username')->getData();
+            // Validate only allowed characters
+            // TODO should allow UTF-8 chars so foreign languages are supported, now you can have them in URL's. Need to also check things like webfinger spec.
+            if ( !preg_match ("/^[a-zA-Z0-9_]+$/",$username)) {
+                $form['username']->addError(new FormError("The username can only have letters, numbers and underscores."));
+            }
+        };
+        $builder->addEventListener(FormEvents::POST_SUBMIT, $myExtraFieldValidator);
     }
 
     public function configureOptions(OptionsResolver $resolver)
