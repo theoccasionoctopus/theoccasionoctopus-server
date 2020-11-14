@@ -32,3 +32,30 @@
     </div>
 
 {%  endblock %}
+
+{% block javascripts %}
+    <script>
+        function onStartChangeMaybeSetEnd() {
+            var start_date = $('#event_new_start_at_date');
+            var start_hour = $('#event_new_start_at_time_hour');
+            var start_minute = $('#event_new_start_at_time_minute');
+            var end_date = $('#event_new_end_at_date');
+            var end_hour = $('#event_new_end_at_time_hour');
+            var end_minute = $('#event_new_end_at_time_minute');
+            if (start_date.val() && !end_date.val()) {
+                end_date.val(start_date.val());
+            }
+            if (start_hour.val() && end_hour.val() == "0") {
+                end_hour.val(start_hour.val());
+            }
+            if (start_minute.val() && end_minute.val() == "0") {
+                end_minute.val(start_minute.val());
+            }
+        }
+        $( document ).ready(function() {
+            $('#event_new_start_at_date').change(onStartChangeMaybeSetEnd);
+            $('#event_new_start_at_time_hour').change(onStartChangeMaybeSetEnd);
+            $('#event_new_start_at_time_minute').change(onStartChangeMaybeSetEnd);
+        });
+    </script>
+{% endblock %}
