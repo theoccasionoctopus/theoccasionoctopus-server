@@ -54,8 +54,7 @@ class AccountManageProfileController extends AccountManageController
             }
         }
 
-        # TODO get a better list; not yourself or account you already follow
-        $accounts_to_follow = $repository->findAllLocal();
+        $accounts_to_follow = $repository->findAllLocalToFollow($this->account);
 
         return $this->render('account/manage/profile/new_follow_local.html.twig', $this->getTemplateVariables([
             'account' => $this->account,
@@ -99,6 +98,9 @@ class AccountManageProfileController extends AccountManageController
     }
 
     protected function startFollowingAccount(Account $account) {
+        if ($this->account == $account) {
+            return;
+        }
         $doctrine = $this->getDoctrine();
         $followsRepo = $doctrine->getRepository(AccountFollowsAccount::class);
         $account_follows_account = $followsRepo->findOneBy(array('account' => $this->account, 'followsAccount' => $account));

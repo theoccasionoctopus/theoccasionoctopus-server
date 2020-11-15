@@ -10,8 +10,7 @@
 
             {%  for account_to_follow in accounts_to_follow %}
                 <div>
-
-                    {{  account_to_follow.username }} / {{  account_to_follow.title }}
+                    <i class="fas fa-user"></i> {{  account_to_follow.title }} ({{  account_to_follow.username }})
                     <form action="#" method="post">
                         <input type="hidden" name="action" value="follow">
                         <input type="hidden" name="guid" value="{{  account_to_follow.id }}">
@@ -19,6 +18,8 @@
                     </form>
                 </div>
             {%  endfor %}
+        {%  else %}
+            <p>There are no more accounts on this server you can follow!</p>
         {%  endif %}
 
     </div>

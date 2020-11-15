@@ -60,6 +60,23 @@ class AccountRepository extends ServiceEntityRepository
     }
 
 
+    public function findAllLocalToFollow(Account $fromAccount) {
+        $entityManager = $this->getEntityManager();
+
+        // TODO don't include accounts you already follow
+        
+        $query = $entityManager->createQuery(
+            'SELECT a ' .
+            'FROM App\Entity\Account a ' .
+            'JOIN a.accountLocal al '.
+            'WHERE a.id != :fromAccountId ' .
+            'ORDER BY a.title ASC '
+        )->setParameter('fromAccountId', $fromAccount->getId());
+
+        return $query->execute();
+    }
+
+
     public function findAllRemote() {
         $entityManager = $this->getEntityManager();
 
