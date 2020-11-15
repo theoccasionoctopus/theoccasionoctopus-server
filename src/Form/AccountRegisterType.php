@@ -26,8 +26,11 @@ class AccountRegisterType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('username', TextType::class)
+            ->add('username', TextType::class, [
+                'label'=>'User name',
+            ])
             ->add('title', TextType::class, [
+                'label'=>'Display name',
                 'mapped'=> false,
             ])
             ->add('default_privacy', ChoiceType::class, [
