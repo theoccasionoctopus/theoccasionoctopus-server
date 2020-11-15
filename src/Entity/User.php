@@ -32,11 +32,6 @@ class User implements UserInterface
     private $emailCanonical;
 
     /**
-     * @ORM\Column(type="string", length=500, nullable=false)
-     */
-    private $title;
-
-    /**
      * @ORM\Column(type="json")
      */
     private $roles = [];
@@ -187,22 +182,6 @@ class User implements UserInterface
     {
         // If you store any temporary, sensitive data on the user, clear it here
         // $this->plainPassword = null;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getTitle()
-    {
-        return $this->title;
-    }
-
-    /**
-     * @param mixed $title
-     */
-    public function setTitle($title)
-    {
-        $this->title = $title;
     }
 
     /**

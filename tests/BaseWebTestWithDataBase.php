@@ -86,7 +86,6 @@ abstract class BaseWebTestWithDataBase extends WebTestCase
 
         $user = new User();
         $user->setEmail($name."@example.com");
-        $user->setTitle($name);
         $user->setPassword('1234');
         $this->entityManager->persist($user);
 
