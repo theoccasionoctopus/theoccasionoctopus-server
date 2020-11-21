@@ -124,15 +124,19 @@ p {
   line-height: 1.5;
 }
 
-a.button {
+a.button, input.button {
+  display: inline-block;
+  margin: 2px 5px 2px 0;
   padding: 10px 20px;
   color: white;
   background-color: darkblue;
   border: 0;
   border-radius: 5px;
   text-decoration: none;
+  white-space: nowrap;
+  font-size: 1rem;
 }
-a.button:hover, a.button:focus {
+a.button:hover, a.button:focus, input.button:hover, input.button:focus {
   background-color: blue;
   text-decoration: underline;
 }
@@ -242,6 +246,7 @@ form.styled {
     border: 0;
     border-radius: 5px;
     text-decoration: none;
+    font-size: 1rem;
   }
   button[type="submit"].button:hover, button[type="submit"].button:focus {
     background-color: blue;

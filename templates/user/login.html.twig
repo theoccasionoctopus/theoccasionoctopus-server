@@ -13,7 +13,7 @@
 
     <div class="content">
 
-        <form method="post">
+        <form method="post" class="styled">
             {% if error %}
                 <div class="flashWarning">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
             {% endif %}
