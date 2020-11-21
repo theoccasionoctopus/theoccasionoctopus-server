@@ -13,6 +13,33 @@
 
     <div class="content">
 
+        <h3>Your login</h3>
+
+        <table class="table">
+            <tr>
+                <th>
+                    Email
+                </th>
+                <td>
+                    {{ app.user.email }}
+                </td>
+                <td>
+                    {# TODO change email feature #}
+                </td>
+            </tr>
+            <tr>
+                <th>
+                    Password
+                </th>
+                <td>
+                    *********
+                </td>
+                <td>
+                    {# TODO change password feature #}
+                </td>
+            </tr>
+        </table>
+
         <h3>Accounts</h3>
 
         {%  if accounts_user_can_manage %}
