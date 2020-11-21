@@ -72,7 +72,14 @@ class ICalBuilderForAccount
             );
 
             // TODO Change to site instance name
-            $description = $event->getDescription()."\n\n\n----\nPowered by The Occasion Octopus\n".$url;
+            $description = $event->getDescription()."\n\n\nEvent Page:".$url."\n\n";
+            if ($event->getUrl()) {
+                $description .= 'Find out more: '. $event->getUrl()."\n\n";
+            }
+            if ($event->getUrlTickets()) {
+                $description .= 'Get Tickets: '. $event->getUrl()."\n\n";
+            }
+            $description .= "\n----\nPowered by The Occasion Octopus";
             $txt .= Library::getIcalLine('DESCRIPTION',$description);
 
             // TODO a HTML description?
