@@ -291,7 +291,7 @@ When you are logged in as the user occ_oct, you can run `db` to get a database s
 
 ## Update to latest version
 
-Log into server and run:
+Log into server and run as root:
 
     cd /home/occ_oct/software
     su -c "git pull" occ_oct
@@ -300,6 +300,7 @@ Log into server and run:
     su -c "./bin/console doctrine:migrations:migrate --no-interaction" occ_oct
     su -c "./bin/console theocasionoctupus:load-country-data" occ_oct
     chown -R www-data:www-data /home/occ_oct/software/var
+    /etc/init.d/php7.4-fpm reload
     su -c "npm install" occ_oct
     su -c "yarn install" occ_oct
     su -c "yarn encore production" occ_oct
