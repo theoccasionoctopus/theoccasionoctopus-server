@@ -39,12 +39,6 @@ We are going to set up a locale for us to use. You may choose a different one fo
     echo "en_GB.UTF-8 UTF-8" >> /etc/locale.gen
     locale-gen
 
-### Create User
-
-Add a user for us to use. Set a random password. You don't need to note it anywhere:
-
-    adduser occ_oct
-
 ### Installing needed packages
 
 Next install needed packages:
@@ -65,7 +59,19 @@ To install composer, run:
     cd /bin    
     
 Then go to https://getcomposer.org/download/ and copy and paste the script commands from there.
+
+### Create User and group
+
+Add a user for us to use. Set a random password. You don't need to note it anywhere:
+
+    adduser occ_oct
     
+Set up a group:
+
+    groupadd occ_oct_and_www
+    usermod -a -G occ_oct_and_www www-data
+    usermod -a -G occ_oct_and_www occ_oct
+        
 ### Get the app
     
 Check out the source code:
@@ -158,7 +164,9 @@ Run:
     chmod o+rx /home/occ_oct/
     chmod o+rx /home/occ_oct/software/
     chmod o+rx /home/occ_oct/software/public/
-    chown -R www-data:www-data /home/occ_oct/software/var
+    chown -R occ_oct:occ_oct_and_www /home/occ_oct/software/var
+    find /home/occ_oct/software/var -type d -exec chmod 775 {} +
+    find /home/occ_oct/software/var -type f -exec chmod 664 {} +   
     systemctl reload apache2
 
 ### Set up cron
@@ -241,7 +249,7 @@ Create the file `/etc/logrotate.d/occ_oct_app` and set the contents:
     compress
     delaycompress
     notifempty
-    create 664 www-data www-data
+    create 664 www-data occ_oct_and_www
     su www-data www-data
 }
 ```
@@ -296,11 +304,12 @@ Log into server and run as root:
 
     cd /home/occ_oct/software
     su -c "git pull" occ_oct
-    chown -R occ_oct:occ_oct /home/occ_oct/software/var
+    chown -R occ_oct:occ_oct_and_www /home/occ_oct/software/var
+    find /home/occ_oct/software/var -type d -exec chmod 775 {} +
+    find /home/occ_oct/software/var -type f -exec chmod 664 {} +          
     su -c "/bin/composer.phar install" occ_oct
     su -c "./bin/console doctrine:migrations:migrate --no-interaction" occ_oct
     su -c "./bin/console theocasionoctupus:load-country-data" occ_oct
-    chown -R www-data:www-data /home/occ_oct/software/var
     /etc/init.d/php7.4-fpm reload
     su -c "npm install" occ_oct
     su -c "yarn install" occ_oct
