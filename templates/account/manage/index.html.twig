@@ -10,12 +10,24 @@
         <p>
             <i class="fas fa-globe-europe"></i> Public (<a href="{{ path('account_public',{'account_username':account.username }) }}">See public view</a>)
         </p>
-        
-        <h3>Events</h3>
+
+        <h3>Follow other people</h3>
+
+        <p>Follow other people to see their events.</p>
+
+        <a class="button" role="button" href="{{ path('account_manage_profile',{'account_username':account.username}) }}"><i class="fas fa-user-edit"></i> Profile</a>
+
+        <h3>Discover Events</h3>
+
+        <p>See events from people you follow.</p>
+
+        <a class="button" role="button" href="{{ path('account_manage_discover_event',{'account_username':account.username}) }}"><i class="fas fa-eye"></i> Discover Events</a>
+
+        <h3>Your Events</h3>
 
         <p>See what events you are publishing to your followers, and add events of your own.</p>
 
-        <a class="button" role="button" href="{{ path('account_manage_event',{'account_username':account.username}) }}"><i class="fas fa-calendar"></i> Events</a>
+        <a class="button" role="button" href="{{ path('account_manage_event',{'account_username':account.username}) }}"><i class="fas fa-calendar"></i> Your Events</a>
 
         <h3>Tags</h3>
 

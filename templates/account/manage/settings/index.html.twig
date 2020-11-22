@@ -3,18 +3,47 @@
 {% block body %}
 
     <div class="content">
-        <div>Account ID (for API Access): {{  account.id }}</div>
 
-        <div>Default Timezone: {{  account.accountLocal.defaultTimeZone.title }}</div>
 
-        <div>Default Country: {{  account.accountLocal.defaultCountry.title }}</div>
 
-        <div>Default Privacy: {%  if account.accountLocal.defaultPrivacy == 0 %}<i class="fas fa-globe-europe"></i> Public{%  else %}<i class="fas fa-lock"></i> Private{%  endif %}</div>
-
-        <div>Years Behind: {{ account.yearsBehind }}</div>
-        <div>Years Ahead: {{ account.yearsAhead }}</div>
-
-        <div>Search Engines: {%  if account.accountLocal.SEOIndexFollow  %}<i class="fas fa-globe-europe"></i> Request to include{%  else %}<i class="fas fa-lock"></i> Request not to list{%  endif %}</div>
+        <table class="table">
+            <tr>
+                <th>Username</th>
+                <td>{{  account.accountLocal.username }}</td>
+            </tr>
+            <tr>
+                <th>Account Name</th>
+                <td>{{  account.title }}</td>
+            </tr>
+            <tr>
+                <th>Account ID (for API Access)</th>
+                <td>{{  account.id }}</td>
+            </tr>
+            <tr>
+                <th>Default Timezone</th>
+                <td>{{  account.accountLocal.defaultTimeZone.title }}</td>
+            </tr>
+            <tr>
+                <th>Default Country</th>
+                <td>{{  account.accountLocal.defaultCountry.title }}</td>
+            </tr>
+            <tr>
+                <th>Default Privacy</th>
+                <td>{%  if account.accountLocal.defaultPrivacy == 0 %}<i class="fas fa-globe-europe"></i> Public{%  else %}<i class="fas fa-lock"></i> Private{%  endif %}</td>
+            </tr>
+            <tr>
+                <th>Search Engines</th>
+                <td>{%  if account.accountLocal.SEOIndexFollow  %}<i class="fas fa-globe-europe"></i> Request to include{%  else %}<i class="fas fa-lock"></i> Request not to list{%  endif %}</td>
+            </tr>
+            <tr>
+                <th>Years Behind</th>
+                <td>{{ account.yearsBehind }}</td>
+            </tr>
+            <tr>
+                <th>Years Ahead</th>
+                <td>{{ account.yearsAhead }}</td>
+            </tr>
+        </table>
 
         <h3>Emails of upcoming events</h3>
 

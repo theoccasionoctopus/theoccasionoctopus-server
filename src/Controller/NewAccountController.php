@@ -59,10 +59,12 @@ class NewAccountController extends BaseController
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
 
+            // TODO check user name not already taken, nicely error if so!
+
             //  save the account!
             $entityManager = $this->getDoctrine()->getManager();
 
-            $account->setTitle($form->get('title')->getData());
+            $account->setTitle($form->get('username')->getData());
             $entityManager->persist($account);
 
             $accountLocal->setSEOIndexFollow($accountLocal->getDefaultPrivacy() == 0);

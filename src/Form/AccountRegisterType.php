@@ -29,10 +29,6 @@ class AccountRegisterType extends AbstractType
             ->add('username', TextType::class, [
                 'label'=>'User name',
             ])
-            ->add('title', TextType::class, [
-                'label'=>'Display name',
-                'mapped'=> false,
-            ])
             ->add('default_privacy', ChoiceType::class, [
                 'choices'  => [
                     'Public' => 0,
