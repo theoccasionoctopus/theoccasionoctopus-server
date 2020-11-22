@@ -16,6 +16,7 @@ MAILER_FROM_NAME="Dev Instance"
 DATABASE_URL=postgresql://app:password@127.0.0.1:5432/app?serverVersion=10&charset=utf8
 INSTANCE_NAME="Dev Instance"
 INSTANCE_SYSADMIN_EMAIL="sysadmin@example.com"
+INSTANCE_URL="http://localhost:8080"
 ```
 
 into `.env.local`, then run:

@@ -78,7 +78,6 @@ class NewAccountController extends BaseController
                 $emailUpcomingEvents = new EmailUserUpcomingEventsForAccount();
                 $emailUpcomingEvents->setAccount($account);
                 $emailUpcomingEvents->setUser($user);
-                $emailUpcomingEvents->setToken(Library::randomString(10,100));
                 $entityManager->persist($emailUpcomingEvents);
             }
 

@@ -4,6 +4,7 @@ namespace App\Command;
 
 use App\Entity\EmailUserUpcomingEventsForAccount;
 use App\Entity\User;
+use App\RepositoryQuery\EventRepositoryQuery;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -50,6 +51,7 @@ class SendEmailUpcomingEventsCommand extends Command
         $doctrine = $this->container->get('doctrine');
         $accountRepository = $doctrine->getRepository(EmailUserUpcomingEventsForAccount::class);
 
+        /** @var EmailUserUpcomingEventsForAccount $emailUpcomingEvents */
         foreach($accountRepository->findByEnabled(true) as $emailUpcomingEvents) {
 
             if ($emailUpcomingEvents->shouldSendIfData()) {
@@ -58,30 +60,37 @@ class SendEmailUpcomingEventsCommand extends Command
 
                 $parameters = [
                     'account'=>$emailUpcomingEvents->getAccount(),
+                    'accountLocal'=>$emailUpcomingEvents->getAccount()->getAccountLocal(),
                     'user'=>$emailUpcomingEvents->getUser(),
+                    'upcomingEventOccurrences'=>$emailUpcomingEvents->getUpcomingEventOccurrences($doctrine),
                 ];
 
-                $message = new \Swift_Message(
+                if ($parameters['upcomingEventOccurrences']) {
+
+                    $output->writeln(".... Sending");
+
+                    $message = new \Swift_Message(
                         $this->twig->render('email/upcoming_events/subject.text.twig', $parameters)
                     );
 
-                $message->setFrom(
-                    [$this->container->getParameter('app.mailer_from_email')=>$this->container->getParameter('app.instance_name')]
-                )
-                    ->setTo($emailUpcomingEvents->getUser()->getEmail())
-                    ->setBody(
-                        $this->twig->render('email/upcoming_events/body.html.twig', $parameters),
-                        'text/html'
+                    $message->setFrom(
+                        [$this->container->getParameter('app.mailer_from_email') => $this->container->getParameter('app.instance_name')]
                     )
-                    ->addPart(
-                        $this->twig->render('email/upcoming_events/body.text.twig', $parameters),
-                        'text/plain'
-                    )
-                ;
+                        ->setTo($emailUpcomingEvents->getUser()->getEmail())
+                        ->setBody(
+                            $this->twig->render('email/upcoming_events/body.html.twig', $parameters),
+                            'text/html'
+                        )
+                        ->addPart(
+                            $this->twig->render('email/upcoming_events/body.text.twig', $parameters),
+                            'text/plain'
+                        );
 
-                // TODO need to add unsubscribe link to each email, and a action to handle it!
+                    // TODO need to add unsubscribe link to each email, and a action to handle it!
 
-                $this->mailer->send($message);
+                    $this->mailer->send($message);
+
+                }
 
             }
 

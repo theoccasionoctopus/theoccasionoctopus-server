@@ -2,6 +2,8 @@
 
 namespace App\Controller;
 
+use App\Command\SendEmailUpcomingEventsCommand;
+use App\Entity\EmailUserUpcomingEventsForAccount;
 use App\Entity\Import;
 use App\Entity\User;
 use App\FilterParams\EventListFilterParams;
@@ -26,12 +28,52 @@ class AccountManageSettingsController extends AccountManageController
         $this->build($account_username);
 
         $doctrine = $this->getDoctrine();
-        $repository = $doctrine->getRepository(Import::class);
-        $imports = $repository->findBy(['account'=>$this->account]);
+        $imports = $doctrine->getRepository(Import::class)->findBy(['account'=>$this->account]);
+        $sendUpcomingEventsEmail = $doctrine->getRepository(EmailUserUpcomingEventsForAccount::class)
+            ->findOneBy(['account'=>$this->account,'user'=>$this->get('security.token_storage')->getToken()->getUser()]);
+
+        if (!$sendUpcomingEventsEmail) {
+            $sendUpcomingEventsEmail = new EmailUserUpcomingEventsForAccount();
+            $sendUpcomingEventsEmail->setAccount($this->account);
+            $sendUpcomingEventsEmail->setUser($this->get('security.token_storage')->getToken()->getUser());
+        }
+
+
+        # TODO check below is POST too, and CSFR
+        if ($request->get('action') == 'startEmailUserUpcomingEventsForAccount') {
+
+            // Save
+            $sendUpcomingEventsEmail->setEnabled(True);
+            $this->getDoctrine()->getManager()->persist($sendUpcomingEventsEmail);
+            $this->getDoctrine()->getManager()->flush($sendUpcomingEventsEmail);
+
+            // redirect
+            $this->addFlash(
+                'success',
+                'You will be emailed.'
+            );
+            return $this->redirectToRoute('account_manage_settings', ['account_username' => $this->account->getUsername() ]);
+        } elseif ($request->get('action') == 'stopEmailUserUpcomingEventsForAccount') {
+
+            // Save
+            $sendUpcomingEventsEmail->setEnabled(False);
+            $this->getDoctrine()->getManager()->persist($sendUpcomingEventsEmail);
+            $this->getDoctrine()->getManager()->flush($sendUpcomingEventsEmail);
+
+            // redirect
+            $this->addFlash(
+                'success',
+                'You will not be emailed.'
+            );
+            return $this->redirectToRoute('account_manage_settings', ['account_username' => $this->account->getUsername() ]);
+        }
+
+
 
         return $this->render('account/manage/settings/index.html.twig', $this->getTemplateVariables([
             'imports'=>$imports,
             'usersManage'=>$doctrine->getRepository(User::class)->findCanManageAccount($this->account),
+            'sendUpcomingEventsEmail' =>$sendUpcomingEventsEmail,
         ]));
 
     }

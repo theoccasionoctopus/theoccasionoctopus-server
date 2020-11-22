@@ -16,6 +16,25 @@
 
         <div>Search Engines: {%  if account.accountLocal.SEOIndexFollow  %}<i class="fas fa-globe-europe"></i> Request to include{%  else %}<i class="fas fa-lock"></i> Request not to list{%  endif %}</div>
 
+        <h3>Emails of upcoming events</h3>
+
+        {%  if sendUpcomingEventsEmail and sendUpcomingEventsEmail.enabled %}
+            <p>You will be sent emails of upcoming events.</p>
+            <form method="post">
+                {#  @TODO Add CSFR  #}
+                <input type="hidden" name="action" value="stopEmailUserUpcomingEventsForAccount">
+                <input type="submit" value="Stop sending emails" class="button">
+            </form>
+        {%  else %}
+            <p>You will not be sent emails of upcoming events.</p>
+            <form method="post">
+                {#  @TODO Add CSFR  #}
+                <input type="hidden" name="action" value="startEmailUserUpcomingEventsForAccount">
+                <input type="submit" value="Start sending emails" class="button">
+            </form>
+        {%  endif %}
+
+
         <h3>Imports</h3>
 
         {%  if imports %}

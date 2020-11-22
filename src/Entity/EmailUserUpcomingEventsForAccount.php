@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use App\Library;
+use App\RepositoryQuery\EventRepositoryQuery;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -10,6 +12,7 @@ use App\Entity\Helper\TraitExtraFields;
 /**
  * @ORM\Entity(repositoryClass="App\Repository\EmailUserUpcomingEventsForAccountRepository")
  * @ORM\Table(name="email_user_upcoming_events_for_account")
+ * @ORM\HasLifecycleCallbacks()
  */
 class EmailUserUpcomingEventsForAccount {
 
@@ -45,10 +48,35 @@ class EmailUserUpcomingEventsForAccount {
         return $this->enabled && !$this->user->isLocked();
     }
 
+
+    public function getUpcomingEventOccurrences($doctrine) {
+        $eventRepositoryBuilder = new EventRepositoryQuery($doctrine);
+        $eventRepositoryBuilder->setAccountEvents($this->getAccount());
+        $start = new \DateTime('now', $this->getAccount()->getAccountLocal()->getDefaultTimezone()->getDateTimeZoneObject());
+        $start->setTime(0,0,0);
+        $eventRepositoryBuilder->setFrom($start);
+        $end = new \DateTime('now', $this->getAccount()->getAccountLocal()->getDefaultTimezone()->getDateTimeZoneObject());
+        $end->setTime(23,59,59);
+        $eventRepositoryBuilder->setTo($end);
+        $eventRepositoryBuilder->setShowCancelled(false);
+        $eventRepositoryBuilder->setShowDeleted(false);
+        return $eventRepositoryBuilder->getEventOccurrences();
+    }
+
+
+    /**
+     * @ORM\PrePersist
+     */
+    public function setCreatedValue()
+    {
+        $this->token = Library::randomString(10,100);
+    }
+
+
     /**
      * @return mixed
      */
-    public function getUser()
+    public function getUser(): User
     {
         return $this->user;
     }
@@ -64,7 +92,7 @@ class EmailUserUpcomingEventsForAccount {
     /**
      * @return mixed
      */
-    public function getAccount()
+    public function getAccount(): Account
     {
         return $this->account;
     }

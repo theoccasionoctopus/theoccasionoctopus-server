@@ -170,8 +170,9 @@ Edit the cron entries as the occ_oct user.
 Add the following entries:
 
 ```
-0 6 * * * cd /home/occ_oct/software; ./bin/console theocasionoctupus:download-import-content
-30 6 * * * cd /home/occ_oct/software; ./bin/console theocasionoctupus:download-remote-user-content
+0 5 * * * cd /home/occ_oct/software; ./bin/console theocasionoctupus:download-import-content
+30 5 * * * cd /home/occ_oct/software; ./bin/console theocasionoctupus:download-remote-user-content
+0 6 * * * cd /home/occ_oct/software; ./bin/console theocasionoctupus:send-email-upcoming-events
 ```
 
 ### Congratulations! 
