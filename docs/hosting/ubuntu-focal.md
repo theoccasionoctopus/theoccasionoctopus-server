@@ -107,6 +107,8 @@ DEFAULT_TIMEZONE=Europe/London
 INSTANCE_SYSADMIN_EMAIL="hello@example.com"
 ```
 
+For a full explanation of what each one does, and how to set it, see [Configuration Options](configuration-options.md).
+
 ### Install Libraries
     
 Installing libraries:
