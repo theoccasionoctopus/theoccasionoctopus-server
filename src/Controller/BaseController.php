@@ -65,14 +65,14 @@ abstract class BaseController extends AbstractController
     }
 
     protected function isRequestForAccountActivityStreamsProfileJSON(Request $request):bool {
-
         // As Defined in https://www.w3.org/TR/activitypub/#retrieving-objects
-        $needle = $request->headers->get('Accept');
-        $haystack = array('application/ld+json','application/ld+json; profile="https://www.w3.org/ns/activitystreams"');
-        if (in_array($needle,$haystack)) {
-            return True;
+        // Must separate by "," - Mastodon sends both
+        $haystack = array('application/activity+json', 'application/ld+json; profile="https://www.w3.org/ns/activitystreams"');
+        foreach(explode(",", $request->headers->get('Accept')) as $needle) {
+            if (in_array(trim($needle), $haystack)) {
+                return True;
+            }
         }
-
         return False;
     }
 
