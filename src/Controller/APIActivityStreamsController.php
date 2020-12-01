@@ -38,7 +38,7 @@ class APIActivityStreamsController extends BaseController
     public function index($account_id, Request $request)
     {
         $this->buildAccount($account_id, $request);
-        return $this->getResponseAccountActivityStreamsProfileJSON($this->account);
+        return $this->getResponseAccountActivityStreamsProfileJSON($this->account, $request);
     }
 
     public function inbox($account_id, Request $request)

@@ -35,7 +35,7 @@ class AccountPublicController extends BaseController
         $this->setUpAccountPublic($account_username, $request);
 
         if ($this->isRequestForAccountActivityStreamsProfileJSON($request)) {
-            return $this->getResponseAccountActivityStreamsProfileJSON($this->account);
+            return $this->getResponseAccountActivityStreamsProfileJSON($this->account, $request);
         }
 
         return $this->render('account/public/index.html.twig', $this->getTemplateVariables([
