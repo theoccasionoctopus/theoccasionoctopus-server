@@ -3,7 +3,9 @@
 namespace App\Controller;
 
 use App\APIV1\ICalBuilderForAccount;
+use App\Entity\InboxSubmission;
 use App\Entity\UserManageAccount;
+use App\Library;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
@@ -45,8 +47,31 @@ class APIActivityStreamsController extends BaseController
     {
         $this->buildAccount($account_id, $request);
 
+        $data = json_decode($request->getContent(), true);
+        if(!$data) {
+            return new Response(
+                json_encode(['error'=>'no-data']),
+                500,
+                ['content-type' => 'application/json']
+            );
+        }
 
-        // TODO
+        $s = new InboxSubmission();
+        $s->setId(Library::GUID());
+        $s->setAccount($this->account);
+        $s->setData($data);
+        $s->setIp($request->getClientIp());
+        $s->setUseragent($request->headers->get('User-Agent'));
+
+        $entityManager = $this->getDoctrine()->getManager();
+        $entityManager->persist($s);
+        $entityManager->flush();
+
+        return new Response(
+            json_encode([]),
+            Response::HTTP_OK,
+            ['content-type' => 'application/json']
+        );
 
     }
 
