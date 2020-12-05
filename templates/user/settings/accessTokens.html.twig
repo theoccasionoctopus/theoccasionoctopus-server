@@ -23,7 +23,12 @@
             </tr>
             {%  for accessToken in accessTokens %}
                 <tr>
-                    <td>{{ accessToken.token }}</td>
+                    <td>
+                        <input value="{{ accessToken.token }}" type="text" readonly id="access-token-{{  loop.index }}-value">
+                        <a href="#" onclick="document.querySelector('#access-token-{{  loop.index }}-value').select(); document.execCommand('copy'); return false;">
+                            <i class="fas fa-clipboard"></i>
+                        </a>
+                    </td>
                     <td>{%  if accessToken.write %}Write{%  else %}Read{%  endif %}</td>
                     <td>{%  if accessToken.enabled %}Enabled{%  else %}Blocked{%  endif %}</td>
                     <td>
@@ -56,7 +61,12 @@
                     <tr>
                         <td><i class="fas fa-user"></i> {{  account.title }}</td>
                         <td>{{  account.username }}</td>
-                        <td>{{  account.id }}</td>
+                        <td>
+                            <input value="{{  account.id }}" type="text" readonly id="account-id-{{  account.id }}-value">
+                            <a href="#" onclick="document.querySelector('#account-id-{{  account.id }}-value').select(); document.execCommand('copy'); return false;">
+                                <i class="fas fa-clipboard"></i>
+                            </a>
+                        </td>
                     </tr>
                 {%  endfor %}
             </table>
