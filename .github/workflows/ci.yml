@@ -25,26 +25,16 @@ jobs:
       - name: Validate composer.json and composer.lock
         run: php composer.phar validate
 
-      - name: Set up test config file
-        run: echo "DATABASE_URL=postgresql://postgres:postgres@localhost:${{ job.services.postgres.ports[5432] }}/postgres?serverVersion=12&charset=utf8" > .env.test.local
-
-      - name: Cache Composer packages
-        id: composer-cache
-        uses: actions/cache@v2
-        with:
-          path: vendor
-          key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-php-
-
-      - name: Cache Composer packages for PHPUnit
-        id: composer-cache-phpunit
-        uses: actions/cache@v2
-        with:
-          path: bin/.phpunit
-          key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}-phpunit
-          restore-keys: |
-            ${{ runner.os }}-php-
+      - name: Set up config files
+        run: |
+          echo "DATABASE_URL=postgresql://postgres:postgres@localhost:${{ job.services.postgres.ports[5432] }}/postgres?serverVersion=12&charset=utf8" > .env.test.local &&
+          echo "MAILER_URL=smtp://localhost:1025" >> .env.test.local &&
+          echo "MAILER_FROM_EMAIL=devinstance@example.com" >> .env.test.local &&
+          echo "MAILER_FROM_NAME=DevInstance" >> .env.test.local &&
+          echo "INSTANCE_URL=http://localhost" >> .env.test.local &&
+          echo "INSTANCE_NAME=DevInstance" >> .env.test.local &&
+          echo "INSTANCE_SYSADMIN_EMAIL=sysadmin@example.com" >> .env.test.local &&
+          cp .env.test.local .env.local
 
       - name: Install dependencies
         if: steps.composer-cache.outputs.cache-hit != 'true'
