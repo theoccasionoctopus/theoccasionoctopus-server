@@ -19,18 +19,29 @@ class IndexController extends BaseController
         $user= $this->get('security.token_storage')->getToken()->getUser();
         if ($user instanceof User) {
 
-            $doctrine = $this->getDoctrine();
-            $repository = $doctrine->getRepository(Account::class);
-            $accounts = $repository->findUserCanManage($user);
+            if (true) { # TODO if email verified
 
+                $doctrine = $this->getDoctrine();
+                $repository = $doctrine->getRepository(Account::class);
+                $accounts = $repository->findUserCanManage($user);
 
-            if (count($accounts) == 1) {
-                return $this->redirectToRoute('account_manage', ['account_username'=>$accounts[0]->getAccountLocal()->getUsername()]);
+                if (count($accounts) == 0) {
+                    return $this->redirectToRoute('register_account');
+                }
+
+                if (count($accounts) == 1) {
+                    return $this->redirectToRoute('account_manage', ['account_username' => $accounts[0]->getAccountLocal()->getUsername()]);
+                }
+
+                return $this->render('index/index.chooseaccount.html.twig', $this->getTemplateVariables([
+                    'accounts_user_can_manage' => $accounts,
+                ]));
+
+            } else {
+
+                ## TODO show verify email page
+
             }
-
-            return $this->render('index/index.loggedin.html.twig', $this->getTemplateVariables([
-                'accounts_user_can_manage' => $accounts,
-            ]));
 
         } else {
 

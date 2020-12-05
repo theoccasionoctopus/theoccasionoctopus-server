@@ -1,0 +1,18 @@
+{%  extends "base.html.twig" %}
+
+
+{% block body %}
+
+
+    <div class="content">
+
+        <p>Please select the account you want to use:</p>
+
+        {%  for account in accounts_user_can_manage %}
+            <p>
+                <a href="{{ path('account_manage',{'account_username':account.username}) }}" class="button" role="button"><i class="fas fa-user"></i> {{  account.title }}</a>
+            </p>
+        {%  endfor %}
+    </div>
+
+{% endblock %}
