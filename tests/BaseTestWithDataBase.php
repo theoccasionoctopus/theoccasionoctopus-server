@@ -91,6 +91,7 @@ abstract class BaseTestWithDataBase extends KernelTestCase
         $accountLocal->setDefaultCountry($country);
         $accountLocal->setDefaultPrivacy(0);
         $accountLocal->setSEOIndexFollow(true);
+        $accountLocal->setListInDirectory(true);
         $this->entityManager->persist($accountLocal);
 
         $this->entityManager->flush();

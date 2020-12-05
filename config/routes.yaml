@@ -10,6 +10,10 @@ contact:
     path: /contact
     controller: App\Controller\IndexController::contact
 
+directory:
+    path: /directory
+    controller: App\Controller\IndexController::directory
+
 # Users
 login:
     path: /login

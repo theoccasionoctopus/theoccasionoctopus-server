@@ -74,6 +74,7 @@ class NewAccountController extends BaseController
                 $entityManager->persist($account);
 
                 $accountLocal->setSEOIndexFollow($accountLocal->getDefaultPrivacy() == 0);
+                $accountLocal->setListInDirectory($accountLocal->getDefaultPrivacy() == 0);
                 $entityManager->persist($accountLocal);
 
                 $userManagesAccount = new UserManageAccount();
@@ -91,10 +92,7 @@ class NewAccountController extends BaseController
 
                 $entityManager->flush();
 
-                // ... do any other work - like sending them an email, etc
-                // maybe set a "flash" success message for the user
-
-
+                // UI and redirect
                 $this->addFlash(
                     'success',
                     'Welcome to your new account'

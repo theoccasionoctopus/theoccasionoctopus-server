@@ -1,0 +1,25 @@
+{%  extends "base.html.twig" %}
+
+
+
+{% block subbanner %}<h2>Directory</h2>{% endblock %}
+
+{% block body %}
+
+    <div class="content">
+
+        {%  if accounts_in_directory %}
+
+            {%  for account_in_directory in accounts_in_directory %}
+                <div>
+                    <i class="fas fa-user"></i> {{  account_in_directory.title }} ({{  account_in_directory.username }})
+                    <a href="{{ path('account_public',{'account_username':account_in_directory.username}) }}" class="button" role="button">View {{  account_in_directory.title }}</a>
+                </div>
+            {%  endfor %}
+        {%  else %}
+            <p>There are no accounts in the directory on this server.</p>
+        {%  endif %}
+
+    </div>
+
+{% endblock %}

@@ -77,6 +77,21 @@ class AccountRepository extends ServiceEntityRepository
     }
 
 
+    public function findAllInDirectory() {
+        $entityManager = $this->getEntityManager();
+
+        $query = $entityManager->createQuery(
+            'SELECT a ' .
+            'FROM App\Entity\Account a ' .
+            'JOIN a.accountLocal al '.
+            'WHERE al.list_in_directory = True ' .
+            'ORDER BY a.title ASC '
+        );
+
+        return $query->execute();
+    }
+
+
     public function findAllRemote() {
         $entityManager = $this->getEntityManager();
 

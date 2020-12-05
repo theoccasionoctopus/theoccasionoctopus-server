@@ -63,6 +63,12 @@ class AccountLocal {
      */
     private $seo_index_follow;
 
+
+    /**
+     * @ORM\Column(name="list_in_directory", type="boolean", nullable=false, options={"default" : false})
+     */
+    private $list_in_directory;
+
     /**
      * @return mixed
      */
@@ -168,7 +174,20 @@ class AccountLocal {
         $this->seo_index_follow = $seo_index_follow;
     }
 
+    /**
+     * @return mixed
+     */
+    public function getListInDirectory()
+    {
+        return $this->list_in_directory;
+    }
 
-
+    /**
+     * @param mixed $list_in_directory
+     */
+    public function setListInDirectory($list_in_directory)
+    {
+        $this->list_in_directory = $list_in_directory;
+    }
 
 }

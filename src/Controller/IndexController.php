@@ -92,4 +92,19 @@ class IndexController extends BaseController
 
         return $this->render('index/contact.html.twig', $this->getTemplateVariables());
     }
+
+    public function directory(Request $request)
+    {
+        $this->setUp($request);
+
+        $doctrine = $this->getDoctrine();
+        $repository = $doctrine->getRepository(Account::class);
+        $accounts_in_directory = $repository->findAllInDirectory();
+
+        return $this->render('index/directory.html.twig', $this->getTemplateVariables([
+            'accounts_in_directory'=>$accounts_in_directory,
+        ]));
+    }
+
+
 }
