@@ -46,7 +46,12 @@
                 end_date.val(start_date.val());
             }
             if (start_hour.val() && end_hour.val() == "0") {
-                end_hour.val(start_hour.val());
+                if (start_hour.val() == '23') {
+                    end_hour.val(start_hour.val());
+                } else {
+                    var val = parseInt(start_hour.val()) + 1;
+                    end_hour.val(val.toString());
+                }
             }
             if (start_minute.val() && end_minute.val() == "0") {
                 end_minute.val(start_minute.val());
