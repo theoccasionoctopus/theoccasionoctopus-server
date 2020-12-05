@@ -3,6 +3,9 @@ twig:
     globals:
         instance_name: '%env(default:app.instance_name_default:INSTANCE_NAME)%'
         instance_sysadmin_email: '%env(default::INSTANCE_SYSADMIN_EMAIL)%'
+        event_list_description_truncate_limit: 400
+        event_list_description_truncate_more: "..."
+        event_list_description_truncate_whole_words: false
     paths:
         '%kernel.project_dir%/templates-local':  ~
     form_themes: ['form_div_layout.html.twig','form_theme.html.twig']
