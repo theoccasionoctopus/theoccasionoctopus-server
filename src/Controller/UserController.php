@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Security\UserAuthenticator;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Response;
@@ -13,6 +14,7 @@ use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use App\Entity\User;
 use App\Entity\Account;
 use App\Library;
+use Symfony\Component\Security\Guard\GuardAuthenticatorHandler;
 
 class UserController extends BaseController
 {
@@ -30,7 +32,7 @@ class UserController extends BaseController
         );
     }
 
-    public function register(Request $request, UserPasswordEncoderInterface $passwordEncoder)
+    public function register(Request $request, UserPasswordEncoderInterface $passwordEncoder, GuardAuthenticatorHandler $guardHandler, UserAuthenticator $formAuthenticator)
     {
         //  build the form
         $user = new User();
@@ -38,13 +40,17 @@ class UserController extends BaseController
 
         //  handle the submit (will only happen on POST)
         $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
+        if ($form->isSubmitted()) {
+
+            // TODO if email already used, show nice error
 
             if ($form->get('magicWord')->getData() != $this->getParameter('app.user_register_instance_password')) {
 
                 $form->get('magicWord')->addError(new FormError('Wrong Magic Word!'));
 
-            } else {
+            }
+
+            if ($form->isValid()) {
 
                 // Encode the password (you could also do this via Doctrine listener)
                 $password = $passwordEncoder->encodePassword($user, $user->getPlainPassword());
@@ -55,13 +61,15 @@ class UserController extends BaseController
                 $entityManager->persist($user);
                 $entityManager->flush();
 
-                // TODO Log user in ourselves?
-
+                // Log user in ourselves and redirect
+                $token = $formAuthenticator->createAuthenticatedToken($user, 'main');
+                $guardHandler->authenticateWithToken($token, $request, 'main');
                 $this->addFlash(
                     'success',
-                    'Welcome! You can now log in.'
+                    'Welcome!'
                 );
-                return $this->redirectToRoute('login');
+                return $this->redirectToRoute('index');
+
             }
         }
 
