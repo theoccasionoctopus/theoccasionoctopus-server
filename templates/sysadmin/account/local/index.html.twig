@@ -10,6 +10,7 @@
                 <th>Id</th>
                 <th>Username</th>
                 <th>Title</th>
+                <th>Locked</th>
                 <th></th>
             </tr>
             {%  for account in accounts %}
@@ -17,6 +18,7 @@
                     <td>{{  account.id }}</td>
                     <td>{{  account.username }}</td>
                     <td>{{  account.title }}</td>
+                    <td>{%  if account.accountLocal.locked %}Locked{%  else %}-{%  endif %}</td>
                     <td>
                         <a href="{{ path('sysadmin_account_local_show_account',{'account_id':account.id}) }}" class="button" role="button">Sysadmin</a>
                         <a href="{{ path('account_public',{'account_username':account.username}) }}" class="button" role="button">View Public</a>
