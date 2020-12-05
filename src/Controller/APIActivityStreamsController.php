@@ -33,6 +33,9 @@ class APIActivityStreamsController extends BaseController
             // API should only be used on local accounts
             throw new  NotFoundHttpException('Not found');
         }
+        if ($this->account->getAccountLocal()->isLocked()) {
+            throw new  NotFoundHttpException('Not found');
+        }
 
     }
 

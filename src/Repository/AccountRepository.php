@@ -22,8 +22,9 @@ class AccountRepository extends ServiceEntityRepository
         $query = $entityManager->createQuery(
             'SELECT a ' .
             'FROM App\Entity\Account a ' .
+            'JOIN a.accountLocal al '.
             'JOIN a.managedByUser uma '.
-            'WHERE uma.user = :u '.
+            'WHERE uma.user = :u AND al.locked = false '.
             'ORDER BY a.title ASC '
         )->setParameter('u', $user);
 
@@ -69,7 +70,7 @@ class AccountRepository extends ServiceEntityRepository
             'SELECT a ' .
             'FROM App\Entity\Account a ' .
             'JOIN a.accountLocal al '.
-            'WHERE a.id != :fromAccountId ' .
+            'WHERE a.id != :fromAccountId AND al.locked = False ' .
             'ORDER BY a.title ASC '
         )->setParameter('fromAccountId', $fromAccount->getId());
 
@@ -84,7 +85,7 @@ class AccountRepository extends ServiceEntityRepository
             'SELECT a ' .
             'FROM App\Entity\Account a ' .
             'JOIN a.accountLocal al '.
-            'WHERE al.list_in_directory = True ' .
+            'WHERE al.list_in_directory = True AND al.locked = False ' .
             'ORDER BY a.title ASC '
         );
 

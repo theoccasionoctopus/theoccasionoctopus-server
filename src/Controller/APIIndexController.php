@@ -47,45 +47,44 @@ class APIIndexController extends BaseController
         if (!$accountLocal) {
             throw new  NotFoundHttpException('Not found');
         }
-
-        if ($accountLocal) {
-            $account = $accountLocal->getAccount();
-            list($ssl, $host) = Library::parseURLToSSLAndHost($this->getParameter('app.instance_url'));
-            $out = [
-                'subject'=>'acct:'.$accountLocal->getUsername().'@'.$host,
-                'aliases'=>[
-                    $this->getParameter('app.instance_url').$this->generateUrl('account_public',['account_username'=>$accountLocal->getUsername()]),
-                ],
-                'links'=>[
-                    [
-                        'rel'=>'http://webfinger.net/rel/profile-page',
-                        'type'=>'text/html',
-                        'href'=>$this->getParameter('app.instance_url').$this->generateUrl('account_public',['account_username'=>$accountLocal->getUsername()]),
-                    ],
-                    [
-                        'rel'=>'self',
-                        'type'=>'application/activity+json',
-                        'href'=>$this->getParameter('app.instance_url').$this->generateUrl('account_activity_streams_index',['account_id'=>$account->getId()]),
-                    ],
-                    [
-                        'rel'=>'self',
-                        'type'=>'application/activity+json',
-                        'href'=>$this->getParameter('app.instance_url').$this->generateUrl('account_public',['account_username'=>$accountLocal->getUsername()]),
-                    ],
-                ],
-                'occasion-octopus-id'=> $account->getId(),
-                'occasion-octopus-title'=> $account->getTitle(),
-                'occasion-octopus-username'=> $accountLocal->getUsername(),
-            ];
-            return new Response(
-                json_encode($out),
-                Response::HTTP_OK,
-                ['content-type' => 'application/json']
-            );
-
-        } else {
+        if ($accountLocal->isLocked()) {
             throw new  NotFoundHttpException('Not found');
         }
+
+        $account = $accountLocal->getAccount();
+        list($ssl, $host) = Library::parseURLToSSLAndHost($this->getParameter('app.instance_url'));
+        $out = [
+            'subject'=>'acct:'.$accountLocal->getUsername().'@'.$host,
+            'aliases'=>[
+                $this->getParameter('app.instance_url').$this->generateUrl('account_public',['account_username'=>$accountLocal->getUsername()]),
+            ],
+            'links'=>[
+                [
+                    'rel'=>'http://webfinger.net/rel/profile-page',
+                    'type'=>'text/html',
+                    'href'=>$this->getParameter('app.instance_url').$this->generateUrl('account_public',['account_username'=>$accountLocal->getUsername()]),
+                ],
+                [
+                    'rel'=>'self',
+                    'type'=>'application/activity+json',
+                    'href'=>$this->getParameter('app.instance_url').$this->generateUrl('account_activity_streams_index',['account_id'=>$account->getId()]),
+                ],
+                [
+                    'rel'=>'self',
+                    'type'=>'application/activity+json',
+                    'href'=>$this->getParameter('app.instance_url').$this->generateUrl('account_public',['account_username'=>$accountLocal->getUsername()]),
+                ],
+            ],
+            'occasion-octopus-id'=> $account->getId(),
+            'occasion-octopus-title'=> $account->getTitle(),
+            'occasion-octopus-username'=> $accountLocal->getUsername(),
+        ];
+        return new Response(
+            json_encode($out),
+            Response::HTTP_OK,
+            ['content-type' => 'application/json']
+        );
+
     }
 
 }

@@ -70,6 +70,12 @@ class AccountLocal {
     private $list_in_directory;
 
     /**
+     * @ORM\Column(type="boolean", nullable=false, options={"default" : false})
+     */
+    private $locked = false;
+
+
+    /**
      * @return mixed
      */
     public function getAccount()
@@ -188,6 +194,22 @@ class AccountLocal {
     public function setListInDirectory($list_in_directory)
     {
         $this->list_in_directory = $list_in_directory;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function isLocked(): bool
+    {
+        return $this->locked;
+    }
+
+    /**
+     * @param mixed $locked
+     */
+    public function setLocked(bool $locked)
+    {
+        $this->locked = $locked;
     }
 
 }

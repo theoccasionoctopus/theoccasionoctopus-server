@@ -36,6 +36,9 @@ abstract class APIV1AccountController extends APIV1Controller
             // API should only be used on local accounts
             throw new  NotFoundHttpException('Not found');
         }
+        if ($this->account->getAccountLocal()->isLocked()) {
+            throw new  NotFoundHttpException('Not found');
+        }
 
         // See if this access token can access this account, and what permissions it has if so.
         if ($this->accessToken) {

@@ -22,7 +22,7 @@ class AccountPublicController extends BaseController
         $this->setUp($request);
         $doctrine = $this->getDoctrine();
         $accountLocal = $doctrine->getRepository(AccountLocal::class)->findOneByUsernameCanonical(Library::makeAccountUsernameCanonical($account_username));
-        if (!$accountLocal) {
+        if (!$accountLocal || $accountLocal->isLocked()) {
             throw new  NotFoundHttpException('Not found');
         }
         $this->account = $accountLocal->getAccount();

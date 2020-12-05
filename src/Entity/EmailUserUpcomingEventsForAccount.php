@@ -45,7 +45,7 @@ class EmailUserUpcomingEventsForAccount {
 
 
     public function shouldSendIfData():bool {
-        return $this->enabled && !$this->user->isLocked();
+        return $this->enabled && !$this->user->isLocked() && !$this->account->getAccountLocal()->isLocked();
     }
 
 
