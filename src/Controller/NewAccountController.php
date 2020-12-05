@@ -57,44 +57,51 @@ class NewAccountController extends BaseController
 
         // handle the submit (will only happen on POST)
         $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
+        if ($form->isSubmitted()) {
 
-            // TODO check user name not already taken, nicely error if so!
-
-            //  save the account!
-            $entityManager = $this->getDoctrine()->getManager();
-
-            $account->setTitle($form->get('username')->getData());
-            $entityManager->persist($account);
-
-            $accountLocal->setSEOIndexFollow($accountLocal->getDefaultPrivacy() == 0);
-            $entityManager->persist($accountLocal);
-
-            $userManagesAccount = new UserManageAccount();
-            $userManagesAccount->setUser($user);
-            $userManagesAccount->setAccount($account);
-            $entityManager->persist($userManagesAccount);
-
-            # TODO We must ask the user permission to do this, not assume!
-            if (true) {
-                $emailUpcomingEvents = new EmailUserUpcomingEventsForAccount();
-                $emailUpcomingEvents->setAccount($account);
-                $emailUpcomingEvents->setUser($user);
-                $entityManager->persist($emailUpcomingEvents);
+            // check user name not already taken, nicely error if so!
+            $existingAccount = $this->getDoctrine()->getRepository(AccountLocal::class)->findOneByUsernameCanonical(Library::makeAccountUsernameCanonical($accountLocal->getUsername()));
+            if ($existingAccount) {
+                $form->get('username')->addError(new FormError('That username is already taken'));
             }
 
-            $entityManager->flush();
+            if ($form->isValid()) {
 
-            // ... do any other work - like sending them an email, etc
-            // maybe set a "flash" success message for the user
+                //  save the account!
+                $entityManager = $this->getDoctrine()->getManager();
+
+                $account->setTitle($form->get('username')->getData());
+                $entityManager->persist($account);
+
+                $accountLocal->setSEOIndexFollow($accountLocal->getDefaultPrivacy() == 0);
+                $entityManager->persist($accountLocal);
+
+                $userManagesAccount = new UserManageAccount();
+                $userManagesAccount->setUser($user);
+                $userManagesAccount->setAccount($account);
+                $entityManager->persist($userManagesAccount);
+
+                # TODO We must ask the user permission to do this, not assume!
+                if (true) {
+                    $emailUpcomingEvents = new EmailUserUpcomingEventsForAccount();
+                    $emailUpcomingEvents->setAccount($account);
+                    $emailUpcomingEvents->setUser($user);
+                    $entityManager->persist($emailUpcomingEvents);
+                }
+
+                $entityManager->flush();
+
+                // ... do any other work - like sending them an email, etc
+                // maybe set a "flash" success message for the user
 
 
-            $this->addFlash(
-                'success',
-                'Welcome to your new account'
-            );
-            return $this->redirectToRoute('account_manage', ['account_username' => $accountLocal->getUsername()  ]);
+                $this->addFlash(
+                    'success',
+                    'Welcome to your new account'
+                );
+                return $this->redirectToRoute('account_manage', ['account_username' => $accountLocal->getUsername()]);
 
+            }
         }
 
         return $this->render(
