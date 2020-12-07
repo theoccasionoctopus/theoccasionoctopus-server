@@ -64,6 +64,8 @@ class APIV1AccountEventDetailsController extends APIV1AccountController
             'end_timezone'=>Library::getAPIJSONResponseForDateTime($this->event->getEndAtTimeZone()),
             'privacy'=>($this->event->getPrivacy() == 0 ? 'public' : 'private'),
             'extra_fields'=>($this->event->getExtraFields() ? $this->event->getExtraFields() : new stdClass()),
+            'editable_mode'=>$this->event->getEditableFieldsMode(),
+            'editable_fields'=>$this->event->getEditableFieldsList(),
         );
 
         return new Response(
@@ -85,153 +87,231 @@ class APIV1AccountEventDetailsController extends APIV1AccountController
             throw new AccessDeniedHttpException('This Token Can Not Write');
         }
 
+        $editableFields = $this->event->getEditableFieldsList();
+        $errorFieldsTriedToEditThatWereNotAllowed = [];
+
         ############# Set Changes!
 
         $historyWorker = $historyWorkerService->getHistoryWorker($this->account, $this->accessToken->getUser());
         $changedEvent = false;
 
         if ($request->get('title') && $request->get('title') != $this->event->getTitle()) {
-            $this->event->setTitle($request->get('title'));
-            $changedEvent = true;
+            if (in_array('title',$editableFields)) {
+                $this->event->setTitle($request->get('title'));
+                $changedEvent = true;
+            } else {
+                $errorFieldsTriedToEditThatWereNotAllowed[] = 'title';
+            }
         }
         if ($request->get('description') && $request->get('description') != $this->event->getDescription()) {
-            $this->event->setDescription($request->get('description'));
-            $changedEvent = true;
+            if (in_array('description',$editableFields)) {
+                $this->event->setDescription($request->get('description'));
+                $changedEvent = true;
+            } else {
+                $errorFieldsTriedToEditThatWereNotAllowed[] = 'description';
+            }
         }
         if ($request->get('url') && $request->get('url') != $this->event->getUrl()) {
-            $this->event->setUrl($request->get('url'));
-            $changedEvent = true;
+            if (in_array('url',$editableFields)) {
+                $this->event->setUrl($request->get('url'));
+                $changedEvent = true;
+            } else {
+                $errorFieldsTriedToEditThatWereNotAllowed[] = 'url';
+            }
         }
         if ($request->get('url_tickets') && $request->get('url_tickets') != $this->event->getUrlTickets()) {
-            $this->event->setUrlTickets($request->get('url_tickets'));
-            $changedEvent = true;
+            if (in_array('url_tickets',$editableFields)) {
+                $this->event->setUrlTickets($request->get('url_tickets'));
+                $changedEvent = true;
+            } else {
+                $errorFieldsTriedToEditThatWereNotAllowed[] = 'url_tickets';
+            }
         }
 
         if ($request->get('start_year_utc')) {
-            $start = new \DateTime('', new \DateTimeZone('UTC'));
-            $start->setDate(
-                $request->get('start_year_utc', $start->format('Y')),
-                $request->get('start_month_utc', $start->format('n')),
-                $request->get('start_day_utc', $start->format('j'))
-            );
-            $start->setTime(
-                $request->get('start_hour_utc', $start->format('G')),
-                $request->get('start_minute_utc', $start->format('i')),
-                0
-            );
-            if ($this->event->setStartWithObject($start)) {
-                $changedEvent = true;
+            if (in_array('start_end',$editableFields)) {
+                $start = new \DateTime('', new \DateTimeZone('UTC'));
+                $start->setDate(
+                    $request->get('start_year_utc', $start->format('Y')),
+                    $request->get('start_month_utc', $start->format('n')),
+                    $request->get('start_day_utc', $start->format('j'))
+                );
+                $start->setTime(
+                    $request->get('start_hour_utc', $start->format('G')),
+                    $request->get('start_minute_utc', $start->format('i')),
+                    0
+                );
+                if ($this->event->setStartWithObject($start)) {
+                    $changedEvent = true;
+                }
+            } else {
+                $errorFieldsTriedToEditThatWereNotAllowed[] = 'start_at';
             }
         }
 
         if ($request->get('end_year_utc')) {
-            $end = new \DateTime('', new \DateTimeZone('UTC'));
-            $end->setDate(
-                $request->get('end_year_utc', $end->format('Y')),
-                $request->get('end_month_utc', $end->format('n')),
-                $request->get('end_day_utc', $end->format('j'))
-            );
-            $end->setTime(
-                $request->get('end_hour_utc', $end->format('G')),
-                $request->get('end_minute_utc', $end->format('i')),
-                0
-            );
-            if ($this->event->setEndWithObject($end)) {
-                $changedEvent = true;
+            if (in_array('start_end',$editableFields)) {
+                $end = new \DateTime('', new \DateTimeZone('UTC'));
+                $end->setDate(
+                    $request->get('end_year_utc', $end->format('Y')),
+                    $request->get('end_month_utc', $end->format('n')),
+                    $request->get('end_day_utc', $end->format('j'))
+                );
+                $end->setTime(
+                    $request->get('end_hour_utc', $end->format('G')),
+                    $request->get('end_minute_utc', $end->format('i')),
+                    0
+                );
+                if ($this->event->setEndWithObject($end)) {
+                    $changedEvent = true;
+                }
+            } else {
+                $errorFieldsTriedToEditThatWereNotAllowed[] = 'end_at';
             }
         }
 
         if ($request->get('start_year_timezone')) {
-            $start = new \DateTime('', $this->event->getTimezone()->getDateTimeZoneObject());
-            if ($this->event->setStartWithInts(
-                $request->get('start_year_timezone', $start->format('Y')),
-                $request->get('start_month_timezone', $start->format('n')),
-                $request->get('start_day_timezone', $start->format('j')),
-                $request->get('start_hour_timezone', $start->format('G')),
-                $request->get('start_minute_timezone', $start->format('i')),
-                0
-            )) {
-                $changedEvent = true;
-            };
+            if (in_array('start_end',$editableFields)) {
+                $start = new \DateTime('', $this->event->getTimezone()->getDateTimeZoneObject());
+                if ($this->event->setStartWithInts(
+                    $request->get('start_year_timezone', $start->format('Y')),
+                    $request->get('start_month_timezone', $start->format('n')),
+                    $request->get('start_day_timezone', $start->format('j')),
+                    $request->get('start_hour_timezone', $start->format('G')),
+                    $request->get('start_minute_timezone', $start->format('i')),
+                    0
+                )) {
+                    $changedEvent = true;
+                };
+            } else {
+                $errorFieldsTriedToEditThatWereNotAllowed[] = 'start_at';
+            }
         }
 
         if ($request->get('end_year_timezone')) {
-            $end = new \DateTime('', $this->event->getTimezone()->getDateTimeZoneObject());
-            if ($this->event->setEndWithInts(
-                $request->get('end_year_timezone', $end->format('Y')),
-                $request->get('end_month_timezone', $end->format('n')),
-                $request->get('end_day_timezone', $end->format('j')),
-                $request->get('end_hour_timezone', $end->format('G')),
-                $request->get('end_minute_timezone', $end->format('i')),
-                0
-            )) {
-                $changedEvent = true;
+            if (in_array('start_end',$editableFields)) {
+                $end = new \DateTime('', $this->event->getTimezone()->getDateTimeZoneObject());
+                if ($this->event->setEndWithInts(
+                    $request->get('end_year_timezone', $end->format('Y')),
+                    $request->get('end_month_timezone', $end->format('n')),
+                    $request->get('end_day_timezone', $end->format('j')),
+                    $request->get('end_hour_timezone', $end->format('G')),
+                    $request->get('end_minute_timezone', $end->format('i')),
+                    0
+                )) {
+                    $changedEvent = true;
+                }
+            } else {
+                $errorFieldsTriedToEditThatWereNotAllowed[] = 'end_at';
             }
         }
 
-        $count = 0;
-        while($request->get('extra_field_'.$count.'_name')) {
-            if ($this->event->getExtraField($request->get('extra_field_'.$count.'_name')) != $request->get('extra_field_'.$count.'_value')) {
-                $this->event->setExtraField($request->get('extra_field_' . $count . '_name'), $request->get('extra_field_' . $count . '_value'));
-                $changedEvent = true;
+        if ($request->get('extra_field_0_name')) {
+            if (in_array('extra_fields',$editableFields)) {
+                $count = 0;
+                while ($request->get('extra_field_' . $count . '_name')) {
+                    if ($this->event->getExtraField($request->get('extra_field_' . $count . '_name')) != $request->get('extra_field_' . $count . '_value')) {
+                        $this->event->setExtraField($request->get('extra_field_' . $count . '_name'), $request->get('extra_field_' . $count . '_value'));
+                        $changedEvent = true;
+                    }
+                    $count++;
+                }
+            } else {
+                $errorFieldsTriedToEditThatWereNotAllowed[] = 'extra_fields';
             }
-            $count++;
         }
 
         $deleted = $this::parseBooleanString($request->get('deleted'));
         if (!is_null($deleted) && $deleted != $this->event->getDeleted()) {
-            $this->event->setDeleted($deleted);
-            $changedEvent = true;
+            if (in_array('deleted',$editableFields)) {
+                $this->event->setDeleted($deleted);
+                $changedEvent = true;
+            } else {
+                $errorFieldsTriedToEditThatWereNotAllowed[] = 'deleted';
+            }
         }
 
         $cancelled = $this::parseBooleanString($request->get('cancelled'));
         if (!is_null($cancelled) && $cancelled != $this->event->getCancelled()) {
-            $this->event->setCancelled($cancelled);
-            $changedEvent = true;
+            if (in_array('cancelled',$editableFields)) {
+                $this->event->setCancelled($cancelled);
+                $changedEvent = true;
+            } else {
+                $errorFieldsTriedToEditThatWereNotAllowed[] = 'cancelled';
+            }
         }
 
-        $count = 0;
-        while($request->request->get('add_tag_'.$count)) {
-            $tag = $tagRepository->findOneBy(['id'=>$request->request->get('add_tag_'.$count), 'account'=>$this->account]);
-            if ($tag) {
-                $eventTag = $eventTagRepository->findOneBy(array('event'=>$this->event, 'tag'=>$tag));
-                if (!$eventTag) {
-                    $eventTag = new EventHasTag();
-                    $eventTag->setEvent($this->event);
-                    $eventTag->setTag($tag);
-                    $eventTag->setEnabled(True);
-                    $historyWorker->addEventHasTag($eventTag);
-                } elseif (!$eventTag->getENabled()) {
-                    $eventTag->setEnabled(True);
-                    $historyWorker->addEventHasTag($eventTag);
+
+        if ($request->get('add_tag_0')) {
+            if (in_array('tags',$editableFields)) {
+                $count = 0;
+                while ($request->request->get('add_tag_' . $count)) {
+                    $tag = $tagRepository->findOneBy(['id' => $request->request->get('add_tag_' . $count), 'account' => $this->account]);
+                    if ($tag) {
+                        $eventTag = $eventTagRepository->findOneBy(array('event' => $this->event, 'tag' => $tag));
+                        if (!$eventTag) {
+                            $eventTag = new EventHasTag();
+                            $eventTag->setEvent($this->event);
+                            $eventTag->setTag($tag);
+                            $eventTag->setEnabled(True);
+                            $historyWorker->addEventHasTag($eventTag);
+                        } elseif (!$eventTag->getENabled()) {
+                            $eventTag->setEnabled(True);
+                            $historyWorker->addEventHasTag($eventTag);
+                        }
+                    } else {
+                        // TODO should show this 404 to user somehow?
+                    }
+                    $count++;
                 }
             } else {
-                // TODO should show this 404 to user somehow?
+                $errorFieldsTriedToEditThatWereNotAllowed[] = 'tags';
             }
-            $count++;
         }
 
 
-        ########### Result and Save!
-        $out = [
-            'event' => [
-                'id' => $this->event->getId(),
-            ],
-            'changes' => false,
-        ];
-        if ($changedEvent) {
-            $historyWorker->addEvent($this->event);
-        }
-        if ($historyWorker->hasContents()) {
-            $historyWorkerService->persistHistoryWorker($historyWorker);
-            $out['changes'] = true;
-        }
+        ########### Result and Error/Save!
+        if ($errorFieldsTriedToEditThatWereNotAllowed) {
+            asort($errorFieldsTriedToEditThatWereNotAllowed);
+            asort($editableFields);
+            $out = [
+                'error' => [
+                    'id' => 'can_not_edit_field',
+                    'fields_mode'=>$this->event->getEditableFieldsMode(),
+                    # TODO This produces values of [0=>'description',1=>'title',2=>'url',3=>'url_tickets']
+                    # there is no reason to have the keys here!
+                    # Should be JSON List, not JSON object!
+                    'fields_not_allowed'=>array_values($errorFieldsTriedToEditThatWereNotAllowed),
+                    'fields_allowed'=>array_values($editableFields),
+                ],
+                'changes' => false,
+            ];
+            return new Response(
+                json_encode($out),
+                Response::HTTP_BAD_REQUEST,
+                ['content-type' => 'application/json']
+            );
+        } else {
+            $out = [
+                'event' => [
+                    'id' => $this->event->getId(),
+                ],
+                'changes' => false,
+            ];
+            if ($changedEvent) {
+                $historyWorker->addEvent($this->event);
+            }
+            if ($historyWorker->hasContents()) {
+                $historyWorkerService->persistHistoryWorker($historyWorker);
+                $out['changes'] = true;
+            }
 
-        return new Response(
-            json_encode($out),
-            Response::HTTP_OK,
-            ['content-type' => 'application/json']
-        );
+            return new Response(
+                json_encode($out),
+                Response::HTTP_OK,
+                ['content-type' => 'application/json']
+            );
+        }
 
     }
 

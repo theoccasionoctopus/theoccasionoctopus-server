@@ -4,29 +4,77 @@
 
 {% block body %}
 
-
     <div class="content">
+
+        {%  if editableMode == 'imported' %}
+            <div>
+                Because this event is being managed my an active importer, you can only edit some fields of the event.
+                To edit all fields, you must disable the importer.
+            </div>
+        {%  elseif editableMode == 'sourced' %}
+            <div>
+                Because this event has been sourced from another account, you can only edit some fields.
+                The other fields will update automatically when the source event changes.
+            </div>
+        {% endif %}
+
         {{ form_start(form) }}
         {{ form_errors(form) }}
-        <h4>What?</h4>
-        {{ form_row(form.title) }}
-        {{ form_row(form.description) }}
-        {%  for edit_extra_field in edit_extra_fields %}
-            {{ form_row(form[edit_extra_field]) }}
-        {%  endfor %}
-        {{ form_row(form.new_extra_field_key) }}
-        {{ form_row(form.new_extra_field_value) }}
-        {{ form_row(form.url) }}
-        {{ form_row(form.url_tickets) }}
-        <h4>Where?</h4>
-        {{ form_row(form.country) }}
-        <h4>When?</h4>
-        {{ form_row(form.timezone) }}
-        {{ form_row(form.start_at) }}
-        {{ form_row(form.end_at) }}
-        {{ form_row(form.rrule) }}
-        <h4>Share?</h4>
-        {{ form_row(form.privacy) }}
+
+        {%  if 'title' in editableFields or 'description' in editableFields or 'extra_fields' in editableFields or 'url' in editableFields or 'url_tickets' in editableFields %}
+            <h4>What?</h4>
+        {%  endif %}
+
+        {%  if 'title' in editableFields %}
+            {{ form_row(form.title) }}
+        {%  endif %}
+
+        {%  if 'description' in editableFields %}
+            {{ form_row(form.description) }}
+        {%  endif %}
+
+        {%  if 'extra_fields' in editableFields %}
+            {%  for edit_extra_field in edit_extra_fields %}
+                {{ form_row(form[edit_extra_field]) }}
+            {%  endfor %}
+            {{ form_row(form.new_extra_field_key) }}
+            {{ form_row(form.new_extra_field_value) }}
+        {%  endif %}
+
+        {%  if 'url' in editableFields %}
+            {{ form_row(form.url) }}
+        {%  endif %}
+
+        {%  if 'url_tickets' in editableFields %}
+            {{ form_row(form.url_tickets) }}
+        {%  endif %}
+
+        {%  if 'country' in editableFields %}
+            <h4>Where?</h4>
+            {{ form_row(form.country) }}
+        {%  endif %}
+
+        {%  if  'timezone' in editableFields or 'start_end' in editableFields or 'rrule' in editableFields %}
+            <h4>When?</h4>
+        {%  endif %}
+
+        {%  if 'timezone' in editableFields %}
+            {{ form_row(form.timezone) }}
+        {%  endif %}
+
+        {%  if 'start_end' in editableFields %}
+            {{ form_row(form.start_at) }}
+            {{ form_row(form.end_at) }}
+        {%  endif %}
+
+        {%  if 'rrule' in editableFields %}
+            {{ form_row(form.rrule) }}
+        {%  endif %}
+
+        {%  if 'privacy' in editableFields %}
+            <h4>Share?</h4>
+            {{ form_row(form.privacy) }}
+        {%  endif %}
 
         <button type="submit" class="button">Save</button>
         {{ form_end(form) }}

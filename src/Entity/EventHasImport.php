@@ -24,7 +24,7 @@ class EventHasImport
      * @Assert\NotNull
      * @ORM\JoinColumn(name="event_id", referencedColumnName="id", nullable=false)
      * This is not OneToOne - what happens if 2 imports in 1 account see the same event?
-     * @ORM\ManyToOne(targetEntity="App\Entity\Event", inversedBy="eventHasICalImport")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Event", inversedBy="eventHasImport")
      */
     private $event;
 

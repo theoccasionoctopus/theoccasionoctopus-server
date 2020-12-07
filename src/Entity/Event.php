@@ -177,6 +177,16 @@ class Event
      */
     private $histories;
 
+    /**
+     * @ORM\OneToMany(targetEntity="EventHasSourceEvent", mappedBy="event")
+     */
+    private $eventHasSources;
+
+    /**
+     * @ORM\OneToMany(targetEntity="EventHasImport", mappedBy="event")
+     */
+    private $eventHasImport;
+
 
     /**
      * @return mixed
@@ -567,6 +577,73 @@ class Event
         $this->timezone = $sourceEvent->getTimezone();
         $this->setStartWithObject($sourceEvent->getStart());
         $this->setEndWithObject($sourceEvent->getEnd());
+    }
+
+    // These values are exported via the API so should be changed with caution
+    const EDITABLE_FIELDS_MODE_ALL = 'all';
+    const EDITABLE_FIELDS_MODE_IMPORTED = 'imported';
+    const EDITABLE_FIELDS_MODE_SOURCED = 'sourced';
+
+    public function getEditableFieldsMode():string {
+
+        // Is this an actively imported event?
+        if ($this->eventHasImport) {
+            foreach($this->eventHasImport as $eventHasImport) {
+                if ($eventHasImport->getImport()->getEnabled()) {
+                    return self::EDITABLE_FIELDS_MODE_IMPORTED;
+                }
+            }
+        }
+
+
+        // Is this an event sourced?
+        if ($this->eventHasSources) {
+            foreach($this->eventHasSources as $eventHasSource) {
+                if (true) { # This should be some check of whether updates from the source are still wanted
+                    return self::EDITABLE_FIELDS_MODE_SOURCED;
+                }
+            }
+        }
+
+
+        // Ok, can edit everything
+        return self::EDITABLE_FIELDS_MODE_ALL;
+    }
+
+    public function getEditableFieldsList():array {
+
+        $mode = $this->getEditableFieldsMode();
+        if ($mode == self::EDITABLE_FIELDS_MODE_SOURCED) {
+            return [
+                'privacy',
+                'tags',
+            ];
+        } elseif ($mode == self::EDITABLE_FIELDS_MODE_IMPORTED) {
+            return [
+                'privacy',
+                'country',
+                'timezone',
+                'extra_fields',
+                'tags',
+            ];
+        } else {
+            return [
+              'title',
+              'description',
+              'url',
+              'url_tickets',
+              'start_end',
+              'rrule',
+              'privacy',
+              'country',
+              'timezone',
+              'extra_fields',
+              'deleted',
+              'cancelled',
+              'tags',
+            ];
+        }
+
     }
 
 }

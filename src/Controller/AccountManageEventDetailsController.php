@@ -103,24 +103,32 @@ class AccountManageEventDetailsController extends  AccountManageController {
                 $timeZone = $timeZoneObject->getCode();
             }
         }
+        $editableFields = $this->event->getEditableFieldsList();
+        $editableMode = $this->event->getEditableFieldsMode();
         $form = $this->createForm(
             EventEditDetailsType::class,
             $this->event,
             array(
                 'timeZoneName' => $timeZone,
                 'edit_extra_fields' => $this->event->getExtraFieldsKeys(),
+                'editableFields' => $editableFields,
+                'editableMode' => $editableMode,
             )
         );
-        $form->get('start_at')->setData($this->event->getStart());
-        $form->get('end_at')->setData($this->event->getEnd());
+        if (in_array('start_end', $editableFields)) {
+            $form->get('start_at')->setData($this->event->getStart());
+            $form->get('end_at')->setData($this->event->getEnd());
+        }
 
         // handle the submit (will only happen on POST)
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
 
             // Non Mapped Fields
-            $this->event->setStartWithObject($form->get('start_at')->getData());
-            $this->event->setEndWithObject($form->get('end_at')->getData());
+            if (in_array('start_end', $editableFields)) {
+                $this->event->setStartWithObject($form->get('start_at')->getData());
+                $this->event->setEndWithObject($form->get('end_at')->getData());
+            }
 
             // Save
             foreach($this->event->getExtraFieldsKeys() as $key) {
@@ -153,6 +161,8 @@ class AccountManageEventDetailsController extends  AccountManageController {
             'event' => $this->event,
             'form' => $form->createView(),
             'edit_extra_fields' => $editExtraFieldKeys,
+            'editableFields' => $editableFields,
+            'editableMode' => $editableMode,
         ]));
 
     }
