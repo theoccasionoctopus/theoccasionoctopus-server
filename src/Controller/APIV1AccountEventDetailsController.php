@@ -95,34 +95,38 @@ class APIV1AccountEventDetailsController extends APIV1AccountController
         $historyWorker = $historyWorkerService->getHistoryWorker($this->account, $this->accessToken->getUser());
         $changedEvent = false;
 
-        if ($request->get('title') && $request->get('title') != $this->event->getTitle()) {
+        if ($request->get('title') ) {
             if (in_array('title',$editableFields)) {
-                $this->event->setTitle($request->get('title'));
-                $changedEvent = true;
+                if ($this->event->setTitle($request->get('title'))) {
+                    $changedEvent = true;
+                }
             } else {
                 $errorFieldsTriedToEditThatWereNotAllowed[] = 'title';
             }
         }
-        if ($request->get('description') && $request->get('description') != $this->event->getDescription()) {
+        if ($request->get('description')) {
             if (in_array('description',$editableFields)) {
-                $this->event->setDescription($request->get('description'));
-                $changedEvent = true;
+                if ($this->event->setDescription($request->get('description'))) {
+                    $changedEvent = true;
+                }
             } else {
                 $errorFieldsTriedToEditThatWereNotAllowed[] = 'description';
             }
         }
-        if ($request->get('url') && $request->get('url') != $this->event->getUrl()) {
+        if ($request->get('url')) {
             if (in_array('url',$editableFields)) {
-                $this->event->setUrl($request->get('url'));
-                $changedEvent = true;
+                if ($this->event->setUrl($request->get('url'))) {
+                    $changedEvent = true;
+                }
             } else {
                 $errorFieldsTriedToEditThatWereNotAllowed[] = 'url';
             }
         }
-        if ($request->get('url_tickets') && $request->get('url_tickets') != $this->event->getUrlTickets()) {
+        if ($request->get('url_tickets')) {
             if (in_array('url_tickets',$editableFields)) {
-                $this->event->setUrlTickets($request->get('url_tickets'));
-                $changedEvent = true;
+                if ($this->event->setUrlTickets($request->get('url_tickets'))) {
+                    $changedEvent = true;
+                }
             } else {
                 $errorFieldsTriedToEditThatWereNotAllowed[] = 'url_tickets';
             }
@@ -222,20 +226,22 @@ class APIV1AccountEventDetailsController extends APIV1AccountController
         }
 
         $deleted = $this::parseBooleanString($request->get('deleted'));
-        if (!is_null($deleted) && $deleted != $this->event->getDeleted()) {
+        if (!is_null($deleted)) {
             if (in_array('deleted',$editableFields)) {
-                $this->event->setDeleted($deleted);
-                $changedEvent = true;
+                if ($this->event->setDeleted($deleted)) {
+                    $changedEvent = true;
+                }
             } else {
                 $errorFieldsTriedToEditThatWereNotAllowed[] = 'deleted';
             }
         }
 
         $cancelled = $this::parseBooleanString($request->get('cancelled'));
-        if (!is_null($cancelled) && $cancelled != $this->event->getCancelled()) {
+        if (!is_null($cancelled)) {
             if (in_array('cancelled',$editableFields)) {
-                $this->event->setCancelled($cancelled);
-                $changedEvent = true;
+                if ($this->event->setCancelled($cancelled)) {
+                    $changedEvent = true;
+                }
             } else {
                 $errorFieldsTriedToEditThatWereNotAllowed[] = 'cancelled';
             }

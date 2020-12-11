@@ -66,3 +66,7 @@ services:
         class: App\Service\Import\ImportService
         public: true
 
+    app.updateSourcedEvent:
+        class: App\Service\UpdateSourcedEvent\UpdateSourcedEventService
+        public: true
+

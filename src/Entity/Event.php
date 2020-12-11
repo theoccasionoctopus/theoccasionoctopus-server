@@ -407,9 +407,13 @@ class Event
     /**
      * @param mixed $deleted
      */
-    public function setDeleted($deleted)
+    public function setDeleted($deleted): bool
     {
-        $this->deleted = $deleted;
+        if ($this->deleted != $deleted) {
+            $this->deleted = $deleted;
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -444,8 +448,15 @@ class Event
     /**
      * @param Country $country
      */
-    public function setCountry($country)
+    public function setCountry(Country $country): bool
     {
+        if (!$this->country || $this->country->getId() != $country->getId()) {
+            $this->country = $country;
+            return true;
+        }
+        return false;
+
+
         $this->country = $country;
     }
 
@@ -460,11 +471,13 @@ class Event
     /**
      * @param TimeZone $timezone
      */
-    public function setTimezone($timezone)
+    public function setTimezone($timezone): bool
     {
         if (!$this->timezone || $this->timezone->getCode() != $timezone->getCode()) {
             $this->timezone = $timezone;
+            return true;
         }
+        return false;
     }
 
     /**
@@ -515,10 +528,13 @@ class Event
     /**
      * @param mixed $url_tickets
      */
-    public function setUrlTickets($url_tickets)
+    public function setUrlTickets($url_tickets):bool
     {
-        $this->url_tickets = $url_tickets;
-    }
+        if ($this->url_tickets != $url_tickets) {
+            $this->url_tickets = $url_tickets;
+            return true;
+        }
+        return false;    }
 
     /**
      * @return mixed
@@ -568,15 +584,41 @@ class Event
     }
 
     public function copyFromEvent(Event $sourceEvent) {
-        $this->title = $sourceEvent->getTitle();
-        $this->description = $sourceEvent->getDescription();
-        $this->url = $sourceEvent->getUrl();
-        $this->url_tickets = $sourceEvent->getUrlTickets();
-        $this->extra_fields = $sourceEvent->getExtraFields();
-        $this->country = $sourceEvent->getCountry();
-        $this->timezone = $sourceEvent->getTimezone();
-        $this->setStartWithObject($sourceEvent->getStart());
-        $this->setEndWithObject($sourceEvent->getEnd());
+        $r = false;
+        if($this->setTitle($sourceEvent->getTitle())) {
+            $r = true;
+        }
+        if ($this->setDescription($sourceEvent->getDescription())) {
+            $r = true;
+        }
+        if ($this->setUrl($sourceEvent->getUrl())) {
+            $r = true;
+        }
+        if ($this->setUrlTickets($sourceEvent->getUrlTickets())) {
+            $r = true;
+        }
+        if ($this->setExtraFields($sourceEvent->getExtraFields())) {
+            $r = true;
+        }
+        if ($this->setCountry($sourceEvent->getCountry())) {
+            $r = true;
+        }
+        if ($this->setTimezone($sourceEvent->getTimezone())) {
+            $r = true;
+        }
+        if ($this->setStartWithObject($sourceEvent->getStart())) {
+            $r = true;
+        }
+        if ($this->setEndWithObject($sourceEvent->getEnd())) {
+            $r = true;
+        }
+        if ($this->setCancelled($sourceEvent->getCancelled())) {
+            $r = true;
+        }
+        if ($this->setDeleted($sourceEvent->getDeleted())) {
+            $r = true;
+        }
+        return $r;
     }
 
     // These values are exported via the API so should be changed with caution
@@ -599,7 +641,7 @@ class Event
         // Is this an event sourced?
         if ($this->eventHasSources) {
             foreach($this->eventHasSources as $eventHasSource) {
-                if (true) { # This should be some check of whether updates from the source are still wanted
+                if (true) { # TODO This should be some check of whether updates from the source are still wanted
                     return self::EDITABLE_FIELDS_MODE_SOURCED;
                 }
             }
