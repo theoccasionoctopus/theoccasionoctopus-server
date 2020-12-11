@@ -205,9 +205,9 @@ class Event
     }
 
     /**
-     * @return mixed
+     * @return Account
      */
-    public function getAccount()
+    public function getAccount(): Account
     {
         return $this->account;
     }

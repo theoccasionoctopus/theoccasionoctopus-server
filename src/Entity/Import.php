@@ -86,9 +86,9 @@ class Import
     }
 
     /**
-     * @return mixed
+     * @return Account
      */
-    public function getAccount()
+    public function getAccount(): Account
     {
         return $this->account;
     }

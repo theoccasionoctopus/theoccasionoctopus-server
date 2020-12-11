@@ -20,13 +20,14 @@ use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use App\Entity\User;
 use App\Entity\Account;
 use App\Library;
+use Psr\Log\LoggerInterface;
 
 class NewAccountController extends BaseController
 {
 
 
 
-    public function register(Request $request, UserPasswordEncoderInterface $passwordEncoder)
+    public function register(Request $request, UserPasswordEncoderInterface $passwordEncoder, LoggerInterface $logger)
     {
 
         // Must be a user!
@@ -91,6 +92,8 @@ class NewAccountController extends BaseController
                 }
 
                 $entityManager->flush();
+
+                $logger->info('New account created', ['account_id'=>$account->getId(), 'user_id'=>$user->getId()]);
 
                 // UI and redirect
                 $this->addFlash(

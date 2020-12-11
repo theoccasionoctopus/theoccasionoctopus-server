@@ -19,6 +19,7 @@ use App\Service\HistoryWorker\HistoryWorkerService;
 use Doctrine\ORM\EntityManagerInterface;
 use GuzzleHttp\Client;
 use Sabre\VObject;
+use Psr\Log\LoggerInterface;
 
 class ImportService
 {
@@ -31,14 +32,17 @@ class ImportService
     /**
      * @param EntityManagerInterface $entityManager
      */
-    public function __construct(EntityManagerInterface $entityManager, HistoryWorkerService $historyWorkerService)
+    public function __construct(EntityManagerInterface $entityManager, HistoryWorkerService $historyWorkerService, LoggerInterface $logger)
     {
         $this->entityManager = $entityManager;
         $this->historyWorkerService = $historyWorkerService;
+        $this->logger = $logger;
     }
 
 
     public function import(Import $import) {
+
+        $this->logger->info('Importing', ['import_id' => $import->getId(), 'account_id'=>$import->getAccount()->getId()]);
 
         $guzzle = new Client(array('defaults' => array('headers' => array(  'User-Agent'=> 'Prototype Software') )));
         $response = $guzzle->request("GET", $import->getURL(), array());

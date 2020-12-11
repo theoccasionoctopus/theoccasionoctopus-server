@@ -30,33 +30,33 @@ class EventHasSourceEvent
     private $sourceEvent;
 
     /**
-     * @return mixed
+     * @return Event
      */
-    public function getEvent()
+    public function getEvent(): Event
     {
         return $this->event;
     }
 
     /**
-     * @param mixed $event
+     * @param Event $event
      */
-    public function setEvent($event)
+    public function setEvent(Event $event)
     {
         $this->event = $event;
     }
 
     /**
-     * @return mixed
+     * @return Event
      */
-    public function getSourceEvent()
+    public function getSourceEvent(): Event
     {
         return $this->sourceEvent;
     }
 
     /**
-     * @param mixed $sourceEvent
+     * @param Event $sourceEvent
      */
-    public function setSourceEvent($sourceEvent)
+    public function setSourceEvent(Event $sourceEvent)
     {
         $this->sourceEvent = $sourceEvent;
     }
