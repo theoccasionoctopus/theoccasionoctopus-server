@@ -10,3 +10,8 @@ monolog:
             type: stream
             path: "%kernel.logs_dir%/%kernel.environment%.log"
             level: debug
+        # There must be a handler called app because this is referenced in services config
+        app:
+            type: console
+            level: error
+            channels: [app]

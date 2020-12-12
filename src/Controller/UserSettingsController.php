@@ -20,6 +20,7 @@ use App\Entity\User;
 use App\Entity\Account;
 use App\Library;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
+use Psr\Log\LoggerInterface;
 
 class UserSettingsController extends BaseController
 {
@@ -61,7 +62,7 @@ class UserSettingsController extends BaseController
         );
     }
 
-    public function accessTokensNew(Request $request) {
+    public function accessTokensNew(Request $request, LoggerInterface $logger) {
         $this->build();
 
         // TODO check $user $limitNumberOfAPIAccessTokens and block
@@ -84,6 +85,9 @@ class UserSettingsController extends BaseController
             $doctrine = $this->getDoctrine();
             $doctrine->getManager()->persist($accessToken);
             $doctrine->getManager()->flush();
+
+            // Log
+            $logger->info('New API Access Token created', ['user_id'=>$this->user->getId(),'api_access_token_id'=>$accessToken->getId()]);
 
             // redirect
             $this->addFlash(

@@ -15,6 +15,7 @@ use App\Entity\User;
 use App\Entity\Account;
 use App\Library;
 use Symfony\Component\Security\Guard\GuardAuthenticatorHandler;
+use Psr\Log\LoggerInterface;
 
 class UserController extends BaseController
 {
@@ -32,7 +33,7 @@ class UserController extends BaseController
         );
     }
 
-    public function register(Request $request, UserPasswordEncoderInterface $passwordEncoder, GuardAuthenticatorHandler $guardHandler, UserAuthenticator $formAuthenticator)
+    public function register(Request $request, UserPasswordEncoderInterface $passwordEncoder, GuardAuthenticatorHandler $guardHandler, UserAuthenticator $formAuthenticator, LoggerInterface $logger)
     {
         //  build the form
         $user = new User();
@@ -45,6 +46,9 @@ class UserController extends BaseController
             // TODO if email already used, show nice error
 
             if ($form->get('magicWord')->getData() != $this->getParameter('app.user_register_instance_password')) {
+
+                // Log
+                $logger->info('User Register Instance Password Wrong', []);
 
                 $form->get('magicWord')->addError(new FormError('Wrong Magic Word!'));
 
@@ -60,6 +64,9 @@ class UserController extends BaseController
                 $entityManager = $this->getDoctrine()->getManager();
                 $entityManager->persist($user);
                 $entityManager->flush();
+
+                // Log
+                $logger->info('New user created', ['user_id'=>$user->getId()]);
 
                 // Log user in ourselves and redirect
                 $token = $formAuthenticator->createAuthenticatedToken($user, 'main');

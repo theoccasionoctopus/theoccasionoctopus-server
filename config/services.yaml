@@ -70,3 +70,12 @@ services:
         class: App\Service\UpdateSourcedEvent\UpdateSourcedEventService
         public: true
 
+    logging.webProcessor:
+        class: Symfony\Bridge\Monolog\Processor\WebProcessor
+        tags:
+          - { name: monolog.processor, handler: app }
+
+    logging.webProcessorFormatting:
+        class: Monolog\Formatter\LineFormatter
+        arguments:
+            - "[%%datetime%%] [%%extra.ip%%] %%channel%%.%%level_name%%: %%message%% %%context%%\n"
