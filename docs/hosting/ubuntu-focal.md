@@ -44,7 +44,7 @@ We are going to set up a locale for us to use. You may choose a different one fo
 Next install needed packages:
 
     apt-get update
-    DEBIAN_FRONTEND=noninteractive apt-get install -y postgresql apache2 php-mbstring php-gd php php-curl php-pgsql git php-intl curl zip php7.4-fpm php-zip php-xml certbot python3-certbot-apache
+    DEBIAN_FRONTEND=noninteractive apt-get install -y postgresql apache2 php-mbstring php-gd php php-curl php-pgsql git php-intl curl zip php7.4-fpm php-zip php-xml certbot python3-certbot-apache acl
     
     curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash -
     apt-get install -y nodejs
@@ -66,12 +66,6 @@ Add a user for us to use. Set a random password. You don't need to note it anywh
 
     adduser occ_oct
     
-Set up a group:
-
-    groupadd occ_oct_and_www
-    usermod -a -G occ_oct_and_www www-data
-    usermod -a -G occ_oct_and_www occ_oct
-        
 ### Get the app
     
 Check out the source code:
@@ -108,6 +102,19 @@ INSTANCE_SYSADMIN_EMAIL="hello@example.com"
 ```
 
 For a full explanation of what each one does, and how to set it, see [Configuration Options](configuration-options.md).
+
+### Set up file permissions for web server and var
+
+So the webserver can see the public files, run:
+
+    chmod o+rx /home/occ_oct/
+    chmod o+rx /home/occ_oct/software/
+    chmod o+rx /home/occ_oct/software/public/
+    
+So the var directory has correct permissions for both web server and CLI user, run:
+
+    mkdir -p /home/occ_oct/software/var
+    setfacl -dR -m u:www-data:rwX -m u:occ_oct:rwX /home/occ_oct/software/var
 
 ### Install Libraries
     
@@ -163,12 +170,6 @@ Run:
     systemctl start php7.4-fpm
     systemctl enable php7.4-fpm
     a2enconf php7.4-fpm
-    chmod o+rx /home/occ_oct/
-    chmod o+rx /home/occ_oct/software/
-    chmod o+rx /home/occ_oct/software/public/
-    chown -R occ_oct:occ_oct_and_www /home/occ_oct/software/var
-    find /home/occ_oct/software/var -type d -exec chmod 775 {} +
-    find /home/occ_oct/software/var -type f -exec chmod 664 {} +   
     systemctl reload apache2
 
 ### Set up cron
@@ -252,7 +253,7 @@ Create the file `/etc/logrotate.d/occ_oct_app` and set the contents:
     compress
     delaycompress
     notifempty
-    create 664 www-data occ_oct_and_www
+    create 664 www-data www-data
     su www-data www-data
 }
 ```
@@ -290,8 +291,8 @@ You must find a way to back this directory up. Some hosts will take regular snap
 
 You may also want to back up the following directories - these contain log files:
 
-* `/home/occ_oct/software/var/log/`
-* `/var/log/apache2/`
+* `/home/occ_oct/software/var/log/` - Log files of the application
+* `/var/log/apache2/` - Log files of the web server, Apache
 
 ## Handy tips
 
@@ -307,9 +308,6 @@ Log into server and run as root:
 
     cd /home/occ_oct/software
     su -c "git pull" occ_oct
-    chown -R occ_oct:occ_oct_and_www /home/occ_oct/software/var
-    find /home/occ_oct/software/var -type d -exec chmod 775 {} +
-    find /home/occ_oct/software/var -type f -exec chmod 664 {} +          
     su -c "/bin/composer.phar install" occ_oct
     su -c "./bin/console doctrine:migrations:migrate --no-interaction" occ_oct
     su -c "./bin/console theocasionoctupus:load-country-data" occ_oct
