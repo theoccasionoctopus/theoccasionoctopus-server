@@ -22,6 +22,13 @@ class UserController extends BaseController
 
     public function login(AuthenticationUtils $authenticationUtils, Request $request): Response
     {
+
+        // If already logged in, go to homepage
+        $user= $this->get('security.token_storage')->getToken()->getUser();
+        if ($user instanceof User) {
+            return $this->redirectToRoute('index');
+        }
+
         // get the login error if there is one
         $error = $authenticationUtils->getLastAuthenticationError();
         // last username entered by the user
@@ -35,6 +42,12 @@ class UserController extends BaseController
 
     public function register(Request $request, UserPasswordEncoderInterface $passwordEncoder, GuardAuthenticatorHandler $guardHandler, UserAuthenticator $formAuthenticator, LoggerInterface $logger)
     {
+        // If already logged in, go to homepage
+        $user= $this->get('security.token_storage')->getToken()->getUser();
+        if ($user instanceof User) {
+            return $this->redirectToRoute('index');
+        }
+
         //  build the form
         $user = new User();
         $form = $this->createForm(UserRegisterType::class, $user);
