@@ -10,6 +10,7 @@ use App\Entity\Tag;
 use App\Library;
 use App\Form\TagNewType;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Form\FormError;
 
 
 
@@ -29,29 +30,37 @@ class AccountManageTagNewController extends AccountManageController
 
         // handle the submit (will only happen on POST)
         $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
+        if ($form->isSubmitted()) {
 
 
-            // Set data
-            $tag = new Tag();
-            $tag->setTitle($form->get('title')->getData());
-            $tag->setDescription($form->get('description')->getData());
-            $tag->setEnabled(true);
-            $tag->setId(Library::GUID());
-            $tag->setAccount($this->account);
-            $tag->setPrivacy($form->get('privacy')->getData());
+            $existingTag = $this->getDoctrine()->getRepository(Tag::class)->findOneBy(array('account' => $this->account, 'title' => $form->get('title')->getData()));;
+            if ($existingTag) {
+                $form->get('title')->addError(new FormError('There is already a tag with that title'));
+            }
 
-            // Save
-            $historyWorker = $historyWorkerService->getHistoryWorker($this->account, $this->get('security.token_storage')->getToken()->getUser());
-            $historyWorker->addTag($tag);
-            $historyWorkerService->persistHistoryWorker($historyWorker);
+            if ($form->isValid()) {
 
-            // redirect
-            $this->addFlash(
-                'success',
-                'Tag created!'
-            );
-            return $this->redirectToRoute('account_manage_tag', ['account_username'=>$this->account->getUsername()]);
+                // Set data
+                $tag = new Tag();
+                $tag->setTitle($form->get('title')->getData());
+                $tag->setDescription($form->get('description')->getData());
+                $tag->setEnabled(true);
+                $tag->setId(Library::GUID());
+                $tag->setAccount($this->account);
+                $tag->setPrivacy($form->get('privacy')->getData());
+
+                // Save
+                $historyWorker = $historyWorkerService->getHistoryWorker($this->account, $this->get('security.token_storage')->getToken()->getUser());
+                $historyWorker->addTag($tag);
+                $historyWorkerService->persistHistoryWorker($historyWorker);
+
+                // redirect
+                $this->addFlash(
+                    'success',
+                    'Tag created!'
+                );
+                return $this->redirectToRoute('account_manage_tag', ['account_username' => $this->account->getUsername()]);
+            }
         }
 
         return $this->render('account/manage/tag/new.html.twig', $this->getTemplateVariables([

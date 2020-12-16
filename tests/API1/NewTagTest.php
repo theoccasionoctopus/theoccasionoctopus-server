@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Tests\API1;
 
 use App\Entity\Account;
@@ -13,14 +14,15 @@ use App\Tests\BaseWebTestWithDataBase;
 class NewTagTest extends BaseWebTestWithDataBase
 {
 
-    
+
     protected $owner;
     protected $country;
     protected $timezone;
     protected $account;
     protected $token;
-    
-    private function setupCommon() {
+
+    private function setupCommon()
+    {
 
         list($this->country, $this->timezone) = $this->createCountryDataForUK();
         list($this->owner, $this->account) = $this->createUserAndAccount('test1', $this->country, $this->timezone);
@@ -35,8 +37,9 @@ class NewTagTest extends BaseWebTestWithDataBase
         $this->entityManager->persist($this->token);
         $this->entityManager->flush();
     }
-    
-    public function test1() {
+
+    public function test1()
+    {
 
         $this->setupCommon();
 
@@ -44,9 +47,9 @@ class NewTagTest extends BaseWebTestWithDataBase
         $this->client->catchExceptions(false);
         $this->client->request(
             'POST',
-            '/api/v1/account/'.$this->account->getId().'/tag.json',
+            '/api/v1/account/' . $this->account->getId() . '/tag.json',
             [
-                'title'=> 'TEST TAG',
+                'title' => 'TEST TAG',
                 'description' => '123',
                 'extra_field_0_name' => 'cats',
                 'extra_field_0_value' => 'many',
@@ -64,8 +67,7 @@ class NewTagTest extends BaseWebTestWithDataBase
 
         $tags = $this->entityManager
             ->getRepository(Tag::class)
-            ->findAll()
-        ;
+            ->findAll();
 
         $this->assertSame(1, count($tags));
         /** @var Event $tag */
@@ -81,5 +83,63 @@ class NewTagTest extends BaseWebTestWithDataBase
     }
 
 
+    public function testDuplicate()
+    {
+
+        $this->setupCommon();
+
+        # Create once
+
+        $this->client->catchExceptions(false);
+        $this->client->request(
+            'POST',
+            '/api/v1/account/' . $this->account->getId() . '/tag.json',
+            [
+                'title' => 'TEST',
+            ],
+            [],
+            [
+                'HTTP_AUTHORIZATION' => "Bearer CAT",
+            ]
+        );
+        $response = $this->client->getResponse();
+        $this->assertSame(200, $response->getStatusCode());
+        $responseData = json_decode($response->getContent(), true);
+
+
+        $tags = $this->entityManager
+            ->getRepository(Tag::class)
+            ->findAll();
+
+        $this->assertSame(1, count($tags));
+        /** @var Event $tag */
+        $tag = $tags[0];
+
+        $this->assertSame($tag->getId(), $responseData['tag']['id']);
+        $this->assertSame('TEST', $tag->getTitle());
+
+        # Create Twice - should crash
+
+        $this->client->catchExceptions(false);
+        $this->client->request(
+            'POST',
+            '/api/v1/account/' . $this->account->getId() . '/tag.json',
+            [
+                'title' => 'TEST',
+            ],
+            [],
+            [
+                'HTTP_AUTHORIZATION' => "Bearer CAT",
+            ]
+        );
+        $response = $this->client->getResponse();
+        $this->assertSame(400, $response->getStatusCode());
+        $responseData = json_decode($response->getContent(), true);
+
+        $this->assertSame('title_already_exists', $responseData['error']['id']);
+        $this->assertSame($tag->getId(), $responseData['error']['existing_tag_id']);
+
+
+    }
 
 }
