@@ -2,8 +2,11 @@ name: Testing App
 on: [push, pull_request]
 jobs:
   test-app:
-    name: test-app (PHP ${{ matrix.php-versions }})
+    name: test-app
     runs-on: ubuntu-20.04
+    strategy:
+      matrix:
+        php: ['7.4']
     services:
       postgres:
         image: postgres:12
@@ -18,12 +21,13 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
-      # We need Composer 2
-      - name: Get latest Composer
-        run: wget -O composer.phar -q https://getcomposer.org/composer.phar
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          tools: composer:2.0.8
 
       - name: Validate composer.json and composer.lock
-        run: php composer.phar validate
+        run: composer validate
 
       - name: Set up config files
         run: |
@@ -38,7 +42,7 @@ jobs:
 
       - name: Install dependencies
         if: steps.composer-cache.outputs.cache-hit != 'true'
-        run: php composer.phar install --prefer-dist --no-progress --no-suggest
+        run: composer install --prefer-dist --no-progress --no-suggest
 
       - name: Run Tests
         run: php bin/phpunit
