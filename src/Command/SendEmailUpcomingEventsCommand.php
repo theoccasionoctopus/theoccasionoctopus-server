@@ -12,6 +12,7 @@ use App\Entity\Source;
 use App\Import\ImportRunner;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Twig\Environment;
+use Psr\Log\LoggerInterface;
 
 class SendEmailUpcomingEventsCommand extends Command
 {
@@ -25,15 +26,19 @@ class SendEmailUpcomingEventsCommand extends Command
 
     private $twig;
 
+    /** @var LoggerInterface  */
+    protected $logger;
+
     /**
      * LoadCountryData constructor.
      */
-    public function __construct(ContainerInterface $container, \Swift_Mailer $mailer, Environment $twig)
+    public function __construct(ContainerInterface $container, \Swift_Mailer $mailer, Environment $twig, LoggerInterface $logger)
     {
         parent::__construct();
         $this->container = $container;
         $this->mailer = $mailer;
         $this->twig = $twig;
+        $this->logger = $logger;
     }
 
     protected function configure()
@@ -84,6 +89,13 @@ class SendEmailUpcomingEventsCommand extends Command
                     // TODO need to add unsubscribe link to each email, and a action to handle it!
 
                     $this->mailer->send($message);
+                    $this->logger->info(
+                        'Email sent of upcoming Events',
+                        [
+                            'user_id'=>$emailUpcomingEvents->getUser()->getId(),
+                            'email_sent_to'=>$emailUpcomingEvents->getUser()->getEmail()
+                        ]
+                    );
                 }
             }
         }

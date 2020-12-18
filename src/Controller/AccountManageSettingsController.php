@@ -16,6 +16,7 @@ use App\Entity\Event;
 use App\Library;
 use App\Form\EventNewType;
 use Symfony\Component\HttpFoundation\Request;
+use Psr\Log\LoggerInterface;
 
 class AccountManageSettingsController extends AccountManageController
 {
@@ -73,7 +74,7 @@ class AccountManageSettingsController extends AccountManageController
         ]));
     }
 
-    public function newImport($account_username, Request $request)
+    public function newImport($account_username, Request $request, LoggerInterface $logger)
     {
         $this->build($account_username);
 
@@ -98,6 +99,16 @@ class AccountManageSettingsController extends AccountManageController
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($import);
             $entityManager->flush();
+
+            // Log
+            $logger->info(
+                'New import created',
+                [
+                    'user_id'=>$this->get('security.token_storage')->getToken()->getUser()->getId(),
+                    'account_id'=>$this->account->getId(),
+                    'import_id'=>$import->getId()
+                ]
+            );
 
             // redirect
             return $this->redirectToRoute('account_manage_settings', ['account_username' => $this->account->getUsername() ]);

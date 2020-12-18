@@ -12,6 +12,7 @@ use App\Entity\TimeZone;
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use GuzzleHttp\Client;
+use Psr\Log\LoggerInterface;
 
 class RemoteUserContentService
 {
@@ -19,12 +20,16 @@ class RemoteUserContentService
     /** @var  EntityManagerInterface */
     protected $entityManager;
 
+    /** @var LoggerInterface  */
+    protected $logger;
+
     /**
      * @param EntityManagerInterface $entityManager
      */
-    public function __construct(EntityManagerInterface $entityManager)
+    public function __construct(EntityManagerInterface $entityManager, LoggerInterface $logger)
     {
         $this->entityManager = $entityManager;
+        $this->logger = $logger;
     }
 
     public function downloadAccountRemote(AccountRemote $accountRemote)
@@ -32,6 +37,8 @@ class RemoteUserContentService
 
         /** @var Account $account */
         $account = $accountRemote->getAccount();
+
+        $this->logger->info('Downloading remote user content', ['account_id'=>$account->getId()]);
 
         // Check if remote server is still running our software
         $guzzle = new Client(array('defaults' => array('headers' => array(  'User-Agent'=> 'Prototype Software') )));

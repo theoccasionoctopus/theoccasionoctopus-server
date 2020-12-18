@@ -29,6 +29,9 @@ class ImportService
 
     protected $historyWorkerService;
 
+    /** @var LoggerInterface  */
+    protected $logger;
+
     /**
      * @param EntityManagerInterface $entityManager
      */

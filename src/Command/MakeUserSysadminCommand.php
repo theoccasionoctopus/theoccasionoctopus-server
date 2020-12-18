@@ -9,6 +9,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use App\Entity\Source;
 use App\Import\ImportRunner;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Psr\Log\LoggerInterface;
 
 class MakeUserSysadminCommand extends Command
 {
@@ -17,13 +18,17 @@ class MakeUserSysadminCommand extends Command
     /** @var  ContainerInterface */
     protected $container;
 
+    /** @var LoggerInterface  */
+    protected $logger;
+
     /**
      * LoadCountryData constructor.
      */
-    public function __construct(ContainerInterface $container)
+    public function __construct(ContainerInterface $container, LoggerInterface $logger)
     {
         parent::__construct();
         $this->container = $container;
+        $this->logger = $logger;
     }
 
     protected function configure()
@@ -50,6 +55,7 @@ class MakeUserSysadminCommand extends Command
 
         $doctrine->getManager()->persist($user);
         $doctrine->getManager()->flush();
+        $this->logger->info('User made sys admin', ['user_id'=>$user->getId()]);
         return 0;
     }
 }

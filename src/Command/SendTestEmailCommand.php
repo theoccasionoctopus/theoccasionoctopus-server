@@ -11,6 +11,7 @@ use App\Entity\Source;
 use App\Import\ImportRunner;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Twig\Environment;
+use Psr\Log\LoggerInterface;
 
 class SendTestEmailCommand extends Command
 {
@@ -24,15 +25,19 @@ class SendTestEmailCommand extends Command
 
     private $twig;
 
+    /** @var LoggerInterface  */
+    protected $logger;
+
     /**
      * LoadCountryData constructor.
      */
-    public function __construct(ContainerInterface $container, \Swift_Mailer $mailer, Environment $twig)
+    public function __construct(ContainerInterface $container, \Swift_Mailer $mailer, Environment $twig, LoggerInterface $logger)
     {
         parent::__construct();
         $this->container = $container;
         $this->mailer = $mailer;
         $this->twig = $twig;
+        $this->logger = $logger;
     }
 
     protected function configure()
@@ -68,6 +73,12 @@ class SendTestEmailCommand extends Command
 
         $this->mailer->send($message);
 
+        $this->logger->info(
+            'Test email sent',
+            [
+                'email_sent_to'=>$input->getArgument('email')
+            ]
+        );
         return 0;
     }
 }
