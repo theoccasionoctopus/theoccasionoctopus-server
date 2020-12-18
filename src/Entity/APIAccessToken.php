@@ -168,8 +168,4 @@ class APIAccessToken
     {
         $this->note = $note;
     }
-
-
-
-
 }

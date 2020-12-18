@@ -14,7 +14,4 @@ class EventHasSourceEventRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, EventHasSourceEvent::class);
     }
-
-
-
 }

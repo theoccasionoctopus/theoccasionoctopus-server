@@ -8,7 +8,8 @@ use App\Library;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
-class EventToEventOccurrenceService {
+class EventToEventOccurrenceService
+{
 
 
 
@@ -28,8 +29,8 @@ class EventToEventOccurrenceService {
         $this->eventDispatcher = $eventDispatcher;
     }
 
-    public function process(Event $event) {
-
+    public function process(Event $event)
+    {
         $occurrenceResults = $this->getOccurrenceResultsForEvent($event);
         $occurrenceResultsByUTCStart = [];
         foreach ($occurrenceResults as $occurrenceResult) {
@@ -39,12 +40,12 @@ class EventToEventOccurrenceService {
         $eventOccurrenceRepository = $this->entityManager->getRepository(EventOccurrence::class);
         $eventOccurrences = $eventOccurrenceRepository->findByEvent($event);
         $eventOccurrencesByUTCStart = [];
-        foreach($eventOccurrences as $eventOccurrence) {
+        foreach ($eventOccurrences as $eventOccurrence) {
             $eventOccurrencesByUTCStart[$eventOccurrence->getStart('UTC')->format('c')] = $eventOccurrence;
         }
 
         # Look for ones that exactly match, take them out - nothing to process
-        foreach(array_keys($occurrenceResultsByUTCStart) as $key) {
+        foreach (array_keys($occurrenceResultsByUTCStart) as $key) {
             if (array_key_exists($key, $occurrenceResultsByUTCStart) && array_key_exists($key, $eventOccurrencesByUTCStart)) {
                 # But the end might have changed - so reset the end!
                 $eventOccurrencesByUTCStart[$key]->setEndWithObject($occurrenceResultsByUTCStart[$key]->getEndUTC());
@@ -61,7 +62,7 @@ class EventToEventOccurrenceService {
         # Any to create?
         /** @var EventOccurrenceResult $occurrenceResult */
         foreach ($occurrenceResultsByUTCStart as $occurrenceResult) {
-            $eventOccurrence = New EventOccurrence();
+            $eventOccurrence = new EventOccurrence();
             $eventOccurrence->setEvent($event);
             $eventOccurrence->setId(Library::GUID());
             $eventOccurrence->setStartWithObject($occurrenceResult->getStartUTC());
@@ -76,14 +77,11 @@ class EventToEventOccurrenceService {
 
         # Finish up
         $this->entityManager->flush();
-
     }
 
-    protected function getOccurrenceResultsForEvent(Event $event) {
-
-
+    protected function getOccurrenceResultsForEvent(Event $event)
+    {
         if ($event->getRrule()) {
-
             $rule        = new \Recurr\Rule(
                 $event->getRrule(),
                 $event->getStartAtTimeZone(),
@@ -97,7 +95,7 @@ class EventToEventOccurrenceService {
             // $constraint = new \Recurr\Transformer\Constraint\BetweenConstraint();
 
             $out = [];
-            foreach($transformer->transform($rule) as $r) {
+            foreach ($transformer->transform($rule) as $r) {
                 $startUTC = clone $r->getStart();
                 $startUTC->setTimezone(new \DateTimeZone('UTC'));
                 $endUTC = clone $r->getEnd();
@@ -105,14 +103,10 @@ class EventToEventOccurrenceService {
                 $out[] = new EventOccurrenceResult($startUTC, $endUTC);
             }
             return $out;
-
         } else {
-
             return [
-                new EventOccurrenceResult($event->getStart('UTC'), $event->getEnd('UTC') )
+                new EventOccurrenceResult($event->getStart('UTC'), $event->getEnd('UTC'))
             ];
         }
-
     }
-
 }

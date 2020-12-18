@@ -2,15 +2,13 @@
 
 namespace App\RepositoryQuery;
 
-
-
 use App\Entity\Account;
 use App\Entity\Event;
 use App\Entity\Tag;
 use App\Repository\EventRepository;
 
-class TagRepositoryQuery {
-
+class TagRepositoryQuery
+{
     protected $doctrine;
 
     /** @var  Account */
@@ -30,13 +28,14 @@ class TagRepositoryQuery {
         $this->account = $account;
     }
 
-    public function setPublicOnly() {
+    public function setPublicOnly()
+    {
         $this->max_privacy_allowed = 0;
     }
 
 
-    public function getTags() {
-
+    public function getTags()
+    {
         $qb = $this->doctrine->getRepository(Tag::class)->createQueryBuilder('t');
 
         $qb->andWhere('t.account = :account ANd t.privacy <= :privacy')
@@ -48,10 +47,5 @@ class TagRepositoryQuery {
         $qb->orderBy('t.title', 'ASC');
 
         return $qb->getQuery()->execute();
-
-
     }
-
-
-
 }

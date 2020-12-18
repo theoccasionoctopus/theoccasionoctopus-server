@@ -14,10 +14,8 @@ use App\Entity\Event;
 
 class AccountPublicTagDetailsController extends AccountPublicController
 {
-
     public function showTag($account_username, $tag_id, Request $request)
     {
-
         $this->setUpAccountPublic($account_username, $request);
 
 
@@ -48,7 +46,5 @@ class AccountPublicTagDetailsController extends AccountPublicController
             'tag' => $tag,
             'events' => $events,
         ]));
-
     }
-    
 }

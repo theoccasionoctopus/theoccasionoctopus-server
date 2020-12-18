@@ -14,7 +14,4 @@ class HistoryHasTagRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, HistoryHasTag::class);
     }
-
-
-
 }

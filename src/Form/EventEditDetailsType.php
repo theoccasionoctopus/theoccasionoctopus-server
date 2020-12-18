@@ -25,7 +25,6 @@ class EventEditDetailsType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-
         if (in_array('title', $options['editableFields'])) {
             $builder->add('title', TextType::class, array('required' => false, 'empty_data' => null));
         }

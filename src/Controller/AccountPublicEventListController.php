@@ -14,11 +14,8 @@ use App\Entity\Event;
 
 class AccountPublicEventListController extends AccountPublicController
 {
-
-
     public function index($account_username, Request $request)
     {
-
         $this->setUpAccountPublic($account_username, $request);
 
 
@@ -33,12 +30,10 @@ class AccountPublicEventListController extends AccountPublicController
             'eventOccurrences' => $eventOccurrences,
             'eventListFilterParams'=>$params,
         ]));
-
     }
 
     public function calendar($account_username, Request $request)
     {
-
         $this->setUpAccountPublic($account_username, $request);
 
         // TODO use EventListFilterParams
@@ -47,16 +42,14 @@ class AccountPublicEventListController extends AccountPublicController
             'account'=> $this->account,
             'now' =>  new \DateTime(),
         ]));
-
     }
 
     public function calendarData($account_username, Request $request)
     {
-
         $this->setUpAccountPublic($account_username, $request);
 
         $from = new \DateTime($request->query->get('start'));
-        $from->setTime(0,0,0);
+        $from->setTime(0, 0, 0);
         $to = new \DateTime($request->query->get('end'));
         $to->setTime(23, 59, 59);
 
@@ -65,13 +58,13 @@ class AccountPublicEventListController extends AccountPublicController
         $repositoryQuery->setPublicOnly();
         $repositoryQuery->setFrom($from);
         $repositoryQuery->setTo($to);
-        $repositoryQuery->setShowDeleted(False);
+        $repositoryQuery->setShowDeleted(false);
 
         $events = $repositoryQuery->getEvents();
 
         $data = [];
         /** @var Event $event */
-        foreach($events as $event) {
+        foreach ($events as $event) {
             $data[] = array(
                 'id'=>$event->getId(),
                 'title'=> $event->getTitle(),
@@ -81,8 +74,5 @@ class AccountPublicEventListController extends AccountPublicController
         }
 
         return $this->json($data);
-
     }
-
-
 }

@@ -18,7 +18,6 @@ class IndexController extends BaseController
 
         $user= $this->get('security.token_storage')->getToken()->getUser();
         if ($user instanceof User) {
-
             if (true) { # TODO if email verified
 
                 $doctrine = $this->getDoctrine();
@@ -36,18 +35,13 @@ class IndexController extends BaseController
                 return $this->render('index/index.chooseaccount.html.twig', $this->getTemplateVariables([
                     'accounts_user_can_manage' => $accounts,
                 ]));
-
             } else {
 
                 ## TODO show verify email page
-
             }
-
         } else {
-
             return $this->render('index/index.loggedout.html.twig', $this->getTemplateVariables());
         }
-
     }
 
     public function setTimeZone(Request $request)
@@ -56,34 +50,29 @@ class IndexController extends BaseController
 
         // Did user specifically request a time zone?
         if ($request->query->get('set_timezone')) {
-
             $doctrine = $this->getDoctrine();
             $repository = $doctrine->getRepository(TimeZone::class);
             $userTimeZone = $repository->findOneByCode($request->query->get('set_timezone'));
             if ($userTimeZone) {
-
                 $response = $this->redirectToRoute('index');
                 $cookie = Cookie::create('timezone', $userTimeZone->getCode());
                 // TODO make the cookie expire later
                 $response->headers->setCookie($cookie);
                 return $response;
-
             } else {
                 // TODO show an error of some sort?
             }
-
         }
 
         $this->setUp($request);
 
         $doctrine = $this->getDoctrine();
         $repository = $doctrine->getRepository(TimeZone::class);
-        $timezones = $repository->findBy([],['code'=>'ASC']);
+        $timezones = $repository->findBy([], ['code'=>'ASC']);
 
         return $this->render('index/set_timezone.html.twig', $this->getTemplateVariables([
             'timezones' => $timezones,
         ]));
-
     }
 
     public function contact(Request $request)
@@ -105,6 +94,4 @@ class IndexController extends BaseController
             'accounts_in_directory'=>$accounts_in_directory,
         ]));
     }
-
-
 }

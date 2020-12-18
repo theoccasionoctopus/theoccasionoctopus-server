@@ -12,7 +12,8 @@ use Symfony\Component\Security\Core\User\UserInterface;
  * @ORM\Table(name="account_local")
  * @ORM\HasLifecycleCallbacks()
  */
-class AccountLocal {
+class AccountLocal
+{
 
 
     /**
@@ -211,5 +212,4 @@ class AccountLocal {
     {
         $this->locked = $locked;
     }
-
 }

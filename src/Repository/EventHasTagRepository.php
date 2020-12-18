@@ -14,7 +14,4 @@ class EventHasTagRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, EventHasTag::class);
     }
-
-
-
 }

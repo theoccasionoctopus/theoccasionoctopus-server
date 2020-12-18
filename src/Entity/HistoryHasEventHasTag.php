@@ -89,8 +89,4 @@ class HistoryHasEventHasTag
     {
         $this->tag = $tag;
     }
-
-
-
-
 }

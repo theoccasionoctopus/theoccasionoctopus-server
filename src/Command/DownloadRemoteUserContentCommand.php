@@ -1,7 +1,6 @@
 <?php
 namespace App\Command;
 
-
 use App\Entity\Account;
 use App\Entity\AccountRemote;
 use App\Entity\Country;
@@ -52,14 +51,12 @@ class DownloadRemoteUserContentCommand extends Command
     {
         $doctrine = $this->container->get('doctrine');
         /** @var AccountRemote $accountRemote */
-        foreach($doctrine->getRepository(AccountRemote::class)->findAll() as $accountRemote) {
+        foreach ($doctrine->getRepository(AccountRemote::class)->findAll() as $accountRemote) {
             /** @var Account $account */
             $account = $accountRemote->getAccount();
             $output->writeln('Account '. $account->getId(). ' on '. $accountRemote->getRemoteServer()->getURL());
             $this->remoteUserContentService->downloadAccountRemote($accountRemote);
         }
         return 0;
-
     }
-
 }

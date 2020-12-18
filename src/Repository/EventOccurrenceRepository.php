@@ -15,7 +15,4 @@ class EventOccurrenceRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, EventOccurrence::class);
     }
-
-
-
 }

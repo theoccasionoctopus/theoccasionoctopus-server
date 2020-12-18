@@ -14,8 +14,8 @@ use App\Entity\Account;
 use App\Entity\Event;
 use App\Library;
 
-class HistoryWorker {
-
+class HistoryWorker
+{
     protected $history;
 
     protected $events = array();
@@ -35,27 +35,32 @@ class HistoryWorker {
         $this->history->setCreator($user);
     }
 
-    public function hasContents() {
+    public function hasContents()
+    {
         return count($this->events) ||
             count($this->tags) ||
             count($this->eventHasTags) ||
             count($this->eventHasImports);
     }
 
-    public function getHistory() {
+    public function getHistory()
+    {
         return $this->history;
     }
 
-    public function addEvent(Event $event) {
+    public function addEvent(Event $event)
+    {
         $this->events[] = $event;
     }
 
-    public function getEvents() {
+    public function getEvents()
+    {
         return $this->events;
     }
 
 
-    public function addTag(Tag $tag) {
+    public function addTag(Tag $tag)
+    {
         $this->tags[] = $tag;
     }
 
@@ -76,11 +81,13 @@ class HistoryWorker {
         return $this->eventHasTags;
     }
 
-    public function addEventHasTag(EventHasTag $eventHasTag) {
+    public function addEventHasTag(EventHasTag $eventHasTag)
+    {
         $this->eventHasTags[] = $eventHasTag;
     }
 
-    public function addEventHasSourceEvent(EventHasSourceEvent $eventHasSourceEvent) {
+    public function addEventHasSourceEvent(EventHasSourceEvent $eventHasSourceEvent)
+    {
         $this->eventHasSourceEvents[] = $eventHasSourceEvent;
     }
 
@@ -92,7 +99,8 @@ class HistoryWorker {
         return $this->eventHasSourceEvents;
     }
 
-    public function addEventHasImport(EventHasImport $eventHasImport) {
+    public function addEventHasImport(EventHasImport $eventHasImport)
+    {
         $this->eventHasImports[] = $eventHasImport;
     }
 
@@ -103,5 +111,4 @@ class HistoryWorker {
     {
         return $this->eventHasImports;
     }
-
 }

@@ -11,7 +11,6 @@ use Symfony\Component\Security\Core\User\UserInterface;
 
 class AccountDiscoverEventListFilterParams
 {
-
     protected $fromNow = true;
 
     protected $repositoryQuery = null;
@@ -25,16 +24,13 @@ class AccountDiscoverEventListFilterParams
      */
     public function __construct($doctrine, Account $account)
     {
-
         $this->repositoryQuery = new EventRepositoryQuery($doctrine);
         $this->repositoryQuery->setAccountDiscoverEvents($account);
-
     }
 
 
     public function build($data)
     {
-
         if (isset($data['eventListFilterDataSubmitted'])) {
 
             // From
@@ -48,7 +44,6 @@ class AccountDiscoverEventListFilterParams
 
             // Cancelled
             $this->showCancelled = isset($data['showCancelled']);
-
         }
 
         // apply to search
@@ -58,7 +53,6 @@ class AccountDiscoverEventListFilterParams
         if ($this->getFromNow()) {
             $this->getRepositoryQuery()->setFrom(new \DateTime('', new \DateTimeZone('UTC')));
         }
-
     }
 
     public function getFromNow()
@@ -91,5 +85,4 @@ class AccountDiscoverEventListFilterParams
     {
         return $this->repositoryQuery;
     }
-
 }

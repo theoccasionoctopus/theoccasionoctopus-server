@@ -16,12 +16,10 @@ use App\Entity\Account;
 use App\Entity\Event;
 use Symfony\Component\HttpFoundation\Response;
 
-class APIV1AccountEventListController extends APIV1AccountController {
-
-
+class APIV1AccountEventListController extends APIV1AccountController
+{
     public function listICAL($account_id, Request $request)
     {
-
         $this->buildAccount($account_id, $request);
 
         $builder = new ICalBuilderForAccount($this->account, $this->container);
@@ -46,7 +44,7 @@ class APIV1AccountEventListController extends APIV1AccountController {
         # Get events, output
         $events = $repositoryQuery->getEvents();
 
-        foreach($events as $event) {
+        foreach ($events as $event) {
             $out .= $builder->getEvent($event);
         }
 
@@ -57,14 +55,11 @@ class APIV1AccountEventListController extends APIV1AccountController {
             Response::HTTP_OK,
             ['content-type' => 'text/calendar']
         );
-
-
     }
 
 
     public function listJSON($account_id, Request $request)
     {
-
         $this->buildAccount($account_id, $request);
 
         $out = array(
@@ -94,7 +89,7 @@ class APIV1AccountEventListController extends APIV1AccountController {
         $events = $repositoryQuery->getEvents();
 
         /** @var Event $event */
-        foreach($events as $event) {
+        foreach ($events as $event) {
             $out['events'][] = array(
                 'id'=> $event->getId(),
                 'title'=>$event->getTitle(),
@@ -124,9 +119,5 @@ class APIV1AccountEventListController extends APIV1AccountController {
             Response::HTTP_OK,
             ['content-type' => 'application/json']
         );
-
-
     }
-
-
 }

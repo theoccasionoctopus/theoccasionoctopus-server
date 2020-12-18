@@ -18,7 +18,8 @@ class AccountPublicController extends BaseController
     protected $account;
 
 
-    protected function setUpAccountPublic($account_username, Request $request) {
+    protected function setUpAccountPublic($account_username, Request $request)
+    {
         $this->setUp($request);
         $doctrine = $this->getDoctrine();
         $accountLocal = $doctrine->getRepository(AccountLocal::class)->findOneByUsernameCanonical(Library::makeAccountUsernameCanonical($account_username));
@@ -31,7 +32,6 @@ class AccountPublicController extends BaseController
 
     public function indexAccount($account_username, Request $request)
     {
-
         $this->setUpAccountPublic($account_username, $request);
 
         if ($this->isRequestForAccountActivityStreamsProfileJSON($request)) {
@@ -42,7 +42,4 @@ class AccountPublicController extends BaseController
             'account'=> $this->account,
         ]));
     }
-
-
-
 }

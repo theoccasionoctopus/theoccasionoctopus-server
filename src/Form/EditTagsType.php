@@ -20,13 +20,12 @@ class EditTagsType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-
         $builder
             ->add('tags', EntityType::class, [
                 'class' => Tag::class,
                 'choice_label' => 'title',
-                'multiple'=> True,
-                'expanded' => True,
+                'multiple'=> true,
+                'expanded' => true,
                 'query_builder' => function (TagRepository $er) use ($options) {
                     return $er->createQueryBuilder('t')
                         ->where('t.account = :account')

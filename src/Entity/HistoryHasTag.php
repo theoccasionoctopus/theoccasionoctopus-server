@@ -63,7 +63,4 @@ class HistoryHasTag
     {
         $this->tag = $tag;
     }
-
-
-
 }

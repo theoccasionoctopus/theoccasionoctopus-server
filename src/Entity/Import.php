@@ -212,6 +212,4 @@ class Import
     {
         $this->description = $description;
     }
-
-
 }

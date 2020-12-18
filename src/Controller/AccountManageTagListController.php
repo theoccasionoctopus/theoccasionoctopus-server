@@ -11,16 +11,10 @@ use App\Library;
 use App\Form\EventNewType;
 use Symfony\Component\HttpFoundation\Request;
 
-
-
 class AccountManageTagListController extends AccountManageController
 {
-
-
-
     public function indexManageTag($account_username, Request $request)
     {
-
         $this->build($account_username);
 
         $repositoryQuery = new TagRepositoryQuery($this->getDoctrine(), $this->account);
@@ -30,7 +24,5 @@ class AccountManageTagListController extends AccountManageController
             'account'=> $this->account,
             'tags' => $tags,
         ]));
-
     }
-
 }

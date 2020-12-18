@@ -2,7 +2,6 @@
 
 namespace App\Controller;
 
-
 use App\Service\HistoryWorker\HistoryWorkerService;
 use App\RepositoryQuery\TagRepositoryQuery;
 use stdClass;
@@ -21,8 +20,8 @@ class APIV1AccountTagDetailsController extends APIV1AccountController
     /** @var  Tag */
     protected $tag;
 
-    protected function buildTag($account_id, $tag_id, Request $request) {
-
+    protected function buildTag($account_id, $tag_id, Request $request)
+    {
         $this->buildAccount($account_id, $request);
 
         $doctrine = $this->getDoctrine();
@@ -35,11 +34,11 @@ class APIV1AccountTagDetailsController extends APIV1AccountController
         if (!$this->account_permission_read_private && $this->tag->getPrivacy() > 0) {
             throw new  NotFoundHttpException('Not found');
         }
-
     }
 
 
-    public function showJSON($account_id, $tag_id, Request $request) {
+    public function showJSON($account_id, $tag_id, Request $request)
+    {
         $this->buildTag($account_id, $tag_id, $request);
 
         $out['tag'] = array(
@@ -55,10 +54,10 @@ class APIV1AccountTagDetailsController extends APIV1AccountController
             Response::HTTP_OK,
             ['content-type' => 'application/json']
         );
-        
     }
 
-    public function editJSON($account_id, $tag_id, Request $request, HistoryWorkerService $historyWorkerService) {
+    public function editJSON($account_id, $tag_id, Request $request, HistoryWorkerService $historyWorkerService)
+    {
         $this->buildTag($account_id, $tag_id, $request);
 
         if (!$this->account_permission_write) {
@@ -81,7 +80,7 @@ class APIV1AccountTagDetailsController extends APIV1AccountController
         }
 
         $count = 0;
-        while($request->get('extra_field_'.$count.'_name')) {
+        while ($request->get('extra_field_'.$count.'_name')) {
             if ($this->tag->getExtraField($request->get('extra_field_'.$count.'_name')) != $request->get('extra_field_'.$count.'_value')) {
                 $this->tag->setExtraField($request->get('extra_field_' . $count . '_name'), $request->get('extra_field_' . $count . '_value'));
                 $changedTag = true;
@@ -110,7 +109,5 @@ class APIV1AccountTagDetailsController extends APIV1AccountController
             Response::HTTP_OK,
             ['content-type' => 'application/json']
         );
-
     }
-
 }

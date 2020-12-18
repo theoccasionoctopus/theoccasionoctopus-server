@@ -13,8 +13,6 @@ use App\Library;
 use App\Form\EventNewType;
 use Symfony\Component\HttpFoundation\Request;
 
-
-
 class AccountManageDiscoverEventDetailsController extends AccountManageController
 {
 
@@ -25,8 +23,8 @@ class AccountManageDiscoverEventDetailsController extends AccountManageControlle
     /** @var  Event */
     protected $discoverEvent;
 
-    protected function buildEvent($account_username, $discover_account_id, $discover_event_id) {
-
+    protected function buildEvent($account_username, $discover_account_id, $discover_event_id)
+    {
         $this->build($account_username);
 
         $doctrine = $this->getDoctrine();
@@ -43,12 +41,11 @@ class AccountManageDiscoverEventDetailsController extends AccountManageControlle
         if ($this->discoverEvent->getPrivacy() > 0) {
             throw new  NotFoundHttpException('Not found');
         }
-
     }
 
 
-    public function indexEventDetails($account_username, $discover_account_id, $discover_event_id, Request $request) {
-
+    public function indexEventDetails($account_username, $discover_account_id, $discover_event_id, Request $request)
+    {
         $this->buildEvent($account_username, $discover_account_id, $discover_event_id);
 
         // TODO look up details of existing links, show to user
@@ -58,11 +55,10 @@ class AccountManageDiscoverEventDetailsController extends AccountManageControlle
             'discoverAccount' => $this->discoverAccount,
             'discoverEvent' => $this->discoverEvent,
         ]));
-
     }
 
-    public function indexEventAdd($account_username, $discover_account_id, $discover_event_id, HistoryWorkerService $historyWorkerService, Request $request) {
-
+    public function indexEventAdd($account_username, $discover_account_id, $discover_event_id, HistoryWorkerService $historyWorkerService, Request $request)
+    {
         $this->buildEvent($account_username, $discover_account_id, $discover_event_id);
 
         // TODO CSFR
@@ -87,7 +83,5 @@ class AccountManageDiscoverEventDetailsController extends AccountManageControlle
         // TODO write a record to say we have added this event
 
         return $this->redirectToRoute('account_manage_event_show_event', ['account_username' => $this->account->getUsername(),'event_id' => $event->getId() ]);
-
     }
-
 }

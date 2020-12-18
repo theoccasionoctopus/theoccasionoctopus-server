@@ -17,14 +17,10 @@ use App\Library;
 use App\Form\EventNewType;
 use Symfony\Component\HttpFoundation\Request;
 
-
-
 class AccountManageSettingsController extends AccountManageController
 {
-
     public function index($account_username, Request $request)
     {
-
         $this->build($account_username);
 
         $doctrine = $this->getDoctrine();
@@ -43,7 +39,7 @@ class AccountManageSettingsController extends AccountManageController
         if ($request->get('action') == 'startEmailUserUpcomingEventsForAccount') {
 
             // Save
-            $sendUpcomingEventsEmail->setEnabled(True);
+            $sendUpcomingEventsEmail->setEnabled(true);
             $this->getDoctrine()->getManager()->persist($sendUpcomingEventsEmail);
             $this->getDoctrine()->getManager()->flush($sendUpcomingEventsEmail);
 
@@ -56,7 +52,7 @@ class AccountManageSettingsController extends AccountManageController
         } elseif ($request->get('action') == 'stopEmailUserUpcomingEventsForAccount') {
 
             // Save
-            $sendUpcomingEventsEmail->setEnabled(False);
+            $sendUpcomingEventsEmail->setEnabled(false);
             $this->getDoctrine()->getManager()->persist($sendUpcomingEventsEmail);
             $this->getDoctrine()->getManager()->flush($sendUpcomingEventsEmail);
 
@@ -75,12 +71,10 @@ class AccountManageSettingsController extends AccountManageController
             'usersManage'=>$doctrine->getRepository(User::class)->findCanManageAccount($this->account),
             'sendUpcomingEventsEmail' =>$sendUpcomingEventsEmail,
         ]));
-
     }
 
     public function newImport($account_username, Request $request)
     {
-
         $this->build($account_username);
 
         // build the form
@@ -113,8 +107,5 @@ class AccountManageSettingsController extends AccountManageController
             'account'=> $this->account,
             'form' => $form->createView(),
         ]));
-
     }
-
-
 }

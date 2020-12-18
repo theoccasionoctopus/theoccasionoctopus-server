@@ -14,7 +14,4 @@ class CountryRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Country::class);
     }
-
-
-
 }

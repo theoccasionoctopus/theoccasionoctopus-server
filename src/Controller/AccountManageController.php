@@ -14,7 +14,6 @@ use App\Form\EventNewType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
-
 class AccountManageController extends BaseController
 {
 
@@ -22,7 +21,8 @@ class AccountManageController extends BaseController
     protected $account;
 
 
-    protected function build($account_username) {
+    protected function build($account_username)
+    {
         // If no user don't even bother
         $user= $this->get('security.token_storage')->getToken()->getUser();
         if (!($user instanceof User)) {
@@ -48,20 +48,18 @@ class AccountManageController extends BaseController
     }
 
 
-    protected function getTemplateVariables($vars = array()) {
+    protected function getTemplateVariables($vars = array())
+    {
         $vars['account'] = $this->account;
         return parent::getTemplateVariables($vars);
     }
 
     public function index($account_username, Request $request)
     {
-
         $this->build($account_username);
 
         return $this->render('account/manage/index.html.twig', $this->getTemplateVariables([
             'account'=> $this->account,
         ]));
-
     }
-
 }

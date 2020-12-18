@@ -1,7 +1,6 @@
 <?php
 namespace App\Command;
 
-
 use App\Entity\EmailUserUpcomingEventsForAccount;
 use App\Entity\User;
 use App\RepositoryQuery\EventRepositoryQuery;
@@ -47,15 +46,12 @@ class SendEmailUpcomingEventsCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-
         $doctrine = $this->container->get('doctrine');
         $accountRepository = $doctrine->getRepository(EmailUserUpcomingEventsForAccount::class);
 
         /** @var EmailUserUpcomingEventsForAccount $emailUpcomingEvents */
-        foreach($accountRepository->findByEnabled(true) as $emailUpcomingEvents) {
-
+        foreach ($accountRepository->findByEnabled(true) as $emailUpcomingEvents) {
             if ($emailUpcomingEvents->shouldSendIfData()) {
-
                 $output->writeln("User ". $emailUpcomingEvents->getUser()->getEmail() . " for Account ". $emailUpcomingEvents->getAccount()->getUsername());
 
                 $parameters = [
@@ -66,7 +62,6 @@ class SendEmailUpcomingEventsCommand extends Command
                 ];
 
                 if ($parameters['upcomingEventOccurrences']) {
-
                     $output->writeln(".... Sending");
 
                     $message = new \Swift_Message(
@@ -89,15 +84,10 @@ class SendEmailUpcomingEventsCommand extends Command
                     // TODO need to add unsubscribe link to each email, and a action to handle it!
 
                     $this->mailer->send($message);
-
                 }
-
             }
-
         }
 
         return 0;
-
     }
-
 }

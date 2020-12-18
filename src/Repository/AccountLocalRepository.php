@@ -17,6 +17,4 @@ class AccountLocalRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, AccountLocal::class);
     }
-
-
 }

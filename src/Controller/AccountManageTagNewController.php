@@ -12,28 +12,22 @@ use App\Form\TagNewType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Form\FormError;
 
-
-
 class AccountManageTagNewController extends AccountManageController
 {
-
-
-    public function newTag($account_username,  Request $request,  HistoryWorkerService $historyWorkerService)
+    public function newTag($account_username, Request $request, HistoryWorkerService $historyWorkerService)
     {
-
         $this->build($account_username);
 
         // build the form
         $form = $this->createForm(TagNewType::class, null, array(
             'account' => $this->account,
-        ) );
+        ));
 
         // handle the submit (will only happen on POST)
         $form->handleRequest($request);
         if ($form->isSubmitted()) {
-
-
-            $existingTag = $this->getDoctrine()->getRepository(Tag::class)->findOneBy(array('account' => $this->account, 'title' => $form->get('title')->getData()));;
+            $existingTag = $this->getDoctrine()->getRepository(Tag::class)->findOneBy(array('account' => $this->account, 'title' => $form->get('title')->getData()));
+            ;
             if ($existingTag) {
                 $form->get('title')->addError(new FormError('There is already a tag with that title'));
             }
@@ -67,8 +61,5 @@ class AccountManageTagNewController extends AccountManageController
             'account'=> $this->account,
             'form' => $form->createView(),
         ]));
-
     }
-
-
 }

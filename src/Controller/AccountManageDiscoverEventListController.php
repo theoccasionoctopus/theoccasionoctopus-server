@@ -11,15 +11,10 @@ use App\Library;
 use App\Form\EventNewType;
 use Symfony\Component\HttpFoundation\Request;
 
-
-
 class AccountManageDiscoverEventListController extends AccountManageController
 {
-
-
     public function indexDiscover($account_username, Request $request)
     {
-
         $this->build($account_username);
 
         $params = new AccountDiscoverEventListFilterParams($this->getDoctrine(), $this->account);
@@ -32,8 +27,5 @@ class AccountManageDiscoverEventListController extends AccountManageController
             'eventListFilterParams'=>$params,
             'eventOccurrences' => $eventOccurrences,
         ]));
-
     }
-
-
 }

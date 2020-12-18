@@ -15,7 +15,4 @@ class TimeZoneRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, TimeZone::class);
     }
-
-
-
 }

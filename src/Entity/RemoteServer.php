@@ -12,7 +12,8 @@ use Symfony\Component\Security\Core\User\UserInterface;
  * @ORM\Table(name="remote_server")
  * @ORM\HasLifecycleCallbacks()
  */
-class RemoteServer {
+class RemoteServer
+{
 
 
     /**
@@ -86,7 +87,8 @@ class RemoteServer {
         $this->ssl = $ssl;
     }
 
-    public function getURL() {
+    public function getURL()
+    {
         return ($this->ssl ? 'https://' : 'http://') . $this->host;
     }
 
@@ -105,7 +107,4 @@ class RemoteServer {
     {
         $this->title = $title;
     }
-
-
-
 }

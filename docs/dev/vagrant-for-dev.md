@@ -66,6 +66,21 @@ Then run
 
     ./bin/phpunit
 
+## Linting
+
+To set up:
+
+    mkdir --parents tools/php-cs-fixer
+    /bin/composer.phar require --working-dir=tools/php-cs-fixer friendsofphp/php-cs-fixer==2.17.2
+    
+To run:
+
+    tools/php-cs-fixer/vendor/bin/php-cs-fixer fix src
+    
+To copy back:
+
+    scp -P 2222 -r vagrant@localhost:/vagrant/src .
+
 ## Drop the database and start again
 
 Run:

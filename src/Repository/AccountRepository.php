@@ -16,7 +16,8 @@ class AccountRepository extends ServiceEntityRepository
         parent::__construct($registry, Account::class);
     }
 
-    public function findUserCanManage(User $user) {
+    public function findUserCanManage(User $user)
+    {
         $entityManager = $this->getEntityManager();
 
         $query = $entityManager->createQuery(
@@ -31,7 +32,8 @@ class AccountRepository extends ServiceEntityRepository
         return $query->execute();
     }
 
-    public function findFollowing(Account $account) {
+    public function findFollowing(Account $account)
+    {
         $entityManager = $this->getEntityManager();
 
         $query = $entityManager->createQuery(
@@ -43,11 +45,11 @@ class AccountRepository extends ServiceEntityRepository
         )->setParameter('a', $account);
 
         return $query->execute();
-
     }
 
 
-    public function findAllLocal() {
+    public function findAllLocal()
+    {
         $entityManager = $this->getEntityManager();
 
         $query = $entityManager->createQuery(
@@ -61,7 +63,8 @@ class AccountRepository extends ServiceEntityRepository
     }
 
 
-    public function findAllLocalToFollow(Account $fromAccount) {
+    public function findAllLocalToFollow(Account $fromAccount)
+    {
         $entityManager = $this->getEntityManager();
 
         // TODO don't include accounts you already follow
@@ -78,7 +81,8 @@ class AccountRepository extends ServiceEntityRepository
     }
 
 
-    public function findAllInDirectory() {
+    public function findAllInDirectory()
+    {
         $entityManager = $this->getEntityManager();
 
         $query = $entityManager->createQuery(
@@ -93,7 +97,8 @@ class AccountRepository extends ServiceEntityRepository
     }
 
 
-    public function findAllRemote() {
+    public function findAllRemote()
+    {
         $entityManager = $this->getEntityManager();
 
         $query = $entityManager->createQuery(
@@ -105,6 +110,4 @@ class AccountRepository extends ServiceEntityRepository
 
         return $query->execute();
     }
-
-
 }

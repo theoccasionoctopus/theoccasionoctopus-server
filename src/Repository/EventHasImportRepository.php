@@ -18,5 +18,4 @@ class EventHasImportRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, EventHasImport::class);
     }
-
 }

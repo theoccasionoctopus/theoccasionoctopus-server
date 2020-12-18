@@ -16,6 +16,4 @@ class AccountFollowsAccountRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, AccountFollowsAccount::class);
     }
-
-
 }

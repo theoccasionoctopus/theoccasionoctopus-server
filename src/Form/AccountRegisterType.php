@@ -41,7 +41,7 @@ class AccountRegisterType extends AbstractType
                     return $cr->createQueryBuilder('c')
                         ->orderBy('c.title', 'ASC');
                 },
-            ] )
+            ])
             ->add('default_timezone', EntityType::class, [
                 'class'=>TimeZone::class,
                 'choice_label' => 'title',
@@ -49,16 +49,16 @@ class AccountRegisterType extends AbstractType
                     return $tzr->createQueryBuilder('tz')
                         ->orderBy('tz.title', 'ASC');
                 },
-            ] )
+            ])
         ;
 
         /** @var \closure $myExtraFieldValidator **/
-        $myExtraFieldValidator = function(FormEvent $event) {
+        $myExtraFieldValidator = function (FormEvent $event) {
             $form = $event->getForm();
             $username = $form->get('username')->getData();
             // Validate only allowed characters
             // TODO should allow UTF-8 chars so foreign languages are supported, now you can have them in URL's. Need to also check things like webfinger spec.
-            if ( !preg_match ("/^[a-zA-Z0-9_]+$/",$username)) {
+            if (!preg_match("/^[a-zA-Z0-9_]+$/", $username)) {
                 $form['username']->addError(new FormError("The username can only have letters, numbers and underscores."));
             }
         };

@@ -18,8 +18,8 @@ class TagRepository extends ServiceEntityRepository
     }
 
 
-    public function findByEvent(Event $event) {
-
+    public function findByEvent(Event $event)
+    {
         $entityManager = $this->getEntityManager();
 
         $query = $entityManager->createQuery(
@@ -29,16 +29,14 @@ class TagRepository extends ServiceEntityRepository
             'WHERE et.event = :event AND et.enabled = :enabled '.
             'ORDER BY t.title ASC '
         )->setParameter('event', $event)
-            ->setParameter('enabled', True)
+            ->setParameter('enabled', true)
         ;
 
         return $query->execute();
-
-
     }
 
-    public function findPublicByEvent(Event $event) {
-
+    public function findPublicByEvent(Event $event)
+    {
         $entityManager = $this->getEntityManager();
 
         $query = $entityManager->createQuery(
@@ -48,13 +46,9 @@ class TagRepository extends ServiceEntityRepository
             'WHERE et.event = :event AND et.enabled = :enabled AND t.privacy = 0'.
             'ORDER BY t.title ASC '
         )->setParameter('event', $event)
-            ->setParameter('enabled', True)
+            ->setParameter('enabled', true)
         ;
 
         return $query->execute();
-
-
     }
-
-
 }

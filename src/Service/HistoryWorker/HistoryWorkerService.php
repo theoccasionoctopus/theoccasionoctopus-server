@@ -11,7 +11,8 @@ use App\SymfonyEvent\HistorySavedEvent;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
-class HistoryWorkerService {
+class HistoryWorkerService
+{
 
 
 
@@ -32,13 +33,14 @@ class HistoryWorkerService {
     }
 
 
-    public function getHistoryWorker(Account $account, User $user = null) {
+    public function getHistoryWorker(Account $account, User $user = null)
+    {
         return new HistoryWorker($account, $user);
     }
 
 
-    public function persistHistoryWorker(HistoryWorker $historyWorker) {
-
+    public function persistHistoryWorker(HistoryWorker $historyWorker)
+    {
         if (!$historyWorker->hasContents()) {
             return;
         }
@@ -46,8 +48,7 @@ class HistoryWorkerService {
         $history = $historyWorker->getHistory();
         $this->entityManager->persist($history);
 
-        foreach($historyWorker->getEvents() as $event) {
-
+        foreach ($historyWorker->getEvents() as $event) {
             $this->entityManager->persist($event);
 
             $historyEvent = new HistoryHasEvent();
@@ -55,11 +56,9 @@ class HistoryWorkerService {
             $historyEvent->setEvent($event);
 
             $this->entityManager->persist($historyEvent);
-
         }
 
-        foreach($historyWorker->getTags() as $tag) {
-
+        foreach ($historyWorker->getTags() as $tag) {
             $this->entityManager->persist($tag);
 
             $historyTag = new HistoryHasTag();
@@ -67,12 +66,10 @@ class HistoryWorkerService {
             $historyTag->setTag($tag);
 
             $this->entityManager->persist($historyTag);
-
         }
 
 
-        foreach($historyWorker->getEventHasTags() as $eventHasTag) {
-
+        foreach ($historyWorker->getEventHasTags() as $eventHasTag) {
             $this->entityManager->persist($eventHasTag);
 
             $historyHasEventHasTag = new HistoryHasEventHasTag();
@@ -81,11 +78,9 @@ class HistoryWorkerService {
             $historyHasEventHasTag->setHistory($history);
 
             $this->entityManager->persist($historyHasEventHasTag);
-
         }
 
-        foreach($historyWorker->getEventHasSourceEvents() as $eventHasSourceEvent) {
-
+        foreach ($historyWorker->getEventHasSourceEvents() as $eventHasSourceEvent) {
             $this->entityManager->persist($eventHasSourceEvent);
 
             // We don't currently save anything to link this change to this history, because we don't think we need that information.
@@ -93,8 +88,7 @@ class HistoryWorkerService {
             // But in the mean time, we do get other code to pass objects in here so they can be written in the same database transaction as any new events.
         }
 
-        foreach($historyWorker->getEventHasImports() as $eventHasImport) {
-
+        foreach ($historyWorker->getEventHasImports() as $eventHasImport) {
             $this->entityManager->persist($eventHasImport);
 
             // We don't currently save anything to link this change to this history, because we don't think we need that information.
@@ -105,7 +99,5 @@ class HistoryWorkerService {
         $this->entityManager->flush();
 
         $this->eventDispatcher->dispatch(new HistorySavedEvent($history), HistorySavedEvent::NAME);
-
     }
-
 }

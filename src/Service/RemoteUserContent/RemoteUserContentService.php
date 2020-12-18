@@ -2,7 +2,6 @@
 
 namespace App\Service\RemoteUserContent;
 
-
 use App\Entity\Account;
 use App\Entity\AccountRemote;
 use App\Entity\Country;
@@ -28,7 +27,8 @@ class RemoteUserContentService
         $this->entityManager = $entityManager;
     }
 
-    public function downloadAccountRemote(AccountRemote $accountRemote) {
+    public function downloadAccountRemote(AccountRemote $accountRemote)
+    {
 
         /** @var Account $account */
         $account = $accountRemote->getAccount();
@@ -52,8 +52,7 @@ class RemoteUserContentService
 
         $APIEventListData = json_decode($response->getBody(), true);
 
-        foreach($APIEventListData['events'] as $eventData) {
-
+        foreach ($APIEventListData['events'] as $eventData) {
             $event = $this->entityManager->getRepository(Event::class)->findOneBy(array('id'=>$eventData['id'], 'account'=>$account));
             if (!$event) {
                 $event = new Event();
@@ -107,11 +106,6 @@ class RemoteUserContentService
             // TODO event to event occurrence!
 
             // TODO this wont deal with things that were once public, new private! Special flag in API?
-
-
         }
-
     }
-
 }
-

@@ -9,10 +9,8 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-
 abstract class BaseController extends AbstractController
 {
-
     protected $userTimeZoneCode = 'Europe/London';
     protected $userTimeZone = null;
 
@@ -21,7 +19,8 @@ abstract class BaseController extends AbstractController
         $this->setUpUserTimeZone($request);
     }
 
-    protected function setUpUserTimeZone(Request $request) {
+    protected function setUpUserTimeZone(Request $request)
+    {
 
         // TODO all controllers need to call this so it's set up correctly, and that needs to be checked
 
@@ -41,50 +40,48 @@ abstract class BaseController extends AbstractController
                 throw new \Exception($code);
             }
         }
-
     }
 
 
-    protected function getTemplateVariables($vars = array()) {
-
+    protected function getTemplateVariables($vars = array())
+    {
         $more_vars = array(
             'userTimeZone' => $this->userTimeZoneCode,
         );
 
         $user = $this->get('security.token_storage')->getToken()->getUser();
         if ($user instanceof User) {
-
             $doctrine = $this->getDoctrine();
             $repository = $doctrine->getRepository(Account::class);
             $more_vars['accounts_user_can_manage'] = $repository->findUserCanManage($user);
-
         }
 
         return array_merge($vars, $more_vars);
-
     }
 
-    protected function isRequestForAccountActivityStreamsProfileJSON(Request $request):bool {
+    protected function isRequestForAccountActivityStreamsProfileJSON(Request $request):bool
+    {
         // As Defined in https://www.w3.org/TR/activitypub/#retrieving-objects
         // Must separate by "," - Mastodon sends both
         $haystack = array('application/activity+json', 'application/ld+json; profile="https://www.w3.org/ns/activitystreams"');
-        foreach(explode(",", $request->headers->get('Accept')) as $needle) {
+        foreach (explode(",", $request->headers->get('Accept')) as $needle) {
             if (in_array(trim($needle), $haystack)) {
-                return True;
+                return true;
             }
         }
-        return False;
+        return false;
     }
 
-    protected function getResponseAccountActivityStreamsProfileJSON(Account $account, Request $request) {
+    protected function getResponseAccountActivityStreamsProfileJSON(Account $account, Request $request)
+    {
         $out = [
             '@context'=>'https://www.w3.org/ns/activitystreams',
             // TODO an type of Group or Organization may be just as good - have a setting per account? https://www.w3.org/TR/activitystreams-vocabulary/#actor-types
             'type'=>'Person',
-            'id'=>$this->getParameter('app.instance_url').$this->generateUrl('account_public',['account_username'=>$account->getAccountLocal()->getUsername()]),
+            'id'=>$this->getParameter('app.instance_url').$this->generateUrl('account_public', ['account_username'=>$account->getAccountLocal()->getUsername()]),
             'name'=>$account->getTitle(),
-            'inbox'=>$this->getParameter('app.instance_url').$this->generateUrl('account_activity_streams_inbox',['account_id'=>$account->getId()]),
-            'outbox'=>$this->getParameter('app.instance_url').$this->generateUrl('account_activity_streams_outbox',['account_id'=>$account->getId()]),
+            'inbox'=>$this->getParameter('app.instance_url').$this->generateUrl('account_activity_streams_inbox', ['account_id'=>$account->getId()]),
+            'outbox'=>$this->getParameter('app.instance_url').$this->generateUrl('account_activity_streams_outbox', ['account_id'=>$account->getId()]),
         ];
         return new Response(
             json_encode($out),
@@ -92,5 +89,4 @@ abstract class BaseController extends AbstractController
             ['content-type' => 'application/json']
         );
     }
-
 }

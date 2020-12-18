@@ -13,11 +13,8 @@ use App\Entity\Event;
 
 class AccountPublicTagListController extends AccountPublicController
 {
-
-
     public function index($account_username, Request $request)
     {
-
         $this->setUpAccountPublic($account_username, $request);
 
         $repositoryQuery = new TagRepositoryQuery($this->getDoctrine(), $this->account);
@@ -29,7 +26,5 @@ class AccountPublicTagListController extends AccountPublicController
             'account'=> $this->account,
             'tags' => $tags,
         ]));
-
     }
-
 }

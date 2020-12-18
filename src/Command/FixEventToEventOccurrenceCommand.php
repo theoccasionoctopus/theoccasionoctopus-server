@@ -1,7 +1,6 @@
 <?php
 namespace App\Command;
 
-
 use App\Entity\Event;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -10,7 +9,6 @@ use Symfony\Component\Console\Output\OutputInterface;
 use App\Entity\Source;
 use App\Import\ImportRunner;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-
 
 class FixEventToEventOccurrenceCommand extends Command
 {
@@ -37,7 +35,6 @@ class FixEventToEventOccurrenceCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-
         $doctrine = $this->container->get('doctrine');
         $eventRepository = $doctrine->getRepository(Event::class);
         $service = $this->container->get('app.eventToEventOccurrenceService');
@@ -48,7 +45,5 @@ class FixEventToEventOccurrenceCommand extends Command
         }
 
         return 0;
-
     }
-
 }

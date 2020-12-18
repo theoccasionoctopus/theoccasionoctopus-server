@@ -18,5 +18,4 @@ class RemoteServerRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, RemoteServer::class);
     }
-
 }

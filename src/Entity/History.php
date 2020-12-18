@@ -110,7 +110,4 @@ class History
         $dt->setTimestamp($this->created);
         return $dt;
     }
-
-
-
 }

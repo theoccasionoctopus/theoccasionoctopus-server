@@ -40,8 +40,8 @@ class ImportService
     }
 
 
-    public function import(Import $import) {
-
+    public function import(Import $import)
+    {
         $this->logger->info('Importing', ['import_id' => $import->getId(), 'account_id'=>$import->getAccount()->getId()]);
 
         $guzzle = new Client(array('defaults' => array('headers' => array(  'User-Agent'=> 'Prototype Software') )));
@@ -55,7 +55,7 @@ class ImportService
 
         $historyWorker = $this->historyWorkerService->getHistoryWorker($import->getAccount());
 
-        foreach($vcalendar->VEVENT as $eventData) {
+        foreach ($vcalendar->VEVENT as $eventData) {
             $this->importVEVENT($import, $historyWorker, $eventData);
         }
 
@@ -65,11 +65,10 @@ class ImportService
 
 
         // TODO make event occurrences
-
     }
 
-    protected function importVEVENT(Import $import, HistoryWorker $historyWorker, $eventData) {
-
+    protected function importVEVENT(Import $import, HistoryWorker $historyWorker, $eventData)
+    {
         $primary_id_in_data = $eventData->UID;
         $secondary_id_in_data = $eventData->{'RECURRENCE-ID'};
         if (!$secondary_id_in_data) {
@@ -81,7 +80,7 @@ class ImportService
             ['import'=>$import, 'primaryIdInData'=>$primary_id_in_data, 'secondaryIdInData'=>$secondary_id_in_data]
         );
 
-        $changes = False;
+        $changes = false;
         if ($eventHasImport) {
             $event = $eventHasImport->getEvent();
         } elseif ($eventData->STATUS == 'CANCELLED') {
@@ -123,16 +122,16 @@ class ImportService
             $changes = true;
         }
 
-        if($eventData->RRULE) {
+        if ($eventData->RRULE) {
             if ($event->setRrule($eventData->RRULE)) {
                 $changes = true;
             }
             // TODO set RRULE Options
         } else {
-            if ($event->setRrule(Null)) {
+            if ($event->setRrule(null)) {
                 $changes = true;
             }
-            if ($event->setRruleOptions(Null)) {
+            if ($event->setRruleOptions(null)) {
                 $changes = true;
             }
         }
@@ -147,8 +146,5 @@ class ImportService
         if ($changes) {
             $historyWorker->addEvent($event);
         }
-
     }
-
 }
-

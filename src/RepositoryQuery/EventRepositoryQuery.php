@@ -2,16 +2,14 @@
 
 namespace App\RepositoryQuery;
 
-
-
 use App\Entity\Account;
 use App\Entity\Event;
 use App\Entity\EventOccurrence;
 use App\Entity\Tag;
 use App\Repository\EventRepository;
 
-class EventRepositoryQuery {
-
+class EventRepositoryQuery
+{
     protected $doctrine;
 
     /** @var  Account */
@@ -54,7 +52,8 @@ class EventRepositoryQuery {
         $this->doctrine = $doctrine;
     }
 
-    public function setAccountEvents(Account $account) {
+    public function setAccountEvents(Account $account)
+    {
         $this->accountEvents = $account;
     }
 
@@ -63,7 +62,8 @@ class EventRepositoryQuery {
         $this->accountDiscoverEvents = $accountDiscoverEvents;
     }
 
-    public function setPublicOnly() {
+    public function setPublicOnly()
+    {
         $this->max_privacy_allowed = 0;
     }
 
@@ -124,8 +124,8 @@ class EventRepositoryQuery {
         $this->limit = $limit;
     }
 
-    public function getEvents() {
-
+    public function getEvents()
+    {
         $qb = $this->doctrine->getRepository(Event::class)->createQueryBuilder('e');
 
         $qb->andWhere('e.privacy <= :privacy')
@@ -140,32 +140,32 @@ class EventRepositoryQuery {
         if ($this->accountDiscoverEvents) {
             $qb->join('e.account', 'a');
             $qb->join('a.followsAccountFollows', 'afa', 'WITH', 'afa.account  = :account');
-            $qb->setParameter('account',$this->accountDiscoverEvents);
+            $qb->setParameter('account', $this->accountDiscoverEvents);
         }
 
         if ($this->from) {
-            $qb->andWhere('e.cachedEndEpoch >= :from')->setParameter('from',$this->from->getTimestamp());
+            $qb->andWhere('e.cachedEndEpoch >= :from')->setParameter('from', $this->from->getTimestamp());
         }
 
         if ($this->to) {
-            $qb->andWhere('e.cachedStartEpoch <= :to')->setParameter('to',$this->to->getTimestamp());
+            $qb->andWhere('e.cachedStartEpoch <= :to')->setParameter('to', $this->to->getTimestamp());
         }
 
         if ($this->url) {
-            $qb->andWhere('e.url = :url')->setParameter('url',$this->url);
+            $qb->andWhere('e.url = :url')->setParameter('url', $this->url);
         }
 
         if (!$this->showCancelled) {
-            $qb->andWhere('e.cancelled = :cancelled')->setParameter('cancelled',false);
+            $qb->andWhere('e.cancelled = :cancelled')->setParameter('cancelled', false);
         }
 
         if (!$this->showDeleted) {
-            $qb->andWhere('e.deleted = :deleted')->setParameter('deleted',false);
+            $qb->andWhere('e.deleted = :deleted')->setParameter('deleted', false);
         }
 
         if ($this->tag) {
             $qb->join('e.eventHasTags', 'eht', 'WITH', 'eht.tag = :tag');
-            $qb->setParameter('tag',$this->tag);
+            $qb->setParameter('tag', $this->tag);
         }
 
         if ($this->limit) {
@@ -175,13 +175,11 @@ class EventRepositoryQuery {
         $qb->orderBy('e.cachedStartEpoch', 'ASC');
 
         return $qb->getQuery()->execute();
-
-
     }
 
 
-    public function getEventOccurrences() {
-
+    public function getEventOccurrences()
+    {
         $qb = $this->doctrine->getRepository(EventOccurrence::class)->createQueryBuilder('eo');
         $qb->join('eo.event', 'e');
 
@@ -197,32 +195,32 @@ class EventRepositoryQuery {
         if ($this->accountDiscoverEvents) {
             $qb->join('e.account', 'a');
             $qb->join('a.followsAccountFollows', 'afa', 'WITH', 'afa.account  = :account');
-            $qb->setParameter('account',$this->accountDiscoverEvents);
+            $qb->setParameter('account', $this->accountDiscoverEvents);
         }
 
         if ($this->from) {
-            $qb->andWhere('e.cachedEndEpoch >= :from')->setParameter('from',$this->from->getTimestamp());
+            $qb->andWhere('e.cachedEndEpoch >= :from')->setParameter('from', $this->from->getTimestamp());
         }
 
         if ($this->to) {
-            $qb->andWhere('e.cachedStartEpoch <= :to')->setParameter('to',$this->to->getTimestamp());
+            $qb->andWhere('e.cachedStartEpoch <= :to')->setParameter('to', $this->to->getTimestamp());
         }
 
         if ($this->url) {
-            $qb->andWhere('e.url = :url')->setParameter('url',$this->url);
+            $qb->andWhere('e.url = :url')->setParameter('url', $this->url);
         }
 
         if (!$this->showCancelled) {
-            $qb->andWhere('e.cancelled = :cancelled')->setParameter('cancelled',false);
+            $qb->andWhere('e.cancelled = :cancelled')->setParameter('cancelled', false);
         }
 
         if (!$this->showDeleted) {
-            $qb->andWhere('e.deleted = :deleted')->setParameter('deleted',false);
+            $qb->andWhere('e.deleted = :deleted')->setParameter('deleted', false);
         }
 
         if ($this->tag) {
             $qb->join('e.eventHasTags', 'eht', 'WITH', 'eht.tag = :tag');
-            $qb->setParameter('tag',$this->tag);
+            $qb->setParameter('tag', $this->tag);
         }
 
         if ($this->limit) {
@@ -232,11 +230,5 @@ class EventRepositoryQuery {
         $qb->orderBy('eo.startEpoch', 'ASC');
 
         return $qb->getQuery()->execute();
-
-
     }
-
-
-
-
 }

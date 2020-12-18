@@ -2,7 +2,7 @@
 
 namespace App\Entity\Helper;
 
-Trait TraitExtraFields
+trait TraitExtraFields
 {
 
     /**
@@ -52,5 +52,4 @@ Trait TraitExtraFields
         }
         $this->extra_fields[$key] = $value;
     }
-
 }

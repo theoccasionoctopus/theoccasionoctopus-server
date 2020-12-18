@@ -81,12 +81,8 @@ class TimeZone
         $this->code = $code;
     }
 
-    public function getDateTimeZoneObject() {
+    public function getDateTimeZoneObject()
+    {
         return new \DateTimeZone($this->code);
     }
-
-
-
-
-
 }

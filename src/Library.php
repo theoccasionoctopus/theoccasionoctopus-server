@@ -14,9 +14,7 @@ use App\Service\HistoryWorker\HistoryWorkerService;
 
 class Library
 {
-
-
-    static function GUID()
+    public static function GUID()
     {
         return strtolower(
             sprintf(
@@ -39,7 +37,7 @@ class Library
      * @param type $value
      * @return type
      */
-    static public function getIcalLine(string $key, ?string $value)
+    public static function getIcalLine(string $key, ?string $value)
     {
         if (is_null($value)) {
             $value = '';
@@ -71,7 +69,7 @@ class Library
     }
 
 
-    static function randomString($minLength = 10, $maxLength = 100)
+    public static function randomString($minLength = 10, $maxLength = 100)
     {
         $characters = '23456789abcdefghjkmnpqrstuvwxyzABCDEFGHJKMNPQRSTUVWXYZ';
         $string = '';
@@ -95,7 +93,8 @@ class Library
         return $bits[0] . '@' . strtolower($bits[1]);
     }
 
-    public static function getAPIJSONResponseForDateTime(\DateTimeInterface $dateTime) {
+    public static function getAPIJSONResponseForDateTime(\DateTimeInterface $dateTime)
+    {
         return [
             'year'=>intval($dateTime->format('Y')),
             'month'=>intval($dateTime->format('n')),
@@ -107,14 +106,14 @@ class Library
         ];
     }
 
-    public static function parseWebFingerResourceToUsernameAndHost($in) {
-
+    public static function parseWebFingerResourceToUsernameAndHost($in)
+    {
         if (substr($in, 0, 5) == 'acct:') {
             $in = substr($in, 5);
         }
 
         $bits = explode("@", $in);
-        while($bits[0] == '') {
+        while ($bits[0] == '') {
             array_shift($bits);
         }
 
@@ -124,7 +123,8 @@ class Library
         return [ $username, $host ];
     }
 
-    public static function parseURLToSSLAndHost($url) {
+    public static function parseURLToSSLAndHost($url)
+    {
         $url_bits = parse_url($url);
         if (!$url_bits) {
             throw new Exception("Are you sure this is a URL? " . $url);
@@ -142,5 +142,4 @@ class Library
 
         return [ $ssl, $host ];
     }
-
 }

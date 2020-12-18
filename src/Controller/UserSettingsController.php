@@ -28,14 +28,16 @@ class UserSettingsController extends BaseController
     /** @var  User */
     protected $user;
 
-    public function build() {
+    public function build()
+    {
         $this->user= $this->get('security.token_storage')->getToken()->getUser();
         if (!($this->user instanceof User)) {
             throw new  AccessDeniedException('You must log in first!');
         }
     }
 
-    public function index(Request $request) {
+    public function index(Request $request)
+    {
         $this->build();
 
         return $this->render(
@@ -46,7 +48,8 @@ class UserSettingsController extends BaseController
         );
     }
 
-    public function accessTokens(Request $request) {
+    public function accessTokens(Request $request)
+    {
         $this->build();
 
         $doctrine = $this->getDoctrine();
@@ -62,7 +65,8 @@ class UserSettingsController extends BaseController
         );
     }
 
-    public function accessTokensNew(Request $request, LoggerInterface $logger) {
+    public function accessTokensNew(Request $request, LoggerInterface $logger)
+    {
         $this->build();
 
         // TODO check $user $limitNumberOfAPIAccessTokens and block
@@ -76,12 +80,11 @@ class UserSettingsController extends BaseController
 
         // build the form
         $form = $this->createForm(APIAccessTokenNewType::class, $accessToken, array(
-        ) );
+        ));
 
         // handle the submit (will only happen on POST)
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-
             $doctrine = $this->getDoctrine();
             $doctrine->getManager()->persist($accessToken);
             $doctrine->getManager()->flush();
@@ -102,5 +105,4 @@ class UserSettingsController extends BaseController
             'form' => $form->createView(),
         ]));
     }
-
 }

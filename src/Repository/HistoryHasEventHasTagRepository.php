@@ -15,7 +15,4 @@ class HistoryHasEventHasTagRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, HistoryHasEventHasTag::class);
     }
-
-
-
 }

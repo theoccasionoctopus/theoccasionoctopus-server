@@ -5,7 +5,7 @@ namespace App\SymfonyEvent;
 use App\Entity\History;
 use Symfony\Contracts\EventDispatcher\Event;
 
-class HistorySavedEvent extends  Event
+class HistorySavedEvent extends Event
 {
     public const NAME = 'app.history.saved';
 
@@ -28,5 +28,4 @@ class HistorySavedEvent extends  Event
     {
         return $this->history;
     }
-
 }

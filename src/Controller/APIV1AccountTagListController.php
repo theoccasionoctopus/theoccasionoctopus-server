@@ -13,12 +13,10 @@ use App\Entity\Event;
 use Symfony\Component\HttpFoundation\Response;
 use stdClass;
 
-class APIV1AccountTagListController extends APIV1AccountController {
-
-
+class APIV1AccountTagListController extends APIV1AccountController
+{
     public function listJSON($account_id, Request $request)
     {
-
         $this->buildAccount($account_id, $request);
 
         $out = array(
@@ -32,7 +30,7 @@ class APIV1AccountTagListController extends APIV1AccountController {
         $tags = $repositoryQuery->getTags();
 
         /** @var Tag $tag */
-        foreach($tags as $tag) {
+        foreach ($tags as $tag) {
             $out['tags'][] = array(
                 'id'=> $tag->getId(),
                 'title'=>$tag->getTitle(),
@@ -47,9 +45,5 @@ class APIV1AccountTagListController extends APIV1AccountController {
             Response::HTTP_OK,
             ['content-type' => 'application/json']
         );
-
-
     }
-
-
 }

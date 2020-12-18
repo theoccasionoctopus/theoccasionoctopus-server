@@ -60,5 +60,4 @@ class EventHasSourceEvent
     {
         $this->sourceEvent = $sourceEvent;
     }
-
 }

@@ -79,6 +79,4 @@ class Country
     {
         $this->iso3166_two_char = $iso3166_two_char;
     }
-
-
 }

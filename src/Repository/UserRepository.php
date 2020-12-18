@@ -38,7 +38,8 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
     }
 
 
-    public function findCanManageAccount(Account $account) {
+    public function findCanManageAccount(Account $account)
+    {
         $entityManager = $this->getEntityManager();
 
         $query = $entityManager->createQuery(
@@ -51,5 +52,4 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
 
         return $query->execute();
     }
-
 }

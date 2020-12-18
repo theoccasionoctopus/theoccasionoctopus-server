@@ -11,7 +11,6 @@ use Symfony\Component\HttpFoundation\Response;
 
 class SysAdminAccountListController extends SysAdminBaseController
 {
-
     public function local(Request $request)
     {
         $this->setUp($request);
@@ -22,7 +21,6 @@ class SysAdminAccountListController extends SysAdminBaseController
         return $this->render('sysadmin/account/local/index.html.twig', $this->getTemplateVariables([
             'accounts'=>$repository->findAllLocal(),
         ]));
-
     }
 
     public function remote(Request $request)
@@ -35,7 +33,5 @@ class SysAdminAccountListController extends SysAdminBaseController
         return $this->render('sysadmin/account/remote/index.html.twig', $this->getTemplateVariables([
             'accounts'=>$repository->findAllRemote(),
         ]));
-
     }
-
 }

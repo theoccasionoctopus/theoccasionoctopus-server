@@ -128,7 +128,8 @@ class User implements UserInterface
         return $this;
     }
 
-    public function addRole($role) {
+    public function addRole($role)
+    {
         $this->roles[] = $role;
     }
 
@@ -225,8 +226,8 @@ class User implements UserInterface
     }
 
 
-    public function isSysAdmin(): bool {
+    public function isSysAdmin(): bool
+    {
         return in_array('ROLE_SYSADMIN', $this->roles);
     }
-
 }

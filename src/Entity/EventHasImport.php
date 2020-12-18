@@ -115,8 +115,4 @@ class EventHasImport
     {
         $this->secondaryIdInData = $secondaryIdInData;
     }
-
-
-
-
 }

@@ -16,7 +16,5 @@ class SysAdminIndexController extends SysAdminBaseController
         $this->setUp($request);
 
         return $this->render('sysadmin/index.html.twig', $this->getTemplateVariables());
-
     }
-
 }

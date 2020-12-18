@@ -19,12 +19,12 @@ abstract class APIV1Controller extends BaseController
     /** @var APIAccessToken */
     protected $accessToken = null;
 
-    protected function build(Request $request) {
-
+    protected function build(Request $request)
+    {
         $accessTokenString = null;
 
-        if (substr($request->headers->get('authorization',''),0,7) == 'Bearer ') {
-            $accessTokenString = substr($request->headers->get('authorization',''), 7);
+        if (substr($request->headers->get('authorization', ''), 0, 7) == 'Bearer ') {
+            $accessTokenString = substr($request->headers->get('authorization', ''), 7);
         } elseif ($request->query->get('access_token')) {
             $accessTokenString = $request->query->get('access_token');
         }
@@ -40,8 +40,5 @@ abstract class APIV1Controller extends BaseController
                 throw new AccessDeniedHttpException('Token Disabled!');
             }
         }
-
     }
-
-
 }

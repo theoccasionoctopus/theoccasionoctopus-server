@@ -12,16 +12,10 @@ use App\Library;
 use App\Form\EventNewType;
 use Symfony\Component\HttpFoundation\Request;
 
-
-
 class AccountManageEventListController extends AccountManageController
 {
-
-
-
     public function indexManageEvent($account_username, Request $request)
     {
-
         $this->build($account_username);
 
 
@@ -35,13 +29,11 @@ class AccountManageEventListController extends AccountManageController
             'eventListFilterParams'=>$params,
             'eventOccurrences' => $eventOccurrences,
         ]));
-
     }
 
 
     public function calendar($account_username, Request $request)
     {
-
         $this->build($account_username);
 
         // TODO use EventListFilterParams
@@ -50,16 +42,14 @@ class AccountManageEventListController extends AccountManageController
             'account'=> $this->account,
             'now' =>  new \DateTime(),
         ]));
-
     }
 
     public function calendarData($account_username, Request $request)
     {
-
         $this->build($account_username);
 
         $from = new \DateTime($request->query->get('start'));
-        $from->setTime(0,0,0);
+        $from->setTime(0, 0, 0);
         $to = new \DateTime($request->query->get('end'));
         $to->setTime(23, 59, 59);
 
@@ -67,13 +57,13 @@ class AccountManageEventListController extends AccountManageController
         $repositoryQuery->setAccountEvents($this->account);
         $repositoryQuery->setFrom($from);
         $repositoryQuery->setTo($to);
-        $repositoryQuery->setShowDeleted(False);
+        $repositoryQuery->setShowDeleted(false);
 
         $events = $repositoryQuery->getEvents();
 
         $data = [];
         /** @var Event $event */
-        foreach($events as $event) {
+        foreach ($events as $event) {
             $data[] = array(
                 'id'=>$event->getId(),
                 'title'=> $event->getTitle(),
@@ -83,7 +73,5 @@ class AccountManageEventListController extends AccountManageController
         }
 
         return $this->json($data);
-
     }
-
 }

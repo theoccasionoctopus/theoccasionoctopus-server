@@ -2,7 +2,6 @@
 
 namespace App\Service\RemoteAccount;
 
-
 use App\Entity\Account;
 use App\Entity\AccountRemote;
 use App\Entity\RemoteServer;
@@ -23,12 +22,12 @@ class RemoteAccountService
         $this->entityManager = $entityManager;
     }
 
-    public function add(RemoteServer $remoteServer, string $username) {
-
-
+    public function add(RemoteServer $remoteServer, string $username)
+    {
         $guzzle = new Client(array('defaults' => array('headers' => array(  'User-Agent'=> 'Prototype Software') )));
         $response = $guzzle->request(
-            "GET", $remoteServer->getURL()."/.well-known/webfinger?resource=". urlencode($username),
+            "GET",
+            $remoteServer->getURL()."/.well-known/webfinger?resource=". urlencode($username),
             array()
         );
         if ($response->getStatusCode() != 200) {
@@ -64,8 +63,5 @@ class RemoteAccountService
         $this->entityManager->flush();
 
         return $account;
-
     }
-
 }
-

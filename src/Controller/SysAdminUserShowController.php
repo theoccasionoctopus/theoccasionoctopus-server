@@ -11,10 +11,8 @@ use Symfony\Component\HttpFoundation\Response;
 
 class SysAdminUserShowController extends SysAdminBaseController
 {
-
     public function index(Request $request, $user_id)
     {
-
         $this->setUp($request);
 
         $doctrine = $this->getDoctrine();
@@ -32,7 +30,5 @@ class SysAdminUserShowController extends SysAdminBaseController
             'user'=>$user,
             'accounts_this_user_can_manage'=>$accountRepository->findUserCanManage($user),
         ]));
-
     }
-
 }

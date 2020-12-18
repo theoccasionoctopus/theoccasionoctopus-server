@@ -36,5 +36,4 @@ class ImportNewType extends AbstractType
             'account' => null,
         ));
     }
-
 }

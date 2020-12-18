@@ -1,7 +1,6 @@
 <?php
 namespace App\Command;
 
-
 use App\Entity\EmailUserUpcomingEventsForAccount;
 use App\Entity\RemoteServer;
 use App\Entity\User;
@@ -40,13 +39,10 @@ class AddRemoteServerCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-
         $url = $input->getArgument('url');
 
         $remoteServer = $this->remoteServerService->add($url);
         $output->writeln('Id='. $remoteServer->getId());
         return 0;
-
     }
-
 }

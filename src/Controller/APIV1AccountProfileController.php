@@ -18,9 +18,8 @@ use Symfony\Component\HttpFoundation\Response;
 
 class APIV1AccountProfileController extends APIV1AccountController
 {
-
-    public function profileJSON($account_id, Request $request) {
-
+    public function profileJSON($account_id, Request $request)
+    {
         $this->buildAccount($account_id, $request);
 
         $out = array(
@@ -34,7 +33,5 @@ class APIV1AccountProfileController extends APIV1AccountController
             Response::HTTP_OK,
             ['content-type' => 'application/json']
         );
-
     }
-
 }

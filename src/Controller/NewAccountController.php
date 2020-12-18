@@ -24,9 +24,6 @@ use Psr\Log\LoggerInterface;
 
 class NewAccountController extends BaseController
 {
-
-
-
     public function register(Request $request, UserPasswordEncoderInterface $passwordEncoder, LoggerInterface $logger)
     {
 
@@ -101,7 +98,6 @@ class NewAccountController extends BaseController
                     'Welcome to your new account'
                 );
                 return $this->redirectToRoute('account_manage', ['account_username' => $accountLocal->getUsername()]);
-
             }
         }
 
@@ -110,6 +106,4 @@ class NewAccountController extends BaseController
             $this->getTemplateVariables(array('form' => $form->createView()))
         );
     }
-
-
 }

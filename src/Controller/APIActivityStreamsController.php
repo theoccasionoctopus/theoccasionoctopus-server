@@ -22,7 +22,6 @@ class APIActivityStreamsController extends BaseController
 
     protected function buildAccount($account_id, Request $request)
     {
-
         $doctrine = $this->getDoctrine();
         $repository = $doctrine->getRepository(Account::class);
         $this->account = $repository->findOneById($account_id);
@@ -36,7 +35,6 @@ class APIActivityStreamsController extends BaseController
         if ($this->account->getAccountLocal()->isLocked()) {
             throw new  NotFoundHttpException('Not found');
         }
-
     }
 
 
@@ -51,7 +49,7 @@ class APIActivityStreamsController extends BaseController
         $this->buildAccount($account_id, $request);
 
         $data = json_decode($request->getContent(), true);
-        if(!$data) {
+        if (!$data) {
             return new Response(
                 json_encode(['error'=>'no-data']),
                 500,
@@ -75,7 +73,6 @@ class APIActivityStreamsController extends BaseController
             Response::HTTP_OK,
             ['content-type' => 'application/json']
         );
-
     }
 
     public function outbox($account_id, Request $request)
@@ -83,7 +80,5 @@ class APIActivityStreamsController extends BaseController
         $this->buildAccount($account_id, $request);
 
         // TODO
-
     }
-
 }

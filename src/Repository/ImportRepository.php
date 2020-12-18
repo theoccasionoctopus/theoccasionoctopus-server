@@ -17,5 +17,4 @@ class ImportRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Import::class);
     }
-
 }

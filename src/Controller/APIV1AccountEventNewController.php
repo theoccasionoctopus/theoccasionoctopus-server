@@ -15,12 +15,10 @@ use App\Entity\Account;
 use App\Entity\Event;
 use Symfony\Component\HttpFoundation\Response;
 
-class APIV1AccountEventNewController extends APIV1AccountController {
-
-
-
-
-    public function newJSON($account_id, Request $request,  HistoryWorkerService $historyWorkerService) {
+class APIV1AccountEventNewController extends APIV1AccountController
+{
+    public function newJSON($account_id, Request $request, HistoryWorkerService $historyWorkerService)
+    {
         $this->buildAccount($account_id, $request);
 
         if (!$this->account_permission_write) {
@@ -111,7 +109,7 @@ class APIV1AccountEventNewController extends APIV1AccountController {
         // TODO start & end are required fields - make sure they are set
 
         $count = 0;
-        while($request->request->get('extra_field_'.$count.'_name')) {
+        while ($request->request->get('extra_field_'.$count.'_name')) {
             $event->setExtraField($request->request->get('extra_field_'.$count.'_name'), $request->request->get('extra_field_'.$count.'_value'));
             $count++;
         }
@@ -131,8 +129,5 @@ class APIV1AccountEventNewController extends APIV1AccountController {
             Response::HTTP_OK,
             ['content-type' => 'application/json']
         );
-
-
     }
-
 }

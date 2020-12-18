@@ -12,7 +12,8 @@ use Symfony\Component\Security\Core\User\UserInterface;
  * @ORM\Table(name="account_remote")
  * @ORM\HasLifecycleCallbacks()
  */
-class AccountRemote {
+class AccountRemote
+{
 
     /**
      * @ORM\Id()
@@ -82,5 +83,4 @@ class AccountRemote {
     {
         $this->humanURL = $humanURL;
     }
-
 }

@@ -65,8 +65,4 @@ class HistoryHasEvent
     {
         $this->event = $event;
     }
-
-
-
-
 }

@@ -13,11 +13,10 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpFoundation\Request;
 
-
 class APIIndexController extends BaseController
 {
-
-    public function occasionOctopusInfoJSON() {
+    public function occasionOctopusInfoJSON()
+    {
         $out = [
             'api_version'=> 1,
             'instance_name'=> $this->getParameter('app.instance_name'),
@@ -35,7 +34,6 @@ class APIIndexController extends BaseController
 
     public function webfinger(Request $request)
     {
-
         list($username, $host) = Library::parseWebFingerResourceToUsernameAndHost($request->query->get('resource'));
 
         // TODO check host is us
@@ -56,23 +54,23 @@ class APIIndexController extends BaseController
         $out = [
             'subject'=>'acct:'.$accountLocal->getUsername().'@'.$host,
             'aliases'=>[
-                $this->getParameter('app.instance_url').$this->generateUrl('account_public',['account_username'=>$accountLocal->getUsername()]),
+                $this->getParameter('app.instance_url').$this->generateUrl('account_public', ['account_username'=>$accountLocal->getUsername()]),
             ],
             'links'=>[
                 [
                     'rel'=>'http://webfinger.net/rel/profile-page',
                     'type'=>'text/html',
-                    'href'=>$this->getParameter('app.instance_url').$this->generateUrl('account_public',['account_username'=>$accountLocal->getUsername()]),
+                    'href'=>$this->getParameter('app.instance_url').$this->generateUrl('account_public', ['account_username'=>$accountLocal->getUsername()]),
                 ],
                 [
                     'rel'=>'self',
                     'type'=>'application/activity+json',
-                    'href'=>$this->getParameter('app.instance_url').$this->generateUrl('account_activity_streams_index',['account_id'=>$account->getId()]),
+                    'href'=>$this->getParameter('app.instance_url').$this->generateUrl('account_activity_streams_index', ['account_id'=>$account->getId()]),
                 ],
                 [
                     'rel'=>'self',
                     'type'=>'application/activity+json',
-                    'href'=>$this->getParameter('app.instance_url').$this->generateUrl('account_public',['account_username'=>$accountLocal->getUsername()]),
+                    'href'=>$this->getParameter('app.instance_url').$this->generateUrl('account_public', ['account_username'=>$accountLocal->getUsername()]),
                 ],
             ],
             'occasion-octopus-id'=> $account->getId(),
@@ -84,7 +82,5 @@ class APIIndexController extends BaseController
             Response::HTTP_OK,
             ['content-type' => 'application/json']
         );
-
     }
-
 }

@@ -84,5 +84,4 @@ class AccountFollowsAccount
     {
         $this->follows = $follows;
     }
-
 }

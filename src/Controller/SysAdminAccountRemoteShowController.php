@@ -12,11 +12,8 @@ use Symfony\Component\HttpFoundation\Response;
 
 class SysAdminAccountRemoteShowController extends SysAdminBaseController
 {
-
-
     public function index(Request $request, $account_id)
     {
-
         $this->setUp($request);
 
         $doctrine = $this->getDoctrine();
@@ -37,8 +34,5 @@ class SysAdminAccountRemoteShowController extends SysAdminBaseController
             'account'=>$account,
             'accountRemote'=>$accountRemote,
         ]));
-
     }
-
-
 }

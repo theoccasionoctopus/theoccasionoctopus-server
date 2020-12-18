@@ -17,8 +17,8 @@ class HistoryRepository extends ServiceEntityRepository
     }
 
 
-    public function getLastHistoryForEvent(Event $event):History {
-
+    public function getLastHistoryForEvent(Event $event):History
+    {
         $entityManager = $this->getEntityManager();
 
         $query = $entityManager->createQuery(
@@ -33,5 +33,4 @@ class HistoryRepository extends ServiceEntityRepository
         $r = $query->execute();
         return $r ? $r[0] : null;
     }
-
 }

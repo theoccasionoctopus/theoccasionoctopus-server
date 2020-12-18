@@ -16,7 +16,4 @@ class APIAccessTokenRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, APIAccessToken::class);
     }
-
-
 }
-

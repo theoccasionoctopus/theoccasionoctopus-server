@@ -2,7 +2,6 @@
 
 namespace App\Command;
 
-
 use App\Entity\EventHasSourceEvent;
 use App\Service\UpdateSourcedEvent\UpdateSourcedEventService;
 use Symfony\Component\Console\Command\Command;
@@ -47,7 +46,5 @@ class UpdateSourcedEventsCommand extends Command
             $this->updateSourcedEventService->update($eventHasSourceEvent);
         }
         return 0;
-
     }
-
 }

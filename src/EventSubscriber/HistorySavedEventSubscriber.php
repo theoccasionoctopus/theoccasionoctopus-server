@@ -8,7 +8,8 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use App\Service\EventToEventOccurrence\EventToEventOccurrenceService;
 use Doctrine\ORM\EntityManagerInterface;
 
-class HistorySavedEventSubscriber implements  EventSubscriberInterface {
+class HistorySavedEventSubscriber implements EventSubscriberInterface
+{
 
     /** @var  EventToEventOccurrenceService */
     protected $eventToEventOccurrenceService;
@@ -37,10 +38,10 @@ class HistorySavedEventSubscriber implements  EventSubscriberInterface {
         ];
     }
 
-    public function process(HistorySavedEvent $historySavedEvent) {
-        foreach($this->entityManager->getRepository(HistoryHasEvent::class)->findByHistory($historySavedEvent->getHistory()) as $historyHasEvent) {
+    public function process(HistorySavedEvent $historySavedEvent)
+    {
+        foreach ($this->entityManager->getRepository(HistoryHasEvent::class)->findByHistory($historySavedEvent->getHistory()) as $historyHasEvent) {
             $this->eventToEventOccurrenceService->process($historyHasEvent->getEvent());
         }
     }
-
 }

@@ -26,6 +26,4 @@ class UserChecker implements UserCheckerInterface
             return;
         }
     }
-
 }
-

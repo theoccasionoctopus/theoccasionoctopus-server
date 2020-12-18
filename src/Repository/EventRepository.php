@@ -18,8 +18,8 @@ class EventRepository extends ServiceEntityRepository
     }
 
 
-    public function getBySourceEvent(SourceEvent $sourceEvent) {
-
+    public function getBySourceEvent(SourceEvent $sourceEvent)
+    {
         $entityManager = $this->getEntityManager();
 
         $query = $entityManager->createQuery(
@@ -31,12 +31,10 @@ class EventRepository extends ServiceEntityRepository
         )->setParameter('se', $sourceEvent);
 
         return $query->execute();
-
     }
 
     public function findByHistory(History $history)
     {
-
         $entityManager = $this->getEntityManager();
 
         $query = $entityManager->createQuery(
@@ -47,7 +45,5 @@ class EventRepository extends ServiceEntityRepository
         )->setParameter('h', $history);
 
         return $query->execute();
-
     }
-
 }

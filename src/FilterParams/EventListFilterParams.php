@@ -12,7 +12,6 @@ use Symfony\Component\HttpFoundation\InputBag;
 
 class EventListFilterParams
 {
-
     protected $fromNow = true;
 
     protected $repositoryQuery = null;
@@ -26,20 +25,17 @@ class EventListFilterParams
      */
     public function __construct($doctrine, Account $account)
     {
-
         $this->repositoryQuery = new EventRepositoryQuery($doctrine);
         $this->repositoryQuery->setAccountEvents($account);
-
     }
 
 
     public function build(InputBag $data)
     {
-
         if ($data->has('eventListFilterDataSubmitted')) {
 
             // From
-            $fromNow = $data->get('fromNow', Null);
+            $fromNow = $data->get('fromNow', null);
             if (!$fromNow) {
                 $this->fromNow = false;
             }
@@ -49,7 +45,6 @@ class EventListFilterParams
 
             // Cancelled
             $this->showCancelled = $data->has('showCancelled');
-
         }
 
         // apply to search
@@ -59,7 +54,6 @@ class EventListFilterParams
         if ($this->getFromNow()) {
             $this->getRepositoryQuery()->setFrom(new \DateTime('', new \DateTimeZone('UTC')));
         }
-
     }
 
     public function getFromNow()
@@ -92,5 +86,4 @@ class EventListFilterParams
     {
         return $this->repositoryQuery;
     }
-
 }

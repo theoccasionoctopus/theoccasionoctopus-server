@@ -15,11 +15,10 @@ use App\Entity\Event;
 
 class AccountPublicEventDetailsController extends AccountPublicController
 {
-
     protected $event;
 
-    protected function setUpAccountPublicEvent($account_username, $event_id, Request $request) {
-
+    protected function setUpAccountPublicEvent($account_username, $event_id, Request $request)
+    {
         $this->setUpAccountPublic($account_username, $request);
 
         $doctrine = $this->getDoctrine();
@@ -36,7 +35,6 @@ class AccountPublicEventDetailsController extends AccountPublicController
 
     public function showEvent($account_username, $event_id, Request $request)
     {
-
         $this->setUpAccountPublicEvent($account_username, $event_id, $request);
 
         $doctrine = $this->getDoctrine();
@@ -45,10 +43,10 @@ class AccountPublicEventDetailsController extends AccountPublicController
         $eventHasImports = $doctrine->getRepository(EventHasImport::class)->findByEvent($this->event);
         $eventHasSourceEvents = $doctrine->getRepository(EventHasSourceEvent::class)->findByEvent($this->event);
 
-        $eventOccurrence = Null;
+        $eventOccurrence = null;
         if ($this->event->hasReoccurence() && $request->query->get('startutc')) {
-            $bits = explode('-',$request->query->get('startutc'));
-            $startutc = new \DateTime('',new \DateTimeZone('UTC'));
+            $bits = explode('-', $request->query->get('startutc'));
+            $startutc = new \DateTime('', new \DateTimeZone('UTC'));
             $startutc->setDate($bits[0], $bits[1], $bits[2]);
             $startutc->setTime($bits[3], $bits[4], $bits[5]);
             $eventOccurrence = $doctrine->getRepository(EventOccurrence::class)->findOneBy(['event'=>$this->event, 'startEpoch'=>$startutc->getTimestamp()]);
@@ -62,12 +60,10 @@ class AccountPublicEventDetailsController extends AccountPublicController
             'eventHasSourceEvents' => $eventHasSourceEvents,
             'eventOccurrence' => $eventOccurrence,
         ]));
-
     }
 
     public function showEventSeries($account_username, $event_id, Request $request)
     {
-
         $this->setUpAccountPublicEvent($account_username, $event_id, $request);
 
         if (!$this->event->hasReoccurence()) {
@@ -76,16 +72,12 @@ class AccountPublicEventDetailsController extends AccountPublicController
 
         $doctrine = $this->getDoctrine();
 
-        $eventOccurrences = $doctrine->getRepository(EventOccurrence::class)->findBy(['event'=>$this->event],['startEpoch'=>'ASC']);
+        $eventOccurrences = $doctrine->getRepository(EventOccurrence::class)->findBy(['event'=>$this->event], ['startEpoch'=>'ASC']);
 
         return $this->render('account/public/event/details/series.html.twig', $this->getTemplateVariables([
             'account'=> $this->account,
             'event' => $this->event,
             'eventOccurrences' => $eventOccurrences,
         ]));
-
     }
-
-
-
 }

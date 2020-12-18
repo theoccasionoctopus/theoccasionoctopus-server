@@ -43,7 +43,8 @@ class LoadCountryData extends Command
         return 0;
     }
 
-    protected function loadCountryTitles() {
+    protected function loadCountryTitles()
+    {
         $guzzle = new Client(array('defaults' => array('headers' => array(  'User-Agent'=> 'Prototype Software') )));
         $response = $guzzle->request("GET", "https://raw.githubusercontent.com/eggert/tz/master/iso3166.tab", array());
         if ($response->getStatusCode() != 200) {
@@ -53,8 +54,8 @@ class LoadCountryData extends Command
         $doctrine = $this->container->get('doctrine');
         $repository = $doctrine->getRepository(Country::class);
 
-        foreach(explode("\n", $response->getBody(true)) as $line) {
-            if ($line && substr($line, 0,1) != '#') {
+        foreach (explode("\n", $response->getBody(true)) as $line) {
+            if ($line && substr($line, 0, 1) != '#') {
                 $bits = explode("\t", $line) ;
 
                 $country = $repository->findOneBy(array('iso3166_two_char'=>$bits[0]));
@@ -65,13 +66,12 @@ class LoadCountryData extends Command
                 $country->setTitle($bits[1]);
                 $doctrine->getManager()->persist($country);
                 $doctrine->getManager()->flush();
-
             }
         }
-
     }
 
-    protected function loadCountryTmeZones() {
+    protected function loadCountryTmeZones()
+    {
         $guzzle = new Client(array('defaults' => array('headers' => array(  'User-Agent'=> 'Prototype Software') )));
         $response = $guzzle->request("GET", "https://raw.githubusercontent.com/eggert/tz/master/zone.tab", array());
         if ($response->getStatusCode() != 200) {
@@ -83,8 +83,8 @@ class LoadCountryData extends Command
         $timeZoneRepository = $doctrine->getRepository(TimeZone::class);
         $countryUsesTimeZoneRepository = $doctrine->getRepository(CountryHasTimeZone::class);
 
-        foreach(explode("\n", $response->getBody(true)) as $line) {
-            if ($line && substr($line, 0,1) != '#') {
+        foreach (explode("\n", $response->getBody(true)) as $line) {
+            if ($line && substr($line, 0, 1) != '#') {
                 $bits = explode("\t", $line) ;
 
                 $country = $countryRepository->findOneBy(array('iso3166_two_char'=>$bits[0]));
@@ -109,12 +109,9 @@ class LoadCountryData extends Command
                     $doctrine->getManager()->persist($countryUsesTimeZone);
                     $doctrine->getManager()->flush();
                 }
-
             }
         }
 
         # TODO do something to remove old CountryHasTimeZone links that don't apply any more.
-
     }
-
 }

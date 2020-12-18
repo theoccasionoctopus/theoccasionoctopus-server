@@ -28,38 +28,38 @@ class ICalBuilderForAccount
     }
 
 
-    public function getStart() {
-        $txt = Library::getIcalLine('BEGIN','VCALENDAR');
-		$txt .= Library::getIcalLine('VERSION','2.0');
-		$txt .= Library::getIcalLine('PRODID','-//TheOccasionOctopus//NONSGML TheOccasionOctopus//EN');
+    public function getStart()
+    {
+        $txt = Library::getIcalLine('BEGIN', 'VCALENDAR');
+        $txt .= Library::getIcalLine('VERSION', '2.0');
+        $txt .= Library::getIcalLine('PRODID', '-//TheOccasionOctopus//NONSGML TheOccasionOctopus//EN');
         // TODO use site instance in title
         $txt .= Library::getIcalLine('X-WR-CALNAME', $this->account->getTitle(). " - SITE INSTANCE NAME HERE");
-		return $txt;
-
-    }
-
-    public function getEnd() {
-
-        $txt = Library::getIcalLine('END','VCALENDAR');
         return $txt;
     }
 
-    public function getEvent(Event $event) {
+    public function getEnd()
+    {
+        $txt = Library::getIcalLine('END', 'VCALENDAR');
+        return $txt;
+    }
 
-		$txt = Library::getIcalLine('BEGIN','VEVENT');
-        $txt .= Library::getIcalLine('UID',$event->getId()); // TODO add "@ site name"
+    public function getEvent(Event $event)
+    {
+        $txt = Library::getIcalLine('BEGIN', 'VEVENT');
+        $txt .= Library::getIcalLine('UID', $event->getId()); // TODO add "@ site name"
 
         if ($event->getDeleted()) {
-			$txt .= Library::getIcalLine('SUMMARY',$event->getTitle(). " [DELETED]");
-			$txt .= Library::getIcalLine('METHOD','CANCEL');
-			$txt .= Library::getIcalLine('STATUS','CANCELLED');
-			$txt .= Library::getIcalLine('DESCRIPTION','DELETED');
-		} else if ($event->getCancelled()) {
-			$txt .= Library::getIcalLine('SUMMARY',$event->getTitle(). " [CANCELLED]");
-			$txt .= Library::getIcalLine('METHOD','CANCEL');
-			$txt .= Library::getIcalLine('STATUS','CANCELLED');
-			$txt .= Library::getIcalLine('DESCRIPTION','CANCELLED');
-		} else {
+            $txt .= Library::getIcalLine('SUMMARY', $event->getTitle(). " [DELETED]");
+            $txt .= Library::getIcalLine('METHOD', 'CANCEL');
+            $txt .= Library::getIcalLine('STATUS', 'CANCELLED');
+            $txt .= Library::getIcalLine('DESCRIPTION', 'DELETED');
+        } elseif ($event->getCancelled()) {
+            $txt .= Library::getIcalLine('SUMMARY', $event->getTitle(). " [CANCELLED]");
+            $txt .= Library::getIcalLine('METHOD', 'CANCEL');
+            $txt .= Library::getIcalLine('STATUS', 'CANCELLED');
+            $txt .= Library::getIcalLine('DESCRIPTION', 'CANCELLED');
+        } else {
             $txt .= Library::getIcalLine('SUMMARY', $event->getTitle());
 
             $url = $this->container->get('router')->generate(
@@ -80,14 +80,13 @@ class ICalBuilderForAccount
                 $description .= 'Get Tickets: '. $event->getUrl()."\n\n";
             }
             $description .= "\n----\nPowered by The Occasion Octopus";
-            $txt .= Library::getIcalLine('DESCRIPTION',$description);
+            $txt .= Library::getIcalLine('DESCRIPTION', $description);
 
             // TODO a HTML description?
-
         }
 
-        $txt .= Library::getIcalLine('DTSTART',$event->getStart('UTC')->format("Ymd")."T".$event->getStart('UTC')->format("His")."Z");
-        $txt .= Library::getIcalLine('DTEND',$event->getEnd('UTC')->format("Ymd")."T".$event->getEnd('UTC')->format("His")."Z");
+        $txt .= Library::getIcalLine('DTSTART', $event->getStart('UTC')->format("Ymd")."T".$event->getStart('UTC')->format("His")."Z");
+        $txt .= Library::getIcalLine('DTEND', $event->getEnd('UTC')->format("Ymd")."T".$event->getEnd('UTC')->format("His")."Z");
 
         /** @var History $eventLastUpdatedHistory */
         $eventLastUpdatedHistory = $this->container->get('doctrine')->getRepository(History::class)->getLastHistoryForEvent($event);
@@ -108,13 +107,11 @@ class ICalBuilderForAccount
             );
         } else {
             $txt .= Library::getIcalLine('SEQUENCE', 0);
-            $txt .= Library::getIcalLine('DTSTAMP','20201008T190113Z');
+            $txt .= Library::getIcalLine('DTSTAMP', '20201008T190113Z');
         }
 
-        $txt .= Library::getIcalLine('END','VEVENT');
+        $txt .= Library::getIcalLine('END', 'VEVENT');
 
         return $txt;
-
     }
-
 }

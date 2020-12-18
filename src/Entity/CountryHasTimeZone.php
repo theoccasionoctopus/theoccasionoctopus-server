@@ -62,6 +62,4 @@ class CountryHasTimeZone
     {
         $this->timezone = $timezone;
     }
-
-
 }

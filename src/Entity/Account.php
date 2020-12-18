@@ -134,7 +134,8 @@ class Account
     }
 
 
-    public function getUsername() {
+    public function getUsername()
+    {
         return $this->accountLocal->getUsername();
     }
 
@@ -233,7 +234,4 @@ class Account
     {
         return $this->limitNumberOfImports;
     }
-
-
-
 }

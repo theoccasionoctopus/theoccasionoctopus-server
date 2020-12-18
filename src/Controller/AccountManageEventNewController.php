@@ -12,15 +12,10 @@ use App\Library;
 use App\Form\EventNewType;
 use Symfony\Component\HttpFoundation\Request;
 
-
-
 class AccountManageEventNewController extends AccountManageController
 {
-
-
-    public function newEvent($account_username,  Request $request,  HistoryWorkerService $historyWorkerService)
+    public function newEvent($account_username, Request $request, HistoryWorkerService $historyWorkerService)
     {
-
         $this->build($account_username);
 
         // build the form
@@ -68,8 +63,5 @@ class AccountManageEventNewController extends AccountManageController
             'account'=> $this->account,
             'form' => $form->createView(),
         ]));
-
     }
-
-
 }

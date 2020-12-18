@@ -13,8 +13,6 @@ use App\Library;
 use App\Form\EventNewType;
 use Symfony\Component\HttpFoundation\Request;
 
-
-
 class AccountManageTagDetailsController extends AccountManageController
 {
 
@@ -24,7 +22,6 @@ class AccountManageTagDetailsController extends AccountManageController
 
     protected function buildTag($account_username, $tag_id)
     {
-
         $this->build($account_username);
 
         $doctrine = $this->getDoctrine();
@@ -34,12 +31,10 @@ class AccountManageTagDetailsController extends AccountManageController
         if (!$this->tag) {
             throw new  NotFoundHttpException('Not found');
         }
-
     }
 
     public function indexShow($account_username, $tag_id, Request $request)
     {
-
         $this->buildTag($account_username, $tag_id);
 
         $repositoryQuery = new EventRepositoryQuery($this->getDoctrine());
@@ -54,11 +49,10 @@ class AccountManageTagDetailsController extends AccountManageController
             'tag' => $this->tag,
             'events' => $events,
         ]));
-
     }
 
-    public function indexEditDetails($account_username, $tag_id, Request $request, HistoryWorkerService $historyWorkerService) {
-
+    public function indexEditDetails($account_username, $tag_id, Request $request, HistoryWorkerService $historyWorkerService)
+    {
         $this->buildTag($account_username, $tag_id);
 
         // build the form
@@ -87,8 +81,5 @@ class AccountManageTagDetailsController extends AccountManageController
             'tag' => $this->tag,
             'form' => $form->createView(),
         ]));
-
-
     }
-
 }

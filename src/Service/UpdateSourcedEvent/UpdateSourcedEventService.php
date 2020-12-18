@@ -40,18 +40,12 @@ class UpdateSourcedEventService
 
             # TODO if event has passed, don't bother?
             if ($eventHasSourceEvent->getEvent()->copyFromEvent($eventHasSourceEvent->getSourceEvent())) {
-
                 $this->logger->info('Updating event from source event', ['event_id' => $eventHasSourceEvent->getEvent()->getId(), 'account_id'=>$eventHasSourceEvent->getEvent()->getAccount()->getId()]);
 
                 $historyWorker = $this->historyWorkerService->getHistoryWorker($eventHasSourceEvent->getEvent()->getAccount(), null);
                 $historyWorker->addEvent($eventHasSourceEvent->getEvent());
                 $this->historyWorkerService->persistHistoryWorker($historyWorker);
-
             }
-
         }
-
     }
-
 }
-

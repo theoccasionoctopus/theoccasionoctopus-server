@@ -21,8 +21,8 @@ class RemoteServerService
         $this->entityManager = $entityManager;
     }
 
-    public function add(string $url) {
-
+    public function add(string $url)
+    {
         list($ssl, $host) = Library::parseURLToSSLAndHost($url);
 
         $remoteServer = $this->entityManager->getRepository(RemoteServer::class)->findOneByHost($host);
@@ -51,13 +51,11 @@ class RemoteServerService
         $this->entityManager->flush();
 
         return $remoteServer;
-
     }
 
-    public function addByHostName(string $host) {
+    public function addByHostName(string $host)
+    {
         // We assume HTTPS - we should try and fall back to HTTP if it's not there
         return $this->add('https://'. $host);
     }
-
 }
-

@@ -15,7 +15,4 @@ class EmailUserUpcomingEventsForAccountRepository extends ServiceEntityRepositor
     {
         parent::__construct($registry, EmailUserUpcomingEventsForAccount::class);
     }
-
-
-
 }

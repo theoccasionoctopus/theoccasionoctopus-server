@@ -12,11 +12,8 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class SysAdminAccountLocalShowController extends SysAdminBaseController
 {
-
-
     public function index(Request $request, $account_id)
     {
-
         $this->setUp($request);
 
         $doctrine = $this->getDoctrine();
@@ -39,9 +36,5 @@ class SysAdminAccountLocalShowController extends SysAdminBaseController
             'accountLocal'=>$accountLocal,
             'usersManage'=>$doctrine->getRepository(User::class)->findCanManageAccount($account),
         ]));
-
     }
-
-
-
 }

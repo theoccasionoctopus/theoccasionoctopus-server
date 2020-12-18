@@ -14,7 +14,8 @@ use App\Entity\Helper\TraitExtraFields;
  * @ORM\Table(name="email_user_upcoming_events_for_account")
  * @ORM\HasLifecycleCallbacks()
  */
-class EmailUserUpcomingEventsForAccount {
+class EmailUserUpcomingEventsForAccount
+{
 
 
     /**
@@ -44,19 +45,21 @@ class EmailUserUpcomingEventsForAccount {
     private $token;
 
 
-    public function shouldSendIfData():bool {
+    public function shouldSendIfData():bool
+    {
         return $this->enabled && !$this->user->isLocked() && !$this->account->getAccountLocal()->isLocked();
     }
 
 
-    public function getUpcomingEventOccurrences($doctrine) {
+    public function getUpcomingEventOccurrences($doctrine)
+    {
         $eventRepositoryBuilder = new EventRepositoryQuery($doctrine);
         $eventRepositoryBuilder->setAccountEvents($this->getAccount());
         $start = new \DateTime('now', $this->getAccount()->getAccountLocal()->getDefaultTimezone()->getDateTimeZoneObject());
-        $start->setTime(0,0,0);
+        $start->setTime(0, 0, 0);
         $eventRepositoryBuilder->setFrom($start);
         $end = new \DateTime('now', $this->getAccount()->getAccountLocal()->getDefaultTimezone()->getDateTimeZoneObject());
-        $end->setTime(23,59,59);
+        $end->setTime(23, 59, 59);
         $eventRepositoryBuilder->setTo($end);
         $eventRepositoryBuilder->setShowCancelled(false);
         $eventRepositoryBuilder->setShowDeleted(false);
@@ -69,7 +72,7 @@ class EmailUserUpcomingEventsForAccount {
      */
     public function setCreatedValue()
     {
-        $this->token = Library::randomString(10,100);
+        $this->token = Library::randomString(10, 100);
     }
 
 
@@ -136,5 +139,4 @@ class EmailUserUpcomingEventsForAccount {
     {
         $this->token = $token;
     }
-
 }

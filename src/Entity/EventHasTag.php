@@ -81,5 +81,4 @@ class EventHasTag
     {
         $this->enabled = $enabled;
     }
-
 }

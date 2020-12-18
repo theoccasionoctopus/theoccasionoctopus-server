@@ -23,8 +23,8 @@ class APIV1AccountEventDetailsController extends APIV1AccountController
     /** @var  Event */
     protected $event;
 
-    protected function buildEvent($account_id, $event_id, Request $request) {
-
+    protected function buildEvent($account_id, $event_id, Request $request)
+    {
         $this->buildAccount($account_id, $request);
 
         $doctrine = $this->getDoctrine();
@@ -37,11 +37,11 @@ class APIV1AccountEventDetailsController extends APIV1AccountController
         if (!$this->account_permission_read_private && $this->event->getPrivacy() > 0) {
             throw new  NotFoundHttpException('Not found');
         }
-
     }
 
 
-    public function showJSON($account_id, $event_id, Request $request) {
+    public function showJSON($account_id, $event_id, Request $request)
+    {
         $this->buildEvent($account_id, $event_id, $request);
 
         $out['event'] = array(
@@ -73,10 +73,10 @@ class APIV1AccountEventDetailsController extends APIV1AccountController
             Response::HTTP_OK,
             ['content-type' => 'application/json']
         );
-        
     }
 
-    public function editJSON($account_id, $event_id, Request $request, HistoryWorkerService $historyWorkerService) {
+    public function editJSON($account_id, $event_id, Request $request, HistoryWorkerService $historyWorkerService)
+    {
         $this->buildEvent($account_id, $event_id, $request);
 
         $doctrine = $this->getDoctrine();
@@ -95,8 +95,8 @@ class APIV1AccountEventDetailsController extends APIV1AccountController
         $historyWorker = $historyWorkerService->getHistoryWorker($this->account, $this->accessToken->getUser());
         $changedEvent = false;
 
-        if ($request->get('title') ) {
-            if (in_array('title',$editableFields)) {
+        if ($request->get('title')) {
+            if (in_array('title', $editableFields)) {
                 if ($this->event->setTitle($request->get('title'))) {
                     $changedEvent = true;
                 }
@@ -105,7 +105,7 @@ class APIV1AccountEventDetailsController extends APIV1AccountController
             }
         }
         if ($request->get('description')) {
-            if (in_array('description',$editableFields)) {
+            if (in_array('description', $editableFields)) {
                 if ($this->event->setDescription($request->get('description'))) {
                     $changedEvent = true;
                 }
@@ -114,7 +114,7 @@ class APIV1AccountEventDetailsController extends APIV1AccountController
             }
         }
         if ($request->get('url')) {
-            if (in_array('url',$editableFields)) {
+            if (in_array('url', $editableFields)) {
                 if ($this->event->setUrl($request->get('url'))) {
                     $changedEvent = true;
                 }
@@ -123,7 +123,7 @@ class APIV1AccountEventDetailsController extends APIV1AccountController
             }
         }
         if ($request->get('url_tickets')) {
-            if (in_array('url_tickets',$editableFields)) {
+            if (in_array('url_tickets', $editableFields)) {
                 if ($this->event->setUrlTickets($request->get('url_tickets'))) {
                     $changedEvent = true;
                 }
@@ -133,7 +133,7 @@ class APIV1AccountEventDetailsController extends APIV1AccountController
         }
 
         if ($request->get('start_year_utc')) {
-            if (in_array('start_end',$editableFields)) {
+            if (in_array('start_end', $editableFields)) {
                 $start = new \DateTime('', new \DateTimeZone('UTC'));
                 $start->setDate(
                     $request->get('start_year_utc', $start->format('Y')),
@@ -154,7 +154,7 @@ class APIV1AccountEventDetailsController extends APIV1AccountController
         }
 
         if ($request->get('end_year_utc')) {
-            if (in_array('start_end',$editableFields)) {
+            if (in_array('start_end', $editableFields)) {
                 $end = new \DateTime('', new \DateTimeZone('UTC'));
                 $end->setDate(
                     $request->get('end_year_utc', $end->format('Y')),
@@ -175,7 +175,7 @@ class APIV1AccountEventDetailsController extends APIV1AccountController
         }
 
         if ($request->get('start_year_timezone')) {
-            if (in_array('start_end',$editableFields)) {
+            if (in_array('start_end', $editableFields)) {
                 $start = new \DateTime('', $this->event->getTimezone()->getDateTimeZoneObject());
                 if ($this->event->setStartWithInts(
                     $request->get('start_year_timezone', $start->format('Y')),
@@ -193,7 +193,7 @@ class APIV1AccountEventDetailsController extends APIV1AccountController
         }
 
         if ($request->get('end_year_timezone')) {
-            if (in_array('start_end',$editableFields)) {
+            if (in_array('start_end', $editableFields)) {
                 $end = new \DateTime('', $this->event->getTimezone()->getDateTimeZoneObject());
                 if ($this->event->setEndWithInts(
                     $request->get('end_year_timezone', $end->format('Y')),
@@ -211,7 +211,7 @@ class APIV1AccountEventDetailsController extends APIV1AccountController
         }
 
         if ($request->get('extra_field_0_name')) {
-            if (in_array('extra_fields',$editableFields)) {
+            if (in_array('extra_fields', $editableFields)) {
                 $count = 0;
                 while ($request->get('extra_field_' . $count . '_name')) {
                     if ($this->event->getExtraField($request->get('extra_field_' . $count . '_name')) != $request->get('extra_field_' . $count . '_value')) {
@@ -227,7 +227,7 @@ class APIV1AccountEventDetailsController extends APIV1AccountController
 
         $deleted = $this::parseBooleanString($request->get('deleted'));
         if (!is_null($deleted)) {
-            if (in_array('deleted',$editableFields)) {
+            if (in_array('deleted', $editableFields)) {
                 if ($this->event->setDeleted($deleted)) {
                     $changedEvent = true;
                 }
@@ -238,7 +238,7 @@ class APIV1AccountEventDetailsController extends APIV1AccountController
 
         $cancelled = $this::parseBooleanString($request->get('cancelled'));
         if (!is_null($cancelled)) {
-            if (in_array('cancelled',$editableFields)) {
+            if (in_array('cancelled', $editableFields)) {
                 if ($this->event->setCancelled($cancelled)) {
                     $changedEvent = true;
                 }
@@ -249,7 +249,7 @@ class APIV1AccountEventDetailsController extends APIV1AccountController
 
 
         if ($request->get('add_tag_0')) {
-            if (in_array('tags',$editableFields)) {
+            if (in_array('tags', $editableFields)) {
                 $count = 0;
                 while ($request->request->get('add_tag_' . $count)) {
                     $tag = $tagRepository->findOneBy(['id' => $request->request->get('add_tag_' . $count), 'account' => $this->account]);
@@ -259,10 +259,10 @@ class APIV1AccountEventDetailsController extends APIV1AccountController
                             $eventTag = new EventHasTag();
                             $eventTag->setEvent($this->event);
                             $eventTag->setTag($tag);
-                            $eventTag->setEnabled(True);
+                            $eventTag->setEnabled(true);
                             $historyWorker->addEventHasTag($eventTag);
                         } elseif (!$eventTag->getENabled()) {
-                            $eventTag->setEnabled(True);
+                            $eventTag->setEnabled(true);
                             $historyWorker->addEventHasTag($eventTag);
                         }
                     } else {
@@ -318,7 +318,5 @@ class APIV1AccountEventDetailsController extends APIV1AccountController
                 ['content-type' => 'application/json']
             );
         }
-
     }
-
 }

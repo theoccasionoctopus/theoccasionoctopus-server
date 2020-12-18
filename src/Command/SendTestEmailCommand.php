@@ -1,7 +1,6 @@
 <?php
 namespace App\Command;
 
-
 use App\Entity\EmailUserUpcomingEventsForAccount;
 use App\Entity\User;
 use Symfony\Component\Console\Command\Command;
@@ -47,12 +46,11 @@ class SendTestEmailCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-
         $parameters = [];
 
         $message = new \Swift_Message(
-                $this->twig->render('email/test/subject.text.twig', $parameters)
-            );
+            $this->twig->render('email/test/subject.text.twig', $parameters)
+        );
 
         $message->setFrom(
             [$this->container->getParameter('app.mailer_from_email')=>$this->container->getParameter('app.instance_name')]
@@ -71,7 +69,5 @@ class SendTestEmailCommand extends Command
         $this->mailer->send($message);
 
         return 0;
-
     }
-
 }

@@ -14,5 +14,4 @@ class InboxSubmissionRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, InboxSubmission::class);
     }
-
 }

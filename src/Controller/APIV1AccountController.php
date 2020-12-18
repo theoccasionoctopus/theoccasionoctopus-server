@@ -17,12 +17,11 @@ abstract class APIV1AccountController extends APIV1Controller
 
     /** @var  Account */
     protected $account;
-    protected $account_permission_read_private = False;
-    protected $account_permission_write = False;
+    protected $account_permission_read_private = false;
+    protected $account_permission_write = false;
 
     protected function buildAccount($account_id, Request $request)
     {
-
         $this->build($request);
 
         // Load Account
@@ -49,27 +48,24 @@ abstract class APIV1AccountController extends APIV1Controller
             // Does this access token give permission to manage this account?
             $userManagesAccount = $doctrine->getRepository(UserManageAccount::class)->findOneBy(['user'=>$this->accessToken->getUser(),'account'=>$this->account]);
             if ($userManagesAccount) {
-                $this->account_permission_read_private = True;
+                $this->account_permission_read_private = true;
                 // But still, only some access tokens can write
                 if ($this->accessToken->getWrite()) {
                     $this->account_permission_write = true;
                 }
             }
         }
-
-
-
     }
 
-    public static function parseBooleanString($in) {
-        $in = substr(strtolower(trim($in)),0,1);
+    public static function parseBooleanString($in)
+    {
+        $in = substr(strtolower(trim($in)), 0, 1);
         if (in_array($in, ['y','1'])) {
-            return True;
+            return true;
         } elseif (in_array($in, ['n','0'])) {
-            return False;
+            return false;
         } else {
-            return Null;
+            return null;
         }
     }
-
 }

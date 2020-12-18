@@ -1,7 +1,6 @@
 <?php
 namespace App\Command;
 
-
 use App\Entity\Account;
 use App\Entity\AccountRemote;
 use App\Entity\Country;
@@ -54,12 +53,10 @@ class DownloadImportContentCommand extends Command
     {
         $doctrine = $this->container->get('doctrine');
         /** @var AccountRemote $accountRemote */
-        foreach($doctrine->getRepository(Import::class)->findByEnabled(true) as $import) {
+        foreach ($doctrine->getRepository(Import::class)->findByEnabled(true) as $import) {
             $output->writeln('Import '. $import->getId(). ' for account '. $import->getAccount()->getId());
             $this->importService->import($import);
         }
         return 0;
-
     }
-
 }

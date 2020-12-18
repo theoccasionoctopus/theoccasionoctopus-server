@@ -13,11 +13,8 @@ use App\Entity\Event;
 
 class AccountPublicProfileController extends AccountPublicController
 {
-
-
     public function index($account_username, Request $request)
     {
-
         $this->setUpAccountPublic($account_username, $request);
 
 
@@ -30,7 +27,5 @@ class AccountPublicProfileController extends AccountPublicController
             'account'=> $this->account,
             'accounts_following'=>$accounts_following,
         ]));
-
     }
-
 }

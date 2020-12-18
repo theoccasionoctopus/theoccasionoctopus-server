@@ -25,7 +25,6 @@ class EventNewType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-
         $builder->add('title', TextType::class, array('required' => false, 'empty_data' => null));
         $builder->add('description', TextAreaType::class, array('required' => false, 'empty_data' => null));
         $builder->add('url', UrlType::class, array('required' => false, 'empty_data' => null));
@@ -82,7 +81,7 @@ class EventNewType extends AbstractType
         $builder->add('rrule', TextType::class, array('required' => false, 'empty_data' => null));
 
         /** @var \closure $myExtraFieldValidator **/
-        $myExtraFieldValidator = function(FormEvent $event) {
+        $myExtraFieldValidator = function (FormEvent $event) {
             $form = $event->getForm();
             $myExtraFieldStart = $form->get('start_at')->getData();
             $myExtraFieldEnd = $form->get('end_at')->getData();
@@ -99,7 +98,6 @@ class EventNewType extends AbstractType
 
         // adding the validator to the FormBuilderInterface
         $builder->addEventListener(FormEvents::POST_SUBMIT, $myExtraFieldValidator);
-
     }
 
     public function configureOptions(OptionsResolver $resolver)

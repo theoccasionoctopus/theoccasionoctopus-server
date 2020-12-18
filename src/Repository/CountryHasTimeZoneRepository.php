@@ -15,7 +15,4 @@ class CountryHasTimeZoneRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, CountryHasTimeZone::class);
     }
-
-
-
 }

@@ -152,9 +152,4 @@ class InboxSubmission
     {
         $this->useragent = $useragent;
     }
-
-
-
-
-
 }

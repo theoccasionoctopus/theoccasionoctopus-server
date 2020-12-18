@@ -18,6 +18,4 @@ class AccountRemoteRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, AccountRemote::class);
     }
-
-
 }

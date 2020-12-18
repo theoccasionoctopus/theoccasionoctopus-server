@@ -277,7 +277,8 @@ class Event
         return $out;
     }
 
-    public function getStartAtTimeZone() {
+    public function getStartAtTimeZone()
+    {
         $out = new \DateTime('', new \DateTimeZone($this->timezone->getCode()));
         $out->setDate($this->startYear, $this->startMonth, $this->startDay);
         $out->setTime($this->startHour, $this->startMinute, $this->startSecond);
@@ -335,7 +336,8 @@ class Event
         return $out;
     }
 
-    public function getEndAtTimeZone() {
+    public function getEndAtTimeZone()
+    {
         $out = new \DateTime('', new \DateTimeZone($this->timezone->getCode()));
         $out->setDate($this->endYear, $this->endMonth, $this->endDay);
         $out->setTime($this->endHour, $this->endMinute, $this->endSecond);
@@ -381,7 +383,8 @@ class Event
 
 
     
-    public function updateStartEndCache() {
+    public function updateStartEndCache()
+    {
         if ($this->timezone) {
             $start = new \DateTime('', new \DateTimeZone($this->timezone->getCode()));
             $start->setDate($this->startYear, $this->startMonth, $this->startDay);
@@ -534,7 +537,8 @@ class Event
             $this->url_tickets = $url_tickets;
             return true;
         }
-        return false;    }
+        return false;
+    }
 
     /**
      * @return mixed
@@ -571,7 +575,7 @@ class Event
      */
     public function setRruleOptions($rrule_options)
     {
-        if ( $this->rrule_options != $rrule_options) {
+        if ($this->rrule_options != $rrule_options) {
             $this->rrule_options = $rrule_options;
             return true;
         }
@@ -579,13 +583,15 @@ class Event
     }
 
 
-    public function hasReoccurence(): bool {
+    public function hasReoccurence(): bool
+    {
         return (bool)$this->rrule;
     }
 
-    public function copyFromEvent(Event $sourceEvent) {
+    public function copyFromEvent(Event $sourceEvent)
+    {
         $r = false;
-        if($this->setTitle($sourceEvent->getTitle())) {
+        if ($this->setTitle($sourceEvent->getTitle())) {
             $r = true;
         }
         if ($this->setDescription($sourceEvent->getDescription())) {
@@ -626,11 +632,12 @@ class Event
     const EDITABLE_FIELDS_MODE_IMPORTED = 'imported';
     const EDITABLE_FIELDS_MODE_SOURCED = 'sourced';
 
-    public function getEditableFieldsMode():string {
+    public function getEditableFieldsMode():string
+    {
 
         // Is this an actively imported event?
         if ($this->eventHasImport) {
-            foreach($this->eventHasImport as $eventHasImport) {
+            foreach ($this->eventHasImport as $eventHasImport) {
                 if ($eventHasImport->getImport()->getEnabled()) {
                     return self::EDITABLE_FIELDS_MODE_IMPORTED;
                 }
@@ -640,7 +647,7 @@ class Event
 
         // Is this an event sourced?
         if ($this->eventHasSources) {
-            foreach($this->eventHasSources as $eventHasSource) {
+            foreach ($this->eventHasSources as $eventHasSource) {
                 if (true) { # TODO This should be some check of whether updates from the source are still wanted
                     return self::EDITABLE_FIELDS_MODE_SOURCED;
                 }
@@ -652,8 +659,8 @@ class Event
         return self::EDITABLE_FIELDS_MODE_ALL;
     }
 
-    public function getEditableFieldsList():array {
-
+    public function getEditableFieldsList():array
+    {
         $mode = $this->getEditableFieldsMode();
         if ($mode == self::EDITABLE_FIELDS_MODE_SOURCED) {
             return [
@@ -685,7 +692,5 @@ class Event
               'tags',
             ];
         }
-
     }
-
 }

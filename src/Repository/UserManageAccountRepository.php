@@ -16,6 +16,4 @@ class UserManageAccountRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, UserManageAccount::class);
     }
-
-
 }

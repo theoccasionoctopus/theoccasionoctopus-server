@@ -61,7 +61,4 @@ class UserManageAccount
     {
         $this->account = $account;
     }
-
-
-
 }

@@ -1,7 +1,6 @@
 <?php
 namespace App\Command;
 
-
 use App\Entity\User;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -10,7 +9,6 @@ use Symfony\Component\Console\Output\OutputInterface;
 use App\Entity\Source;
 use App\Import\ImportRunner;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-
 
 class MakeUserSysadminCommand extends Command
 {
@@ -39,7 +37,6 @@ class MakeUserSysadminCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-
         $doctrine = $this->container->get('doctrine');
         $accountRepository = $doctrine->getRepository(User::class);
 
@@ -54,7 +51,5 @@ class MakeUserSysadminCommand extends Command
         $doctrine->getManager()->persist($user);
         $doctrine->getManager()->flush();
         return 0;
-
     }
-
 }

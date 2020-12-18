@@ -19,7 +19,6 @@ use Psr\Log\LoggerInterface;
 
 class UserController extends BaseController
 {
-
     public function login(AuthenticationUtils $authenticationUtils, Request $request): Response
     {
 
@@ -64,7 +63,6 @@ class UserController extends BaseController
                 $logger->info('User Register Instance Password Wrong', []);
 
                 $form->get('magicWord')->addError(new FormError('Wrong Magic Word!'));
-
             }
 
             if ($form->isValid()) {
@@ -89,7 +87,6 @@ class UserController extends BaseController
                     'Welcome!'
                 );
                 return $this->redirectToRoute('index');
-
             }
         }
 
@@ -98,6 +95,4 @@ class UserController extends BaseController
             $this->getTemplateVariables(array('form' => $form->createView()))
         );
     }
-
-
 }

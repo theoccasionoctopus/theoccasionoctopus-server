@@ -87,7 +87,8 @@ class EventOccurrence
     /**
      * @return \DateTime
      */
-    public function getStartAtTimeZone(): \DateTime {
+    public function getStartAtTimeZone(): \DateTime
+    {
         $out = new \DateTime('', new \DateTimeZone($this->getEvent()->getTimezone()->getCode()));
         $out->setTimestamp($this->startEpoch);
         return $out;
@@ -100,7 +101,7 @@ class EventOccurrence
     public function getEnd($timezone = null): \DateTime
     {
         $timezone = ($timezone ? new \DateTimeZone($timezone) : new \DateTimeZone($this->getEvent()->getTimezone()->getCode()));
-        $out = new \DateTime('', $timezone );
+        $out = new \DateTime('', $timezone);
         $out->setTimestamp($this->endEpoch);
         return $out;
     }
@@ -108,7 +109,8 @@ class EventOccurrence
     /**
      * @return \DateTime
      */
-    public function getEndAtTimeZone(): \DateTime {
+    public function getEndAtTimeZone(): \DateTime
+    {
         $out = new \DateTime('', new \DateTimeZone($this->getEvent()->getTimezone()->getCode()));
         $out->setTimestamp($this->endEpoch);
         return $out;
@@ -129,8 +131,4 @@ class EventOccurrence
     {
         $this->endEpoch = $endEpoch->getTimestamp();
     }
-
-
-
-
 }

@@ -21,7 +21,5 @@ class SysAdminUserListController extends SysAdminBaseController
         return $this->render('sysadmin/user/index.html.twig', $this->getTemplateVariables([
             'users'=>$repository->findAll(),
         ]));
-
     }
-
 }

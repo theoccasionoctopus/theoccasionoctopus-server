@@ -1,7 +1,6 @@
 <?php
 namespace App\Command;
 
-
 use App\Entity\Account;
 use App\Entity\AccountRemote;
 use App\Entity\EmailUserUpcomingEventsForAccount;
@@ -50,7 +49,6 @@ class AddRemoteAccountComand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-
         $doctrine = $this->container->get('doctrine');
         $remoteServer = $doctrine->getRepository(RemoteServer::class)->findOneById($input->getArgument('server_id'));
         if (!$remoteServer) {
@@ -64,5 +62,4 @@ class AddRemoteAccountComand extends Command
         $output->writeln('Id='. $account->getId());
         return 0;
     }
-
 }

@@ -14,12 +14,10 @@ use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpFoundation\Response;
 
-class APIV1AccountTagNewController extends APIV1AccountController {
-
-
-
-
-    public function newJSON($account_id, Request $request,  HistoryWorkerService $historyWorkerService) {
+class APIV1AccountTagNewController extends APIV1AccountController
+{
+    public function newJSON($account_id, Request $request, HistoryWorkerService $historyWorkerService)
+    {
         $this->buildAccount($account_id, $request);
 
         if (!$this->account_permission_write) {
@@ -27,7 +25,8 @@ class APIV1AccountTagNewController extends APIV1AccountController {
         }
 
 
-        $existingTag = $this->getDoctrine()->getRepository(Tag::class)->findOneBy(array('account' => $this->account, 'title' => $request->get('title')));;
+        $existingTag = $this->getDoctrine()->getRepository(Tag::class)->findOneBy(array('account' => $this->account, 'title' => $request->get('title')));
+        ;
         if ($existingTag) {
             return new Response(
                 json_encode([
@@ -45,7 +44,7 @@ class APIV1AccountTagNewController extends APIV1AccountController {
         $tag->setAccount($this->account);
         $tag->setId(Library::GUID());
         $tag->setPrivacy($this->account->getAccountLocal()->getDefaultPrivacy());
-        $tag->setEnabled(True);
+        $tag->setEnabled(true);
 
         // TODO If don't pass a title, should error nicely. There should at least be a title.
         if ($request->get('title')) {
@@ -56,7 +55,7 @@ class APIV1AccountTagNewController extends APIV1AccountController {
         }
 
         $count = 0;
-        while($request->request->get('extra_field_'.$count.'_name')) {
+        while ($request->request->get('extra_field_'.$count.'_name')) {
             $tag->setExtraField($request->request->get('extra_field_'.$count.'_name'), $request->request->get('extra_field_'.$count.'_value'));
             $count++;
         }
@@ -76,8 +75,5 @@ class APIV1AccountTagNewController extends APIV1AccountController {
             Response::HTTP_OK,
             ['content-type' => 'application/json']
         );
-
-
     }
-
 }
