@@ -17,6 +17,7 @@ DATABASE_URL=postgresql://app:password@127.0.0.1:5432/app?serverVersion=10&chars
 INSTANCE_NAME="Dev Instance"
 INSTANCE_SYSADMIN_EMAIL="sysadmin@example.com"
 INSTANCE_URL="http://localhost:8080"
+MESSENGER_TRANSPORT_DSN="amqp://guest:guest@localhost:5672/%2f/messages"
 ```
 
 into `.env.local`, then run:
@@ -54,11 +55,19 @@ Copy changed files back
     scp -P 2222 -r vagrant@localhost:/vagrant/migrations .
     scp -P 2222 -r vagrant@localhost:/vagrant/config .
         
+## Message Ques
+
+Run consumer:
+
+    php ./bin/console messenger:consume
+
+
 ## PHP Tests
 
 Put
 
     DATABASE_URL=postgresql://apptest:passwordtest@127.0.0.1:5432/apptest?serverVersion=10&charset=utf8
+    MESSENGER_TRANSPORT_DSN="in-memory://"
     
 into `.env.test.local`
 

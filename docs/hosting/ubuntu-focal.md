@@ -44,7 +44,7 @@ We are going to set up a locale for us to use. You may choose a different one fo
 Next install needed packages:
 
     apt-get update
-    DEBIAN_FRONTEND=noninteractive apt-get install -y postgresql apache2 php-mbstring php-gd php php-curl php-pgsql git php-intl curl zip php7.4-fpm php-zip php-xml certbot python3-certbot-apache acl
+    DEBIAN_FRONTEND=noninteractive apt-get install -y postgresql apache2 php-mbstring php-gd php php-curl php-pgsql git php-intl curl zip php7.4-fpm php-zip php-xml certbot python3-certbot-apache acl rabbitmq-server php-amqp supervisor
     
     curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash -
     apt-get install -y nodejs
@@ -83,6 +83,19 @@ Create the database, replacing the database password:
     sudo su --login -c "psql -c \"CREATE USER occ_oct_app WITH PASSWORD 'ENTER-PASSWORD-HERE';\"" postgres
     sudo su --login -c "psql -c \"CREATE DATABASE occ_oct_app WITH OWNER occ_oct_app ENCODING 'UTF8'  LC_COLLATE='en_GB.UTF-8' LC_CTYPE='en_GB.UTF-8'  TEMPLATE=template0 ;\"" postgres
 
+## Configure the message queue
+
+Configure the server to accept connections from localhost only:
+
+    echo "NODE_IP_ADDRESS=127.0.0.1" >> /etc/rabbitmq/rabbitmq-env.conf
+    /etc/init.d/rabbitmq-server restart
+
+Generate a random password to use for the RabbitMQ user. Keep a note of it handy for the rest of this guide, but you won't need it saved afterwards.
+
+Change the password for the guest user:
+
+    rabbitmqctl change_password guest ENTER-PASSWORD-HERE
+
 ### Configure the app
 
 Create `/home/occ_oct/software/.env.local` with the contents (edited as appropriate):
@@ -99,6 +112,7 @@ USER_REGISTER_INSTANCE_PASSWORD="please"
 DEFAULT_COUNTRY=GB
 DEFAULT_TIMEZONE=Europe/London
 INSTANCE_SYSADMIN_EMAIL="hello@example.com"
+MESSENGER_TRANSPORT_DSN="amqp://guest:ENTER-PASSWORD-HERE@localhost:5672/%2f/messages"
 ```
 
 For a full explanation of what each one does, and how to set it, see [Configuration Options](configuration-options.md).
@@ -171,6 +185,27 @@ Run:
     systemctl enable php7.4-fpm
     a2enconf php7.4-fpm
     systemctl reload apache2
+
+### Set up the message queue
+
+Create the config file and save it as `/etc/supervisor/conf.d/occ-oct-messenger-consume.conf`:
+
+```
+[program:occ-oct-messenger-consume]
+command=php /home/occ_oct/software/bin/console messenger:consume async --failure-limit=1 --time-limit=3600
+user=occ_oct
+numprocs=2
+startsecs=0
+autostart=true
+autorestart=true
+process_name=%(program_name)s_%(process_num)02d
+```
+
+Start the workers:
+
+    supervisorctl reread
+    supervisorctl update
+    supervisorctl start occ-oct-messenger-consume:*
 
 ### Set up cron
 
@@ -312,6 +347,7 @@ Log into server and run as root:
     su -c "./bin/console doctrine:migrations:migrate --no-interaction" occ_oct
     su -c "./bin/console theocasionoctupus:load-country-data" occ_oct
     /etc/init.d/php7.4-fpm reload
+    su -c "./bin/console messenger:stop-workers" occ_oct
     su -c "npm install" occ_oct
     su -c "yarn install" occ_oct
     su -c "yarn encore production" occ_oct

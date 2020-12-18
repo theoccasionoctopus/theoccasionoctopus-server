@@ -38,6 +38,7 @@ jobs:
           echo "INSTANCE_URL=http://localhost" >> .env.test.local &&
           echo "INSTANCE_NAME=DevInstance" >> .env.test.local &&
           echo "INSTANCE_SYSADMIN_EMAIL=sysadmin@example.com" >> .env.test.local &&
+          echo "MESSENGER_TRANSPORT_DSN=in-memory://" >> .env.test.local &&
           cp .env.test.local .env.local
 
       - name: Install dependencies

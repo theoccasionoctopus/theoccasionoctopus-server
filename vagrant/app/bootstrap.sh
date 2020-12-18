@@ -13,7 +13,7 @@ locale-gen
 #--------------------------------------------  Install
 
 apt-get update
-DEBIAN_FRONTEND=noninteractive apt-get install -y postgresql apache2 php7.4-fpm php-mbstring php-gd php php-curl php-pgsql git php-intl curl zip php-zip php-xml
+DEBIAN_FRONTEND=noninteractive apt-get install -y postgresql apache2 php7.4-fpm php-mbstring php-gd php php-curl php-pgsql git php-intl curl zip php-zip php-xml rabbitmq-server php-amqp
 
 #--------------------------------------------  Logs
 

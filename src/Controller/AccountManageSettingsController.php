@@ -17,6 +17,7 @@ use App\Library;
 use App\Form\EventNewType;
 use Symfony\Component\HttpFoundation\Request;
 use Psr\Log\LoggerInterface;
+use App\Message\NewImportMessage;
 
 class AccountManageSettingsController extends AccountManageController
 {
@@ -109,6 +110,9 @@ class AccountManageSettingsController extends AccountManageController
                     'import_id'=>$import->getId()
                 ]
             );
+
+            // Message
+            $this->dispatchMessage(new NewImportMessage($import->getId()));
 
             // redirect
             return $this->redirectToRoute('account_manage_settings', ['account_username' => $this->account->getUsername() ]);

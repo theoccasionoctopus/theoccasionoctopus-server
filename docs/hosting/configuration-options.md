@@ -93,6 +93,14 @@ MAILER_FROM_EMAIL="theoccocc@example.com"
 ```
 
 
+## MESSENGER_TRANSPORT_DSN
+
+```
+MESSENGER_TRANSPORT_DSN="amqp://guest:guest@localhost:5672/%2f/messages"
+```
+
+
+
 ## USER_REGISTER_INSTANCE_PASSWORD
 
 
