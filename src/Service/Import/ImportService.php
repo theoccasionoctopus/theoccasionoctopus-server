@@ -74,6 +74,12 @@ class ImportService
     {
         $primary_id_in_data = $eventData->UID;
         $secondary_id_in_data = $eventData->{'RECURRENCE-ID'};
+        $eventDataStatus = iconv(mb_detect_encoding($eventData->STATUS), "UTF-8//IGNORE", $eventData->STATUS);
+        $eventDataSummary = iconv(mb_detect_encoding($eventData->SUMMARY), "UTF-8//IGNORE", $eventData->SUMMARY);
+        $eventDataDescription = iconv(mb_detect_encoding($eventData->DESCRIPTION), "UTF-8//IGNORE", $eventData->DESCRIPTION);
+        $eventDataUrl = iconv(mb_detect_encoding($eventData->URL), "UTF-8//IGNORE", $eventData->URL);
+        $eventDataRRule = iconv(mb_detect_encoding($eventData->RRULE), "UTF-8//IGNORE", $eventData->RRULE);
+
         if (!$secondary_id_in_data) {
             // Nulls are not allowed here, it must be an empty string
             $secondary_id_in_data = '';
@@ -86,7 +92,7 @@ class ImportService
         $changes = false;
         if ($eventHasImport) {
             $event = $eventHasImport->getEvent();
-        } elseif ($eventData->STATUS == 'CANCELLED') {
+        } elseif ($eventDataStatus == 'CANCELLED') {
             // It's a new event, but it's cancelled - we don't want to bother importing that at all.
             return;
         } else {
@@ -109,24 +115,24 @@ class ImportService
         $event->setTimezone($import->getDefaultTimezone());
 
 
-        if ($event->setTitle($eventData->SUMMARY)) {
+        if ($event->setTitle($eventDataSummary)) {
             $changes = true;
         }
 
-        if ($event->setDescription($eventData->DESCRIPTION)) {
+        if ($event->setDescription($eventDataDescription)) {
             $changes = true;
         }
 
-        if ($event->setUrl($eventData->URL)) {
+        if ($event->setUrl($eventDataUrl)) {
             $changes = true;
         }
 
-        if ($event->setCancelled($eventData->STATUS == 'CANCELLED')) {
+        if ($event->setCancelled($eventDataStatus == 'CANCELLED')) {
             $changes = true;
         }
 
-        if ($eventData->RRULE) {
-            if ($event->setRrule($eventData->RRULE)) {
+        if ($eventDataRRule) {
+            if ($event->setRrule($eventDataRRule)) {
                 $changes = true;
             }
             // TODO set RRULE Options
