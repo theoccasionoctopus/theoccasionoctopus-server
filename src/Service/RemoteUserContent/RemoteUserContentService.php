@@ -10,6 +10,7 @@ use App\Entity\Event;
 use App\Entity\RemoteServer;
 use App\Entity\TimeZone;
 use App\Entity\User;
+use App\Service\EventToEventOccurrence\EventToEventOccurrenceService;
 use Doctrine\ORM\EntityManagerInterface;
 use GuzzleHttp\Client;
 use Psr\Log\LoggerInterface;
@@ -23,13 +24,16 @@ class RemoteUserContentService
     /** @var LoggerInterface  */
     protected $logger;
 
+    protected $eventToEventOccurrenceService;
+
     /**
      * @param EntityManagerInterface $entityManager
      */
-    public function __construct(EntityManagerInterface $entityManager, LoggerInterface $logger)
+    public function __construct(EntityManagerInterface $entityManager, LoggerInterface $logger, EventToEventOccurrenceService $eventToEventOccurrenceService)
     {
         $this->entityManager = $entityManager;
         $this->logger = $logger;
+        $this->eventToEventOccurrenceService = $eventToEventOccurrenceService;
     }
 
     public function downloadAccountRemote(AccountRemote $accountRemote)
@@ -110,7 +114,8 @@ class RemoteUserContentService
             $this->entityManager->persist($event);
             $this->entityManager->flush();
 
-            // TODO event to event occurrence!
+            // Event to event occurrence!
+            $this->eventToEventOccurrenceService->process($event);
 
             // TODO this wont deal with things that were once public, new private! Special flag in API?
         }
