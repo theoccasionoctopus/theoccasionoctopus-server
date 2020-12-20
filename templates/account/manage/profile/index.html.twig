@@ -17,6 +17,11 @@
                             <i class="fas fa-user"></i> {{  account_following.title }} on <i class="fas fa-database"></i> {{ account_following.accountRemote.remoteServer.title }}
                             <a href="{{ account_following.accountRemote.humanURL }}" class="button" role="button" target="_blank">View</a>
                         {%  endif %}
+                        <form action="#" method="post">
+                            <input type="hidden" name="action" value="unfollow">
+                            <input type="hidden" name="guid" value="{{  account_following.id }}">
+                            <input type="submit" value="Unfollow" class="button">
+                        </form>
                     </li>
                 {%  endfor %}
             </ul>

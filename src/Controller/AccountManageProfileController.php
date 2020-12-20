@@ -19,11 +19,25 @@ class AccountManageProfileController extends AccountManageController
     {
         $this->build($account_username);
 
-
         $doctrine = $this->getDoctrine();
-        $repository = $doctrine->getRepository(Account::class);
-        $accounts_following = $repository->findFollowing($this->account);
 
+        if ($request->request->get('action') == 'unfollow') {
+
+            # TODO CSFR
+            $account = $doctrine->getRepository(Account::class)->findOneBy(['id'=>$request->request->get('guid')]);
+            if ($account) {
+                /** @var AccountFollowsAccount $account_follows_account */
+                $account_follows_account = $doctrine->getRepository(AccountFollowsAccount::class)->findOneBy(array('account' => $this->account, 'followsAccount' => $account));
+                if ($account_follows_account) {
+                    $account_follows_account->setFollows(false);
+                    $doctrine->getManager()->persist($account_follows_account);
+                    $doctrine->getManager()->flush();
+                    return $this->redirectToRoute('account_manage_profile', ['account_username' => $this->account->getUsername()]);
+                }
+            }
+        }
+
+        $accounts_following = $doctrine->getRepository(Account::class)->findFollowing($this->account);
 
         return $this->render('account/manage/profile/index.html.twig', $this->getTemplateVariables([
             'account' => $this->account,

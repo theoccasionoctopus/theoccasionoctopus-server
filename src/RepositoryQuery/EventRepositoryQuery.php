@@ -139,7 +139,7 @@ class EventRepositoryQuery
 
         if ($this->accountDiscoverEvents) {
             $qb->join('e.account', 'a');
-            $qb->join('a.followsAccountFollows', 'afa', 'WITH', 'afa.account  = :account');
+            $qb->join('a.followsAccountFollows', 'afa', 'WITH', 'afa.account  = :account AND afa.follows = true');
             $qb->setParameter('account', $this->accountDiscoverEvents);
         }
 
@@ -194,7 +194,7 @@ class EventRepositoryQuery
 
         if ($this->accountDiscoverEvents) {
             $qb->join('e.account', 'a');
-            $qb->join('a.followsAccountFollows', 'afa', 'WITH', 'afa.account  = :account');
+            $qb->join('a.followsAccountFollows', 'afa', 'WITH', 'afa.account  = :account AND afa.follows = true');
             $qb->setParameter('account', $this->accountDiscoverEvents);
         }
 
