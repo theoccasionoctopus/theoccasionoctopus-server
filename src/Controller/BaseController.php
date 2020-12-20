@@ -82,6 +82,9 @@ abstract class BaseController extends AbstractController
             'name'=>$account->getTitle(),
             'inbox'=>$this->getParameter('app.instance_url').$this->generateUrl('account_activity_streams_inbox', ['account_id'=>$account->getId()]),
             'outbox'=>$this->getParameter('app.instance_url').$this->generateUrl('account_activity_streams_outbox', ['account_id'=>$account->getId()]),
+            'preferredUsername'=>$account->getAccountLocal()->getUsername(),
+            'name'=>$account->getTitle(),
+            'url'=>$this->getParameter('app.instance_url').$this->generateUrl('account_public', ['account_username'=>$account->getAccountLocal()->getUsername()]),
         ];
         return new Response(
             json_encode($out),
