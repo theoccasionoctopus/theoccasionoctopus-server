@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Message\NewFollowRemoteAccountMessage;
 use App\Service\RemoteAccount\RemoteAccountService;
 use App\Service\RemoteServer\RemoteServerService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -76,8 +77,13 @@ class AccountManageProfileController extends AccountManageController
 
             $remoteAccount = $remoteAccountService->add($remoteServer, $username);
 
+            // Save
             $this->startFollowingAccount($remoteAccount);
 
+            // Message
+            $this->dispatchMessage(new NewFollowRemoteAccountMessage($this->account->getId(), $remoteAccount->getId()));
+
+            // Return
             return $this->redirectToRoute('account_manage_profile', ['account_username' => $this->account->getUsername()]);
         }
 

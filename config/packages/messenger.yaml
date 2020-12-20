@@ -12,3 +12,4 @@ framework:
         routing:
             # Route your messages to the transports
             'App\Message\NewImportMessage': async
+            'App\Message\NewFollowRemoteAccountMessage': async
