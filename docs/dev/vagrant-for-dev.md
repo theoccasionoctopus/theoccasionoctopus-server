@@ -59,7 +59,7 @@ Copy changed files back
 
 Run consumer:
 
-    php ./bin/console messenger:consume
+    php ./bin/console messenger:consume -vv --failure-limit=1
 
 
 ## PHP Tests
