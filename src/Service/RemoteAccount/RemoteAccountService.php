@@ -5,6 +5,7 @@ namespace App\Service\RemoteAccount;
 use App\Entity\Account;
 use App\Entity\AccountRemote;
 use App\Entity\RemoteServer;
+use App\Library;
 use GuzzleHttp\Client;
 use Doctrine\ORM\EntityManagerInterface;
 
@@ -25,38 +26,67 @@ class RemoteAccountService
     public function add(RemoteServer $remoteServer, string $username)
     {
         $guzzle = new Client(array('defaults' => array('headers' => array(  'User-Agent'=> 'Prototype Software') )));
-        $response = $guzzle->request(
+        $resourceToGetFromWebFinger = 'acct:'. $username. '@'. $remoteServer->getHost();
+        $responseWebFinger = $guzzle->request(
             "GET",
-            $remoteServer->getURL()."/.well-known/webfinger?resource=". urlencode($username),
+            $remoteServer->getURL()."/.well-known/webfinger?resource=". urlencode($resourceToGetFromWebFinger),
             array()
         );
-        if ($response->getStatusCode() != 200) {
-            throw new Exception("Got Status " . $response->getStatusCode());
+        if ($responseWebFinger->getStatusCode() != 200) {
+            throw new Exception("Got Status " . $responseWebFinger->getStatusCode());
         }
 
-        $data = json_decode($response->getBody(), true);
+        $dataWebFinger = json_decode($responseWebFinger->getBody(), true);
+        $isOccasionOctopus = array_key_exists('occasion-octopus-id', $dataWebFinger);
 
-        if (!array_key_exists('occasion-octopus-id', $data)) {
-            throw new Exception("This is not an Occasion Octopus Server");
+        // Check account not already here - if Occasion Octopus
+        if ($isOccasionOctopus) {
+            $account = $this->entityManager->getRepository(Account::class)->findOneById($dataWebFinger['occasion-octopus-id']);
+            if ($account) {
+                // TODO check that account actually is a remote account on this server - if not we have an ID collision!
+                return $account;
+            }
         }
 
-        $account = $this->entityManager->getRepository(Account::class)->findOneById($data['occasion-octopus-id']);
-        if ($account) {
-
-            // TODO check that account actually is a remote account on this server - if not we have an ID collision!
-
-            return $account;
+        // Get account data
+        $actorDataURL = Library::getActivityStreamsActorURLFromWebFingerData($dataWebFinger);
+        $responseActorData = $guzzle->request(
+            "GET",
+            $actorDataURL,
+            array(
+                'headers' => [
+                    'Accept'     => 'application/activity+json',
+                ]
+            )
+        );
+        if ($responseActorData->getStatusCode() != 200) {
+            throw new Exception("Got Status " . $responseActorData->getStatusCode());
         }
 
+        $dataActor = json_decode($responseActorData->getBody(), true);
+
+        // Check account not already here - if not Occasion Octopus
+        if (!$isOccasionOctopus) {
+            $account = $this->entityManager->getRepository(AccountRemote::class)->findOneBy(['actorDataId'=>$dataActor['id'],'remoteServer'=>$remoteServer]);
+            if ($account) {
+                return $account->getAccount();
+            }
+        }
+
+        // Now save.
         $account = new Account();
-        $account->setId($data['occasion-octopus-id']);
-        $account->setTitle($data['occasion-octopus-title']);
+        $account->setId($isOccasionOctopus ? $dataWebFinger['occasion-octopus-id'] : Library::GUID());
+        $account->setTitle($isOccasionOctopus ? $dataWebFinger['occasion-octopus-title'] : $dataActor['name']);
 
         $accountRemote = new AccountRemote();
         $accountRemote->setAccount($account);
         $accountRemote->setRemoteServer($remoteServer);
-        // TODO we can get away with hard coding this now - as soon as we start adding other types of servers we'll need to fix this!
-        $accountRemote->setHumanURL($remoteServer->getURL().'/a/'.$username);
+        $accountRemote->setUsername($username);
+        $accountRemote->setWebfingerData($dataWebFinger);
+        $accountRemote->setWebfingerDataLastFetched(time());
+        $accountRemote->setActorData($dataActor);
+        $accountRemote->setActorDataLastFetched(time());
+        $accountRemote->setActorDataId($dataActor['id']);
 
         $this->entityManager->persist($account);
         $this->entityManager->persist($accountRemote);

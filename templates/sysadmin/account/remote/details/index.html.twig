@@ -13,17 +13,23 @@
             </tr>
             <tr>
                 <th></th>
-                <td><h4>User Info</h4></td>
+                <td><h4>Information</h4></td>
             </tr>
             <tr>
-                <th>Account Title</th>
+                <th>Username</th>
+                <td>{{  accountRemote.username }}</td>
+            </tr>
+            <tr>
+                <th>Title</th>
                 <td>{{  account.title }}</td>
             </tr>
             <tr>
                 <th>Human Page</th>
                 <td>
-                    {{  accountRemote.humanURL }}
-                    <a href="{{ accountRemote.humanURL }}" class="button" role="button" target="_blank">View</a>
+                    {%  if accountRemote.humanURL %}
+                        {{  accountRemote.humanURL }}
+                        <a href="{{ accountRemote.humanURL }}" class="button" role="button" target="_blank">View</a>
+                    {%  endif %}
                 </td>
             </tr>
             <tr>
@@ -72,6 +78,18 @@
             <tr>
                 <th>limitNumberOfImports</th>
                 <td>{{  account.limitNumberOfImports }}</td>
+            </tr>
+            <tr>
+                <th></th>
+                <td><h4>Debug</h4></td>
+            </tr>
+            <tr>
+                <th>WebFinger Data</th>
+                <td><pre>{{  accountRemote.WebFingerDataAsString }}</pre></td>
+            </tr>
+            <tr>
+                <th>Actor Data</th>
+                <td><pre>{{  accountRemote.ActorDataAsString }}</pre></td>
             </tr>
         </table>
 

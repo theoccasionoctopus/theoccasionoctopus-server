@@ -38,6 +38,10 @@ class RemoteServer
      */
     private $title;
 
+    /**
+     * @ORM\Column(name="occasion_octopus_software", type="boolean", nullable=false, options={"default" : false})
+     */
+    private $occasionOctopusSoftware = false;
 
     /**
      * @return mixed
@@ -106,5 +110,21 @@ class RemoteServer
     public function setTitle($title)
     {
         $this->title = $title;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getOccasionOctopusSoftware()
+    {
+        return $this->occasionOctopusSoftware;
+    }
+
+    /**
+     * @param mixed $occasionOctopusSoftware
+     */
+    public function setOccasionOctopusSoftware($occasionOctopusSoftware)
+    {
+        $this->occasionOctopusSoftware = $occasionOctopusSoftware;
     }
 }

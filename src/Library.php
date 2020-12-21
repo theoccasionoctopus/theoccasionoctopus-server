@@ -142,4 +142,13 @@ class Library
 
         return [ $ssl, $host ];
     }
+
+    public static function getActivityStreamsActorURLFromWebFingerData($data)
+    {
+        foreach ($data['links'] as $linkData) {
+            if ($linkData['rel']== 'self' && $linkData['type'] == 'application/activity+json') {
+                return $linkData['href'];
+            }
+        }
+    }
 }

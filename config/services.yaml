@@ -58,8 +58,8 @@ services:
         class: App\Service\RemoteAccount\RemoteAccountService
         public: true
 
-    app.remoteUserContent:
-        class: App\Service\RemoteUserContent\RemoteUserContentService
+    app.remoteAccountContent:
+        class: App\Service\RemoteAccountContent\RemoteAccountContentService
         public: true
 
     app.import:

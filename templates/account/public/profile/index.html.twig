@@ -21,7 +21,9 @@
                             <a href="{{ path('account_public',{'account_username':account_following.username}) }}" class="button" role="button">View</a>
                         {%  elseif account_following.AccountRemote %}
                             <i class="fas fa-user"></i> {{  account_following.title }} on <i class="fas fa-database"></i> {{ account_following.accountRemote.remoteServer.title }}
-                            <a href="{{ account_following.accountRemote.humanURL }}" class="button" role="button" target="_blank">View</a>
+                            {%  if account_following.accountRemote.hasHumanURL %}
+                                <a href="{{ account_following.accountRemote.humanURL }}" class="button" role="button" target="_blank">View</a>
+                            {%  endif %}
                         {%  endif %}
                     </li>
                 {%  endfor %}

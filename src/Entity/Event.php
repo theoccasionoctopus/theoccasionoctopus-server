@@ -168,6 +168,12 @@ class Event
     private $rrule_options;
 
     /**
+     *
+     * @ORM\Column(name="activitypub_id", type="string", length=2000,  nullable=true, unique=true)
+     */
+    private $activitypubId;
+
+    /**
      * @ORM\OneToMany(targetEntity="EventHasTag", mappedBy="event")
      */
     private $eventHasTags;
@@ -692,5 +698,21 @@ class Event
               'tags',
             ];
         }
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getActivitypubId()
+    {
+        return $this->activitypubId;
+    }
+
+    /**
+     * @param mixed $activitypubId
+     */
+    public function setActivitypubId($activitypubId)
+    {
+        $this->activitypubId = $activitypubId;
     }
 }

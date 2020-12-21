@@ -9,7 +9,7 @@ use App\Entity\Event;
 use App\Entity\RemoteServer;
 use App\Entity\TimeZone;
 use App\Entity\User;
-use App\Service\RemoteUserContent\RemoteUserContentService;
+use App\Service\RemoteAccountContent\RemoteAccountContentService;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -20,6 +20,7 @@ use App\Import\ImportRunner;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Twig\Environment;
 
+// TODO This should be called DownloadRemoteAccountContentCommand! Need to change cron entries at same time.
 class DownloadRemoteUserContentCommand extends Command
 {
     protected static $defaultName = 'theocasionoctupus:download-remote-user-content';
@@ -27,16 +28,16 @@ class DownloadRemoteUserContentCommand extends Command
     /** @var  ContainerInterface */
     protected $container;
 
-    protected $remoteUserContentService;
+    protected $remoteAccountContentService;
 
     /**
      * LoadCountryData constructor.
      */
-    public function __construct(ContainerInterface $container, RemoteUserContentService $remoteUserContentService)
+    public function __construct(ContainerInterface $container, RemoteAccountContentService $remoteAccountContentService)
     {
         parent::__construct();
         $this->container = $container;
-        $this->remoteUserContentService = $remoteUserContentService;
+        $this->remoteAccountContentService = $remoteAccountContentService;
     }
 
     protected function configure()
@@ -55,7 +56,7 @@ class DownloadRemoteUserContentCommand extends Command
             /** @var Account $account */
             $account = $accountRemote->getAccount();
             $output->writeln('Account '. $account->getId(). ' on '. $accountRemote->getRemoteServer()->getURL());
-            $this->remoteUserContentService->downloadAccountRemote($accountRemote);
+            $this->remoteAccountContentService->downloadAccountRemote($accountRemote);
         }
         return 0;
     }
