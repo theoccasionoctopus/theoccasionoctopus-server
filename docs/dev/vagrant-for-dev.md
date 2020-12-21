@@ -96,7 +96,7 @@ Run:
 
     sudo su --login -c "psql -c \"DROP DATABASE app\"" postgres
     sudo su --login -c "psql -c \"CREATE DATABASE app WITH OWNER app ENCODING 'UTF8'  LC_COLLATE='en_GB.UTF-8' LC_CTYPE='en_GB.UTF-8'  TEMPLATE=template0 ;\"" postgres
-    php bin/console   doctrine:migrations:migrate 
+    php bin/console --no-interaction doctrine:migrations:migrate
     php bin/console theocasionoctupus:load-country-data
  
  
