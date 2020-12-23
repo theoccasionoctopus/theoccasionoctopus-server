@@ -148,8 +148,15 @@ class ImportService
         if ($event->setStartWithObject($eventData->DTSTART->getDateTime())) {
             $changes = true;
         }
-        if ($event->setEndWithObject($eventData->DTEND->getDateTime())) {
-            $changes = true;
+        if ($eventData->DTEND) {
+            if ($event->setEndWithObject($eventData->DTEND->getDateTime())) {
+                $changes = true;
+            }
+        } else {
+            // TODO should we be looking for duration field here?
+            if ($event->setEndWithObject($eventData->DTSTART->getDateTime())) {
+                $changes = true;
+            }
         }
 
         if ($changes) {
