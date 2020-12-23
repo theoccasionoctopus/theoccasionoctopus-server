@@ -50,6 +50,11 @@ class InboxSubmission
     private $created;
 
     /**
+     * @ORM\Column(name="processed_at", type="integer", nullable=true)
+     */
+    private $processed;
+
+    /**
      * @ORM\PrePersist
      */
     public function setCreatedValue()
@@ -76,7 +81,7 @@ class InboxSubmission
     /**
      * @return mixed
      */
-    public function getAccount()
+    public function getAccount(): Account
     {
         return $this->account;
     }
@@ -151,5 +156,21 @@ class InboxSubmission
     public function setUseragent($useragent)
     {
         $this->useragent = $useragent;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getProcessed()
+    {
+        return $this->processed;
+    }
+
+    /**
+     * @param mixed $processed
+     */
+    public function setProcessed($processed)
+    {
+        $this->processed = $processed;
     }
 }

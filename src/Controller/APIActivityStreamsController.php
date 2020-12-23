@@ -6,6 +6,7 @@ use App\APIV1\ICalBuilderForAccount;
 use App\Entity\InboxSubmission;
 use App\Entity\UserManageAccount;
 use App\Library;
+use App\Message\NewInboxSubmissionMessage;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
@@ -67,6 +68,8 @@ class APIActivityStreamsController extends BaseController
         $entityManager = $this->getDoctrine()->getManager();
         $entityManager->persist($s);
         $entityManager->flush();
+
+        $this->dispatchMessage(new NewInboxSubmissionMessage($s->getId()));
 
         return new Response(
             json_encode([]),

@@ -33,9 +33,15 @@ class AccountFollowsAccount
 
     /**
      * @var boolean
-     * @ORM\Column(type="boolean", nullable=false, options={"default" : true})
+     * @ORM\Column(name="follows", type="boolean", nullable=false, options={"default" : false})
      */
-    private $follows = true;
+    private $follows = false;
+
+    /**
+     * @var boolean
+     * @ORM\Column(name="follow_requested", type="boolean", nullable=false, options={"default" : false})
+     */
+    private $followRequested = false;
 
     /**
      * @return mixed
@@ -83,5 +89,21 @@ class AccountFollowsAccount
     public function setFollows($follows)
     {
         $this->follows = $follows;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isFollowRequested(): bool
+    {
+        return $this->followRequested;
+    }
+
+    /**
+     * @param bool $followRequested
+     */
+    public function setFollowRequested(bool $followRequested)
+    {
+        $this->followRequested = $followRequested;
     }
 }

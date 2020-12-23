@@ -40,7 +40,7 @@ class AccountRepository extends ServiceEntityRepository
             'SELECT a ' .
             'FROM App\Entity\Account a ' .
             'JOIN a.followsAccountFollows afa '.
-            'WHERE afa.account = :a AND afa.follows = true '.
+            'WHERE afa.account = :a AND ( afa.follows = true OR afa.followRequested = true )'.
             'ORDER BY a.title ASC '
         )->setParameter('a', $account);
 

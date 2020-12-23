@@ -120,7 +120,7 @@ class Account
     /**
      * @return mixed
      */
-    public function getAccountLocal()
+    public function getAccountLocal(): ?AccountLocal
     {
         return $this->accountLocal;
     }
@@ -128,7 +128,7 @@ class Account
     /**
      * @return mixed
      */
-    public function getAccountRemote()
+    public function getAccountRemote(): ?AccountRemote
     {
         return $this->accountRemote;
     }

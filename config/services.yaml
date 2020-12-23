@@ -54,8 +54,16 @@ services:
         class: App\Service\RemoteServer\RemoteServerService
         public: true
 
-    app.remoteAccount:
-        class: App\Service\RemoteAccount\RemoteAccountService
+    app.account:
+        class: App\Service\Account\AccountService
+        public: true
+
+    app.accountRemote:
+        class: App\Service\AccountRemote\AccountRemoteService
+        public: true
+
+    app.accountLocalInbox:
+        class: App\Service\AccountLocalInbox\AccountLocalInboxService
         public: true
 
     app.remoteAccountContent:
@@ -68,6 +76,10 @@ services:
 
     app.updateSourcedEvent:
         class: App\Service\UpdateSourcedEvent\UpdateSourcedEventService
+        public: true
+
+    app.requestHTTP:
+        class: App\Service\RequestHTTP\RequestHTTPService
         public: true
 
     logging.webProcessor:

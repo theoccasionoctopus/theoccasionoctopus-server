@@ -85,6 +85,7 @@ abstract class BaseController extends AbstractController
             'preferredUsername'=>$account->getAccountLocal()->getUsername(),
             'name'=>$account->getTitle(),
             'url'=>$this->getParameter('app.instance_url').$this->generateUrl('account_public', ['account_username'=>$account->getAccountLocal()->getUsername()]),
+            'occasion-octopus-id'=>$account->getId(),
         ];
         return new Response(
             json_encode($out),

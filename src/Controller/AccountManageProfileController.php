@@ -3,7 +3,8 @@
 namespace App\Controller;
 
 use App\Message\NewFollowRemoteAccountMessage;
-use App\Service\RemoteAccount\RemoteAccountService;
+use App\Service\Account\AccountService;
+use App\Service\AccountRemote\AccountRemoteService;
 use App\Service\RemoteServer\RemoteServerService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -30,6 +31,7 @@ class AccountManageProfileController extends AccountManageController
                 $account_follows_account = $doctrine->getRepository(AccountFollowsAccount::class)->findOneBy(array('account' => $this->account, 'followsAccount' => $account));
                 if ($account_follows_account) {
                     $account_follows_account->setFollows(false);
+                    $account_follows_account->setFollowRequested(false);
                     $doctrine->getManager()->persist($account_follows_account);
                     $doctrine->getManager()->flush();
                     return $this->redirectToRoute('account_manage_profile', ['account_username' => $this->account->getUsername()]);
@@ -45,7 +47,7 @@ class AccountManageProfileController extends AccountManageController
         ]));
     }
 
-    public function indexNewFollowLocal($account_username, Request $request)
+    public function indexNewFollowLocal($account_username, Request $request, AccountService $accountService)
     {
         $this->build($account_username);
 
@@ -58,7 +60,7 @@ class AccountManageProfileController extends AccountManageController
             # TODO CSFR
             $account_to_follow = $repository->findOneBy(array('id' => $request->request->get('guid')));
             if ($account_to_follow) {
-                $this->startFollowingAccount($account_to_follow);
+                $accountService->follow($this->account, $account_to_follow);
                 return $this->redirectToRoute('account_manage_profile', ['account_username' => $this->account->getUsername()]);
             }
         }
@@ -71,7 +73,7 @@ class AccountManageProfileController extends AccountManageController
         ]));
     }
 
-    public function indexNewFollowRemote($account_username, Request $request, RemoteServerService $remoteServerService, RemoteAccountService $remoteAccountService)
+    public function indexNewFollowRemote($account_username, Request $request, RemoteServerService $remoteServerService, AccountRemoteService $remoteAccountService, AccountService $accountService)
     {
         $this->build($account_username);
 
@@ -89,13 +91,10 @@ class AccountManageProfileController extends AccountManageController
 
             $remoteServer = $remoteServerService->addByHostName($hostname);
 
-            $remoteAccount = $remoteAccountService->add($remoteServer, $username);
+            $remoteAccount = $remoteAccountService->addByUsername($remoteServer, $username);
 
             // Save
-            $this->startFollowingAccount($remoteAccount);
-
-            // Message
-            $this->dispatchMessage(new NewFollowRemoteAccountMessage($this->account->getId(), $remoteAccount->getId()));
+            $accountService->follow($this->account, $remoteAccount);
 
             // Return
             return $this->redirectToRoute('account_manage_profile', ['account_username' => $this->account->getUsername()]);
@@ -104,23 +103,5 @@ class AccountManageProfileController extends AccountManageController
         return $this->render('account/manage/profile/new_follow_remote.html.twig', $this->getTemplateVariables([
             'account' => $this->account,
         ]));
-    }
-
-    protected function startFollowingAccount(Account $account)
-    {
-        if ($this->account == $account) {
-            return;
-        }
-        $doctrine = $this->getDoctrine();
-        $followsRepo = $doctrine->getRepository(AccountFollowsAccount::class);
-        $account_follows_account = $followsRepo->findOneBy(array('account' => $this->account, 'followsAccount' => $account));
-        if (!$account_follows_account) {
-            $account_follows_account = new AccountFollowsAccount();
-            $account_follows_account->setAccount($this->account);
-            $account_follows_account->setFollowsAccount($account);
-        }
-        $account_follows_account->setFollows(true);
-        $doctrine->getManager()->persist($account_follows_account);
-        $doctrine->getManager()->flush();
     }
 }

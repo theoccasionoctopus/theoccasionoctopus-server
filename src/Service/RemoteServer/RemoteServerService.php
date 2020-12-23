@@ -87,6 +87,10 @@ class RemoteServerService
     public function addByHostName(string $host)
     {
         // We assume HTTPS - we should try and fall back to HTTP if it's not there
-        return $this->add('https://'. $host);
+        try {
+            return $this->add('https://' . $host);
+        } catch (\GuzzleHttp\Exception\ConnectException $e) {
+            return $this->add('http://' . $host);
+        }
     }
 }

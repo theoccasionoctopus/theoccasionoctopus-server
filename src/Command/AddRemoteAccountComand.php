@@ -6,7 +6,7 @@ use App\Entity\AccountRemote;
 use App\Entity\EmailUserUpcomingEventsForAccount;
 use App\Entity\RemoteServer;
 use App\Entity\User;
-use App\Service\RemoteAccount\RemoteAccountService;
+use App\Service\AccountRemote\AccountRemoteService;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -24,13 +24,13 @@ class AddRemoteAccountComand extends Command
     /** @var  ContainerInterface */
     protected $container;
 
-    /** @var  RemoteAccountService */
+    /** @var  AccountRemoteService */
     protected $remoteAccountService;
 
     /**
      * LoadCountryData constructor.
      */
-    public function __construct(ContainerInterface $container, RemoteAccountService $remoteAccountService)
+    public function __construct(ContainerInterface $container, AccountRemoteService $remoteAccountService)
     {
         parent::__construct();
         $this->container = $container;
@@ -57,7 +57,7 @@ class AddRemoteAccountComand extends Command
 
         $username = $input->getArgument('username');
 
-        $account = $this->remoteAccountService->add($remoteServer, $username);
+        $account = $this->remoteAccountService->addByUsername($remoteServer, $username);
 
         $output->writeln('Id='. $account->getId());
         return 0;
