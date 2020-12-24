@@ -28,12 +28,9 @@ php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
 php composer-setup.php
 php -r "unlink('composer-setup.php');"
 
-cd /vagrant
-php /bin/composer.phar install
-
 #--------------------------------------------  Apache
 
-cp /vagrant/vagrant/app/apache.conf /etc/apache2/sites-enabled/
+cp /vagrant/vagrant/app/apache.conf /etc/apache2/sites-enabled/000-default.conf
 
 a2enmod rewrite
 a2dismod mpm_prefork
@@ -85,6 +82,10 @@ apt-get update && apt-get install yarn
 cd /vagrant
 yarn install
 
-#--------------------------------------------  File Permissions is shared folder
+#--------------------------------------------  File Permissions in shared folder
 
 chown -R vagrant /vagrant
+
+#--------------------------------------------  Set up SSH Access
+
+cat /home/vagrant/.ssh/me.pub >> /home/vagrant/.ssh/authorized_keys
