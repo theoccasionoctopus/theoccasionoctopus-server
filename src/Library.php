@@ -123,6 +123,19 @@ class Library
         return [ $username, $host ];
     }
 
+    public static function parseAccountHandleWithServerToUsernameAndHost($in)
+    {
+        $bits = explode("@", $in);
+        while ($bits[0] == '') {
+            array_shift($bits);
+        }
+
+        $username = array_shift($bits);
+        $host = array_shift($bits);
+
+        return [ $username, $host ];
+    }
+
     public static function parseURLToSSLAndHost($url)
     {
         $url_bits = parse_url($url);

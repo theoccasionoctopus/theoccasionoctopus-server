@@ -75,10 +75,7 @@ class AccountManageProfileController extends AccountManageController
         $doctrine = $this->getDoctrine();
 
         if ($request->request->get('action') == 'follow') {
-            $username = $request->request->get('username');
-            // TODO strip leading @'s
-
-            list($username, $hostname) = explode('@', $username);
+            list($username, $hostname) = Library::parseAccountHandleWithServerToUsernameAndHost($request->request->get('username'));
 
             // TODO catch errors from here and show to user nicely
 
