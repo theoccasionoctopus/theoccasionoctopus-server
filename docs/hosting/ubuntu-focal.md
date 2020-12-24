@@ -113,6 +113,8 @@ DEFAULT_COUNTRY=GB
 DEFAULT_TIMEZONE=Europe/London
 INSTANCE_SYSADMIN_EMAIL="hello@example.com"
 MESSENGER_TRANSPORT_DSN="amqp://guest:ENTER-PASSWORD-HERE@localhost:5672/%2f/messages"
+INSTANCE_READ_ONLY=off
+INSTANCE_FEDERATION=on
 ```
 
 For a full explanation of what each one does, and how to set it, see [Configuration Options](configuration-options.md).

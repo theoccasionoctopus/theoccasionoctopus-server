@@ -30,7 +30,9 @@
         {%  endif %}
 
         <a href="{{ path('account_manage_new_follow_local',{'account_username':account.username}) }}" class="button" role="button">Follow Another Account on this server</a>
-        <a href="{{ path('account_manage_new_follow_remote',{'account_username':account.username}) }}" class="button" role="button">Follow Another Account on another server</a>
+        {%  if instance_federation %}
+            <a href="{{ path('account_manage_new_follow_remote',{'account_username':account.username}) }}" class="button" role="button">Follow Another Account on another server</a>
+        {%  endif %}
 
         {%  if accounts_followers %}
             <h3>Followers</h3>

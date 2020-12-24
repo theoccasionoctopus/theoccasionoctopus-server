@@ -45,6 +45,23 @@ DEFAULT_COUNTRY=GB
 DEFAULT_TIMEZONE=Europe/London
 ```
 
+## INSTANCE_FEDERATION
+
+```
+INSTANCE_FEDERATION=on
+INSTANCE_FEDERATION=off
+```
+
+If `off`, this disables the WebFinger and Activitypub inbox and outbox API's.
+
+This has the effect of disabling all federation features to other Occasion Octopus or other Activitypub servers.
+
+Turning this off and on repeatedly will cause problems; it should either:
+
+* Always be `off`, if your instance never wants to federate.
+* Almost always be `on`, and only turned `off` very occasionally for moderation or security problems.
+
+(However the API, with it's iCal and JSON feeds, is not disabled by this setting.)
 
 ## INSTANCE_NAME
 
@@ -54,6 +71,19 @@ DEFAULT_TIMEZONE=Europe/London
 INSTANCE_NAME="My Instance Name"
 ```
 
+
+## INSTANCE_READ_ONLY
+
+```
+INSTANCE_READ_ONLY=on
+INSTANCE_READ_ONLY=off
+```
+
+Should normally be `off`. Only turn `on` for brief periods for maintenance, moderation or security problems. 
+
+Before turning `on`, make sure any workers are fully stopped.
+
+TODO This only disables a few places to write at the moment; it should disable them all!
 
 ## INSTANCE_SYSADMIN_EMAIL
 
@@ -98,7 +128,6 @@ MAILER_FROM_EMAIL="theoccocc@example.com"
 ```
 MESSENGER_TRANSPORT_DSN="amqp://guest:guest@localhost:5672/%2f/messages"
 ```
-
 
 
 ## USER_REGISTER_INSTANCE_PASSWORD

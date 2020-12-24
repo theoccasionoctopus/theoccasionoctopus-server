@@ -41,6 +41,11 @@ class UserController extends BaseController
 
     public function register(Request $request, UserPasswordEncoderInterface $passwordEncoder, GuardAuthenticatorHandler $guardHandler, UserAuthenticator $formAuthenticator, LoggerInterface $logger)
     {
+        // Read Only
+        if ($this->getParameter('app.instance_read_only')) {
+            return $this->render('instance_read_only.html.twig');
+        }
+
         // If already logged in, go to homepage
         $user= $this->get('security.token_storage')->getToken()->getUser();
         if ($user instanceof User) {

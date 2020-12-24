@@ -34,6 +34,13 @@ class APIIndexController extends BaseController
 
     public function webfinger(Request $request)
     {
+        if (!$this->getParameter('app.instance_federation')) {
+            return new Response(
+                json_encode(['error'=>'federation_off']),
+                Response::HTTP_SERVICE_UNAVAILABLE,
+                ['content-type' => 'application/json']
+            );
+        }
         list($username, $host) = Library::parseWebFingerResourceToUsernameAndHost($request->query->get('resource'));
 
         // TODO check host is us

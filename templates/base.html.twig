@@ -17,7 +17,7 @@
     <header id="headerMain">
         <div class="content">
             <h1>
-                {% if app.user and accounts_user_can_manage|length == 1  %}
+                {% if app.user and accounts_user_can_manage is defined and accounts_user_can_manage|length == 1  %}
                 <a href="{{ path('account_manage',{'account_username':accounts_user_can_manage[0].username}) }}">
                     {% else %}
                     <a class="text-dark" href="{{ path('index') }}">
@@ -71,7 +71,7 @@
             <p>{% if userTimeZone is defined %}Currently: {{  userTimeZone }} {%  endif %}(<a href="{{  path('set_timezone') }}"><i class="fas fa-clock"></i> Change TimeZone</a>)</p>
             {% if app.user %}
                 <p><a  href="{{ path('user_settings') }}"><i class="fas fa-user-cog"></i> Your User Settings</a></p>
-                {%  if accounts_user_can_manage|length > 1 %}
+                {%  if accounts_user_can_manage is defined and accounts_user_can_manage|length > 1 %}
                     <p >
                         Switch to account:
                         {%  for account in accounts_user_can_manage %}

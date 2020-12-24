@@ -33,6 +33,11 @@ class NewAccountController extends BaseController
             throw new  AccessDeniedException('You must log in first!');
         }
 
+        // Read Only
+        if ($this->getParameter('app.instance_read_only')) {
+            return $this->render('instance_read_only.html.twig');
+        }
+
         // TODO check user $limitNumberOfAccountsManage!
 
         // build the form

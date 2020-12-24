@@ -12,6 +12,8 @@ parameters:
     app.mailer_from_email: '%env(default::MAILER_FROM_EMAIL)%'
     app.default_country_code: '%env(default::DEFAULT_COUNTRY)%'
     app.default_timezone_code: '%env(default::DEFAULT_TIMEZONE)%'
+    app.instance_read_only: '%env(bool:INSTANCE_READ_ONLY)%'
+    app.instance_federation: '%env(bool:INSTANCE_FEDERATION)%'
 
 
 services:

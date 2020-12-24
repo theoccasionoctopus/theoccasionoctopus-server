@@ -6,6 +6,8 @@ twig:
         event_list_description_truncate_limit: 400
         event_list_description_truncate_more: "..."
         event_list_description_truncate_whole_words: false
+        instance_read_only: '%env(bool:INSTANCE_READ_ONLY)%'
+        instance_federation: '%env(bool:INSTANCE_FEDERATION)%'
     paths:
         '%kernel.project_dir%/templates-local':  ~
     form_themes: ['form_div_layout.html.twig','form_theme.html.twig']

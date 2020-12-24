@@ -47,6 +47,13 @@ class APIActivityStreamsController extends BaseController
 
     public function inbox($account_id, Request $request)
     {
+        if (!$this->getParameter('app.instance_federation')) {
+            return new Response(
+                json_encode(['error'=>'federation_off']),
+                Response::HTTP_SERVICE_UNAVAILABLE,
+                ['content-type' => 'application/json']
+            );
+        }
         $this->buildAccount($account_id, $request);
 
         $data = json_decode($request->getContent(), true);
@@ -80,6 +87,13 @@ class APIActivityStreamsController extends BaseController
 
     public function outbox($account_id, Request $request)
     {
+        if (!$this->getParameter('app.instance_federation')) {
+            return new Response(
+                json_encode(['error'=>'federation_off']),
+                Response::HTTP_SERVICE_UNAVAILABLE,
+                ['content-type' => 'application/json']
+            );
+        }
         $this->buildAccount($account_id, $request);
 
         // TODO

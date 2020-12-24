@@ -23,6 +23,8 @@ MAILER_FROM_NAME="Dev Instance"
 DATABASE_URL=postgresql://app:password@127.0.0.1:5432/app?serverVersion=10&charset=utf8
 INSTANCE_SYSADMIN_EMAIL="sysadmin@example.com"
 MESSENGER_TRANSPORT_DSN="amqp://guest:guest@localhost:5672/%2f/messages"
+INSTANCE_READ_ONLY=off
+INSTANCE_FEDERATION=on
 ```
 
 On the `app1` box also add:
@@ -90,6 +92,8 @@ Put
 
     DATABASE_URL=postgresql://apptest:passwordtest@127.0.0.1:5432/apptest?serverVersion=10&charset=utf8
     MESSENGER_TRANSPORT_DSN="in-memory://"
+    INSTANCE_READ_ONLY=off
+    INSTANCE_FEDERATION=on
     
 into `.env.test.local`
 

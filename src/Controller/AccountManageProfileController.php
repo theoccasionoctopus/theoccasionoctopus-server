@@ -13,6 +13,7 @@ use App\Entity\AccountFollowsAccount;
 use App\Library;
 use App\Form\EventNewType;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 class AccountManageProfileController extends AccountManageController
 {
@@ -70,6 +71,13 @@ class AccountManageProfileController extends AccountManageController
 
     public function indexNewFollowRemote($account_username, Request $request, RemoteServerService $remoteServerService, AccountRemoteService $remoteAccountService, AccountService $accountService)
     {
+        if (!$this->getParameter('app.instance_federation')) {
+            return new Response(
+                json_encode(['error'=>'federation_off']),
+                Response::HTTP_SERVICE_UNAVAILABLE,
+                ['content-type' => 'application/json']
+            );
+        }
         $this->build($account_username);
 
         $doctrine = $this->getDoctrine();
