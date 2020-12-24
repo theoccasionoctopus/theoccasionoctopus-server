@@ -16,7 +16,7 @@ use Symfony\Component\HttpFoundation\Request;
 
 class AccountManageProfileController extends AccountManageController
 {
-    public function indexManageProfile($account_username, Request $request)
+    public function indexManageProfile($account_username, Request $request, AccountService $accountService)
     {
         $this->build($account_username);
 
@@ -27,15 +27,8 @@ class AccountManageProfileController extends AccountManageController
             # TODO CSFR
             $account = $doctrine->getRepository(Account::class)->findOneBy(['id'=>$request->request->get('guid')]);
             if ($account) {
-                /** @var AccountFollowsAccount $account_follows_account */
-                $account_follows_account = $doctrine->getRepository(AccountFollowsAccount::class)->findOneBy(array('account' => $this->account, 'followsAccount' => $account));
-                if ($account_follows_account) {
-                    $account_follows_account->setFollows(false);
-                    $account_follows_account->setFollowRequested(false);
-                    $doctrine->getManager()->persist($account_follows_account);
-                    $doctrine->getManager()->flush();
-                    return $this->redirectToRoute('account_manage_profile', ['account_username' => $this->account->getUsername()]);
-                }
+                $accountService->unfollow($this->account, $account);
+                return $this->redirectToRoute('account_manage_profile', ['account_username' => $this->account->getUsername()]);
             }
         }
 

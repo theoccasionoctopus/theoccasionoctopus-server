@@ -203,6 +203,27 @@ class AccountRemoteService
         );
     }
 
+    public function sendUnfollow(AccountLocal $account, AccountRemote $wantsToUnfollowAccount)
+    {
+        $this->postToInbox(
+            $account,
+            $wantsToUnfollowAccount,
+            [
+                "id"=> $this->params->get('app.instance_url') . '/activitypubactivity/unfollow/'.$account->getAccount()->getId().'/'.urlencode($wantsToUnfollowAccount->getActorDataId()),
+                "type"=> "Undo",
+                "actor"=> $this->params->get('app.instance_url') . $this->router->generate('account_public', ['account_username'=>$account->getUsername()]),
+                "object"=>[
+                    "id"=> $this->params->get('app.instance_url') . '/activitypubactivity/followrequest/'.$account->getAccount()->getId().'/'.urlencode($wantsToUnfollowAccount->getActorDataId()),
+                    "type"=> "Follow",
+                    "actor"=> $this->params->get('app.instance_url') . $this->router->generate('account_public', ['account_username'=>$account->getUsername()]),
+                    "object"=> $wantsToUnfollowAccount->getActorDataId(),
+                    "@context"=> "https://www.w3.org/ns/activitystreams",
+                ],
+                "@context"=> "https://www.w3.org/ns/activitystreams",
+            ]
+        );
+    }
+
     public function postToInbox(AccountLocal $fromAccountLocal, AccountRemote $toAccount, $data)
     {
         if (!$toAccount->getActorData() || !array_key_exists('inbox', $toAccount->getActorData())) {

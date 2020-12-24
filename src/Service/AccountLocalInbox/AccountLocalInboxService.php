@@ -68,12 +68,18 @@ class AccountLocalInboxService
                 $this->requestHTTPService,
                 $this->accountRemoteService,
                 $this->remoteServerService
+            ),
+            new ProcessInboxSubmissionUndoFollow(
+                $this->entityManager,
+                $this->logger,
+                $this->requestHTTPService,
+                $this->accountRemoteService,
+                $this->remoteServerService
             )
         ];
         foreach ($handlers as $handler) {
             if ($handler->canHandle($inboxSubmission)) {
                 return $handler->handle($inboxSubmission);
-                // TODO set processed column on $inboxSubmission
             }
         }
     }

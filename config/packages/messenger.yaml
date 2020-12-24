@@ -14,3 +14,4 @@ framework:
             'App\Message\NewImportMessage': async
             'App\Message\NewFollowRemoteAccountMessage': async
             'App\Message\NewInboxSubmissionMessage': async
+            'App\Message\NewUnfollowRemoteAccountMessage': async
