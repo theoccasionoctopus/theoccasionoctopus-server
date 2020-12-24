@@ -9,10 +9,8 @@
 
     <div class="content">
 
-        <h3>Following</h3>
-
         {%  if accounts_following %}
-
+            <h3>Following</h3>
             <ul class="mainListAccounts">
                 {%  for account_following in accounts_following %}
                     <li class="account">
@@ -28,8 +26,27 @@
                     </li>
                 {%  endfor %}
             </ul>
-
         {%  endif %}
+
+        {%  if accounts_followers %}
+            <h3>Followers</h3>
+            <ul class="mainListAccounts">
+                {%  for account_follower in accounts_followers %}
+                    <li class="account">
+                        {%  if account_follower.AccountLocal %}
+                            <i class="fas fa-user"></i> {{  account_follower.title }} ({{  account_follower.username }})
+                            <a href="{{ path('account_public',{'account_username':account_follower.username}) }}" class="button" role="button">View</a>
+                        {%  elseif account_follower.AccountRemote %}
+                            <i class="fas fa-user"></i> {{  account_follower.title }} on <i class="fas fa-database"></i> {{ account_follower.accountRemote.remoteServer.title }}
+                            {%  if account_follower.accountRemote.hasHumanURL %}
+                                <a href="{{ account_follower.accountRemote.humanURL }}" class="button" role="button" target="_blank">View</a>
+                            {%  endif %}
+                        {%  endif %}
+                    </li>
+                {%  endfor %}
+            </ul>
+        {%  endif %}
+
     </div>
 
 {% endblock %}

@@ -21,11 +21,12 @@ class AccountPublicProfileController extends AccountPublicController
         $doctrine = $this->getDoctrine();
         $repository = $doctrine->getRepository(Account::class);
         $accounts_following = $repository->findFollowing($this->account);
-
+        $accounts_followers = $repository->findFollowers($this->account);
 
         return $this->render('account/public/profile/index.html.twig', $this->getTemplateVariables([
             'account'=> $this->account,
             'accounts_following'=>$accounts_following,
+            'accounts_followers' => $accounts_followers,
         ]));
     }
 }

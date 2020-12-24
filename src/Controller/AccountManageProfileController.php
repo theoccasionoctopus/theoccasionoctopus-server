@@ -40,10 +40,12 @@ class AccountManageProfileController extends AccountManageController
         }
 
         $accounts_following = $doctrine->getRepository(Account::class)->findFollowing($this->account);
+        $accounts_followers = $doctrine->getRepository(Account::class)->findFollowers($this->account);
 
         return $this->render('account/manage/profile/index.html.twig', $this->getTemplateVariables([
             'account' => $this->account,
             'accounts_following' => $accounts_following,
+            'accounts_followers' => $accounts_followers,
         ]));
     }
 

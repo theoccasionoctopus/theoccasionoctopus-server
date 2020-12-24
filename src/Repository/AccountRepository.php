@@ -47,6 +47,21 @@ class AccountRepository extends ServiceEntityRepository
         return $query->execute();
     }
 
+    public function findFollowers(Account $account)
+    {
+        $entityManager = $this->getEntityManager();
+
+        $query = $entityManager->createQuery(
+            'SELECT a ' .
+            'FROM App\Entity\Account a ' .
+            'JOIN a.followsAccount afa '.
+            'WHERE afa.followsAccount = :a AND afa.follows = true '.
+            'ORDER BY a.title ASC '
+        )->setParameter('a', $account);
+
+        return $query->execute();
+    }
+
 
     public function findAllLocal()
     {
