@@ -149,34 +149,36 @@ class RemoteAccountContentService
                     /** @var \App\ActivityPub\APEvent $apEvent */
                     $apEvent = $item->getObject();
 
-                    $event = $this->entityManager->getRepository(Event::class)->findOneBy(array('activitypubId' => $apEvent->getId(), 'account' => $accountRemote->getAccount()));
-                    if (!$event) {
-                        $event = new Event();
-                        $event->setId(Library::GUID());
-                        $event->setAccount($accountRemote->getAccount());
-                        $event->setPrivacy(0);
-                        $event->setActivitypubId($apEvent->getId());
-                        // TODO better setCountry and setTimezone needed
-                        $event->setCountry($this->entityManager->getRepository(Country::class)->findOneBy(['iso3166_two_char' => 'GB']));
-                        $event->setTimezone($this->entityManager->getRepository(TimeZone::class)->findOneByCode('Europe/London'));
+                    if ($apEvent->getEnd()->getTimestamp() > time()) {
+                        $event = $this->entityManager->getRepository(Event::class)->findOneBy(array('activitypubId' => $apEvent->getId(), 'account' => $accountRemote->getAccount()));
+                        if (!$event) {
+                            $event = new Event();
+                            $event->setId(Library::GUID());
+                            $event->setAccount($accountRemote->getAccount());
+                            $event->setPrivacy(0);
+                            $event->setActivitypubId($apEvent->getId());
+                            // TODO better setCountry and setTimezone needed
+                            $event->setCountry($this->entityManager->getRepository(Country::class)->findOneBy(['iso3166_two_char' => 'GB']));
+                            $event->setTimezone($this->entityManager->getRepository(TimeZone::class)->findOneByCode('Europe/London'));
+                        }
+
+                        $event->setTitle($apEvent->getName());
+                        $event->setUrl($apEvent->getURL());
+                        $event->setUrlTickets($apEvent->getURL());
+
+                        $event->setStartWithObject($apEvent->getStart());
+                        $event->setEndWithObject($apEvent->getEnd());
+
+                        // TODO extra fields
+                        // TODO Cancelled
+                        // TODO Deleted
+
+                        $this->entityManager->persist($event);
+                        $this->entityManager->flush();
+
+                        // Event to event occurrence!
+                        $this->eventToEventOccurrenceService->process($event);
                     }
-
-                    $event->setTitle($apEvent->getName());
-                    $event->setUrl($apEvent->getURL());
-                    $event->setUrlTickets($apEvent->getURL());
-
-                    $event->setStartWithObject($apEvent->getStart());
-                    $event->setEndWithObject($apEvent->getEnd());
-
-                    // TODO extra fields
-                    // TODO Cancelled
-                    // TODO Deleted
-
-                    $this->entityManager->persist($event);
-                    $this->entityManager->flush();
-
-                    // Event to event occurrence!
-                    $this->eventToEventOccurrenceService->process($event);
                 }
             }
 
