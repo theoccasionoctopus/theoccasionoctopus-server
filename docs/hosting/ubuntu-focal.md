@@ -148,7 +148,7 @@ We can now run the app commands to set up the database:
 
     cd /home/occ_oct/software
     su -c "./bin/console doctrine:migrations:migrate --no-interaction" occ_oct
-    su -c "./bin/console theocasionoctupus:load-country-data" occ_oct
+    su -c "./bin/console theocasionoctupus:check-and-fix-instance" occ_oct
     
 ### Set up the webserver
 
@@ -347,7 +347,7 @@ Log into server and run as root:
     su -c "git pull" occ_oct
     su -c "/bin/composer.phar install" occ_oct
     su -c "./bin/console doctrine:migrations:migrate --no-interaction" occ_oct
-    su -c "./bin/console theocasionoctupus:load-country-data" occ_oct
+    su -c "./bin/console theocasionoctupus:check-and-fix-instance" occ_oct
     /etc/init.d/php7.4-fpm reload
     su -c "./bin/console messenger:stop-workers" occ_oct
     su -c "npm install" occ_oct

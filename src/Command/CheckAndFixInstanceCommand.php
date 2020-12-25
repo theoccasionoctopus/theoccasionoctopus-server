@@ -1,25 +1,26 @@
 <?php
 namespace App\Command;
 
-use App\Entity\Country;
-use App\Entity\CountryHasTimeZone;
-use App\Entity\TimeZone;
-use GuzzleHttp\Client;
+use App\Entity\Event;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Config\Definition\Exception\Exception;
+use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use App\Entity\Source;
 use App\Import\ImportRunner;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use App\Entity\Country;
+use App\Entity\CountryHasTimeZone;
+use App\Entity\TimeZone;
+use GuzzleHttp\Client;
 
-class LoadCountryData extends Command
+class CheckAndFixInstanceCommand extends Command
 {
-    protected static $defaultName = 'theocasionoctupus:load-country-data';
+    protected static $defaultName = 'theocasionoctupus:check-and-fix-instance';
 
     /** @var  ContainerInterface */
     protected $container;
-    
+
     /**
      * LoadCountryData constructor.
      */
@@ -32,16 +33,35 @@ class LoadCountryData extends Command
     protected function configure()
     {
         $this
-            ->setDescription('Load Country Data')
-            ->setHelp('Load Country Data');
+            ->setDescription('Checks and fixes any issues found. Run after install/upgrading or if problems seen.')
+        ;
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $output->writeln("Country Titles");
         $this->loadCountryTitles();
+        $output->writeln("Country Time Zones");
         $this->loadCountryTmeZones();
+        $output->writeln("Event to Event Occurrences");
+        $this->eventToEventOccurrenceFixer($output);
         return 0;
     }
+
+    protected function eventToEventOccurrenceFixer(OutputInterface $output)
+    {
+        $doctrine = $this->container->get('doctrine');
+        $eventRepository = $doctrine->getRepository(Event::class);
+        $service = $this->container->get('app.eventToEventOccurrenceService');
+
+        foreach ($eventRepository->findBy([]) as $event) {
+            $output->writeln("Event " . $event->getId());
+            $service->process($event);
+        }
+
+        return 0;
+    }
+
 
     protected function loadCountryTitles()
     {
@@ -75,7 +95,7 @@ class LoadCountryData extends Command
         $guzzle = new Client(array('defaults' => array('headers' => array(  'User-Agent'=> 'Prototype Software') )));
         $response = $guzzle->request("GET", "https://raw.githubusercontent.com/eggert/tz/master/zone.tab", array());
         if ($response->getStatusCode() != 200) {
-            throw new Exception("Got Status " . $response->getStatusCode());
+            throw new \Exception("Got Status " . $response->getStatusCode());
         }
 
         $doctrine = $this->container->get('doctrine');
