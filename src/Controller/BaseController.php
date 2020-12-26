@@ -74,18 +74,23 @@ abstract class BaseController extends AbstractController
 
     protected function getResponseAccountActivityStreamsProfileJSON(Account $account, Request $request)
     {
+        $id_and_url = $this->getParameter('app.instance_url').$this->generateUrl('account_public', ['account_username'=>$account->getAccountLocal()->getUsername()]);
         $out = [
             '@context'=>'https://www.w3.org/ns/activitystreams',
             // TODO an type of Group or Organization may be just as good - have a setting per account? https://www.w3.org/TR/activitystreams-vocabulary/#actor-types
             'type'=>'Person',
-            'id'=>$this->getParameter('app.instance_url').$this->generateUrl('account_public', ['account_username'=>$account->getAccountLocal()->getUsername()]),
-            'name'=>$account->getTitle(),
+            'id'=>$id_and_url,
             'inbox'=>$this->getParameter('app.instance_url').$this->generateUrl('account_activity_streams_inbox', ['account_id'=>$account->getId()]),
             'outbox'=>$this->getParameter('app.instance_url').$this->generateUrl('account_activity_streams_outbox', ['account_id'=>$account->getId()]),
             'preferredUsername'=>$account->getAccountLocal()->getUsername(),
             'name'=>$account->getTitle(),
-            'url'=>$this->getParameter('app.instance_url').$this->generateUrl('account_public', ['account_username'=>$account->getAccountLocal()->getUsername()]),
+            'url'=>$id_and_url,
             'occasion-octopus-id'=>$account->getId(),
+            'publicKey'=>[
+                "id"=>$id_and_url.'#main-key',
+                'owner'=>$id_and_url,
+                'publicKeyPem'=>$account->getAccountLocal()->getKeyPublic(),
+            ]
         ];
         return new Response(
             json_encode($out),

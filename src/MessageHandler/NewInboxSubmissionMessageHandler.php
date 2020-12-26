@@ -26,6 +26,8 @@ class NewInboxSubmissionMessageHandler implements MessageHandlerInterface
     public function __invoke(NewInboxSubmissionMessage $message)
     {
         $inboxSubmission = $this->entityManager->getRepository(InboxSubmission::class)->findOneBy(['id'=>$message->getInboxSubmissionId()]);
-        $this->accountLocalInboxService->processInboxSubmission($inboxSubmission);
+        if ($inboxSubmission) {
+            $this->accountLocalInboxService->processInboxSubmission($inboxSubmission);
+        }
     }
 }

@@ -78,6 +78,7 @@ class NewAccountController extends BaseController
 
                 $accountLocal->setSEOIndexFollow($accountLocal->getDefaultPrivacy() == 0);
                 $accountLocal->setListInDirectory($accountLocal->getDefaultPrivacy() == 0);
+                $accountLocal->generateNewKey();
                 $entityManager->persist($accountLocal);
 
                 $userManagesAccount = new UserManageAccount();

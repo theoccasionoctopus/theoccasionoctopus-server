@@ -12,6 +12,8 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use GuzzleHttp\Psr7\Request as Psr7Request;
+use HttpSignatures\Context;
 
 class AccountRemoteService
 {
@@ -231,10 +233,33 @@ class AccountRemoteService
         }
         $url = $toAccount->getActorData()['inbox'];
 
-        $response = $this->requestHTTPService->request(
+        // Request
+        $psrRequest = new Psr7Request(
             "POST",
             $url,
-            array('http_errors' => false, 'body'=>json_encode($data))
+            [
+                'date'=>(new \DateTime('', new \DateTimeZone('UTC')))->format('D, d M Y H:i:s \G\M\T'),
+            ],
+            json_encode($data)
+        );
+
+        // Sign
+        $context = new Context([
+            'keys' => [
+                $data['actor'].'#main-key' => $fromAccountLocal->getKeyPrivate()
+            ],
+            'algorithm' => 'rsa-sha256',
+            'headers' => ['(request-target)', 'date'],
+        ]);
+        $psrRequest = $context->signer()->sign($psrRequest);
+        // TODO Digest? $psrRequest = $context->signer()->signWithDigest($psrRequest);
+
+        // Send
+        $response = $this->requestHTTPService->send(
+            $psrRequest,
+            array(
+                'http_errors' => false,
+            )
         );
         if ($response->getStatusCode() != 200) {
             throw new \Exception("When Posting to inbox, Got Status " . $response->getStatusCode());

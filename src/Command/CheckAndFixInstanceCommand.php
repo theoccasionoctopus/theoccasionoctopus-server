@@ -1,6 +1,7 @@
 <?php
 namespace App\Command;
 
+use App\Entity\AccountLocal;
 use App\Entity\Event;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -43,6 +44,8 @@ class CheckAndFixInstanceCommand extends Command
         $this->loadCountryTitles();
         $output->writeln("Country Time Zones");
         $this->loadCountryTmeZones();
+        $output->writeln("All Local Users Have Keys");
+        $this->dataMigrationAllLocalUsersHaveKeys($output);
         $output->writeln("Event to Event Occurrences");
         $this->eventToEventOccurrenceFixer($output);
         return 0;
@@ -133,5 +136,20 @@ class CheckAndFixInstanceCommand extends Command
         }
 
         # TODO do something to remove old CountryHasTimeZone links that don't apply any more.
+    }
+
+    protected function dataMigrationAllLocalUsersHaveKeys(OutputInterface $output)
+    {
+        $doctrine = $this->container->get('doctrine');
+        /** @var AccountLocal $accountLocal */
+        foreach ($doctrine->getRepository(AccountLocal::class)->findBy([]) as $accountLocal) {
+            if (!$accountLocal->getKeyPublic()) {
+                $output->writeln("Account " . $accountLocal->getAccount()->getId());
+                $accountLocal->generateNewKey();
+                $doctrine->getManager()->persist($accountLocal);
+                $doctrine->getManager()->flush();
+            }
+        }
+        return 0;
     }
 }

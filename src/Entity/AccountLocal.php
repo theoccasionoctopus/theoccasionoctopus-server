@@ -77,6 +77,18 @@ class AccountLocal
 
 
     /**
+     * Should really be nullable=false but we have old accounts to deal with
+     * @ORM\Column(name="key_private", type="text", nullable=true)
+     */
+    private $keyPrivate;
+
+    /**
+     * Should really be nullable=false but we have old accounts to deal with
+     * @ORM\Column(name="key_public", type="text", nullable=true)
+     */
+    private $keyPublic;
+
+    /**
      * @return mixed
      */
     public function getAccount()
@@ -211,5 +223,41 @@ class AccountLocal
     public function setLocked(bool $locked)
     {
         $this->locked = $locked;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getKeyPrivate()
+    {
+        return $this->keyPrivate;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getKeyPublic()
+    {
+        return $this->keyPublic;
+    }
+
+    public function generateNewKey()
+    {
+        $openssl_options = [
+            'digest_alg'       => 'sha512',
+            'private_key_bits' => 4096,
+            'encrypt_key'      => false,
+            'private_key_type' => OPENSSL_KEYTYPE_RSA,
+        ];
+        $result = openssl_pkey_new($openssl_options);
+
+        if (empty($result)) {
+            throw new \Exception('openssl_pkey_new failed');
+        }
+
+        openssl_pkey_export($result, $this->keyPrivate);
+
+        $details = openssl_pkey_get_details($result);
+        $this->keyPublic = $details["key"];
     }
 }

@@ -7,6 +7,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Psr\Log\LoggerInterface;
+use GuzzleHttp\Psr7\Request as Psr7Request;
 
 class RequestHTTPService
 {
@@ -26,18 +27,21 @@ class RequestHTTPService
     {
         $this->params = $params;
         $this->logger = $logger;
+        $this->client = new Client(
+            array(
+                'headers' => array(  'User-Agent'=> $this->params->get('app.instance_url').' - '.$this->params->get('app.instance_name'))
+            )
+        );
     }
 
 
     public function request(string $method, $uri = '', array $options = []): ResponseInterface
     {
-        if (!$this->client) {
-            $this->client = new Client(
-                array(
-                    'headers' => array(  'User-Agent'=> $this->params->get('app.instance_url').' - '.$this->params->get('app.instance_name'))
-                )
-            );
-        }
         return $this->client->request($method, $uri, $options);
+    }
+
+    public function send(Psr7Request $request, array $options = [])
+    {
+        return $this->client->send($request, $options);
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Service\AccountLocalInbox;
 
+use App\Entity\AccountRemote;
 use App\Entity\InboxSubmission;
 use App\Service\AccountRemote\AccountRemoteService;
 use App\Service\RemoteServer\RemoteServerService;
@@ -52,9 +53,9 @@ class AccountLocalInboxService
         $this->remoteServerService = $remoteServerService;
     }
 
-    public function processInboxSubmission(InboxSubmission $inboxSubmission)
+    protected function getHandlers(): array
     {
-        $handlers = [
+        return [
             new ProcessInboxSubmissionFollow(
                 $this->entityManager,
                 $this->logger,
@@ -77,10 +78,25 @@ class AccountLocalInboxService
                 $this->remoteServerService
             )
         ];
-        foreach ($handlers as $handler) {
+    }
+
+    public function processInboxSubmission(InboxSubmission $inboxSubmission)
+    {
+        foreach ($this->getHandlers() as $handler) {
             if ($handler->canHandle($inboxSubmission)) {
-                return $handler->handle($inboxSubmission);
+                $handler->handle($inboxSubmission);
+                return;
             }
         }
+    }
+
+    public function canProcessInboxSubmission(InboxSubmission $inboxSubmission): bool
+    {
+        foreach ($this->getHandlers() as $handler) {
+            if ($handler->canHandle($inboxSubmission)) {
+                return true;
+            }
+        }
+        return false;
     }
 }
