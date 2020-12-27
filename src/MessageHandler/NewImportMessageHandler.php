@@ -27,6 +27,9 @@ class NewImportMessageHandler implements MessageHandlerInterface
     public function __invoke(NewImportMessage $message)
     {
         $import = $this->entityManager->getRepository(Import::class)->findOneBy(['id'=>$message->getImportId()]);
+        if (!$import) {
+            throw new \Exception('No Import Found');
+        }
         $this->importService->import($import);
     }
 }

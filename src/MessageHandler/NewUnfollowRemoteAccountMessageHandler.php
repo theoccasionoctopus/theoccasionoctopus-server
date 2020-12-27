@@ -40,7 +40,13 @@ class NewUnfollowRemoteAccountMessageHandler implements MessageHandlerInterface
     {
         $accountRepo = $this->entityManager->getRepository(Account::class);
         $account = $accountRepo->findOneBy(['id'=>$message->getAccountId()]);
+        if (!$account) {
+            throw new \Exception('No Account Found');
+        }
         $wantsToUnfollowAccount = $accountRepo->findOneBy(['id'=>$message->getUnfollowsAccountId()]);
+        if (!$wantsToUnfollowAccount) {
+            throw  new \Exception('No Account Wants To Unfollow Found');
+        }
         $this->remoteAccountService->sendUnfollow($account->getAccountLocal(), $wantsToUnfollowAccount->getAccountRemote());
     }
 }

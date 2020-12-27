@@ -39,7 +39,13 @@ class NewFollowRemoteAccountMessageHandler implements MessageHandlerInterface
     {
         $accountRepo = $this->entityManager->getRepository(Account::class);
         $account = $accountRepo->findOneBy(['id'=>$message->getAccountId()]);
+        if (!$account) {
+            throw new \Exception('No Account Found');
+        }
         $wantsToFollowAccount = $accountRepo->findOneBy(['id'=>$message->getFollowsAccountId()]);
+        if (!$wantsToFollowAccount) {
+            throw  new \Exception('No Account Wants To Follow Found');
+        }
         $this->remoteAccountService->sendFollowRequest($account->getAccountLocal(), $wantsToFollowAccount->getAccountRemote());
         $this->remoteAccountContentService->downloadAccountRemote($wantsToFollowAccount->getAccountRemote());
     }
