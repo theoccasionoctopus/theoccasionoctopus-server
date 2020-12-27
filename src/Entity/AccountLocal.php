@@ -89,6 +89,12 @@ class AccountLocal
     private $keyPublic;
 
     /**
+     * @var boolean
+     * @ORM\Column(name="manually_approves_followers", type="boolean", nullable=false, options={"default" : false})
+     */
+    private $manuallyApprovesFollowers = false;
+
+    /**
      * @return mixed
      */
     public function getAccount()
@@ -259,5 +265,21 @@ class AccountLocal
 
         $details = openssl_pkey_get_details($result);
         $this->keyPublic = $details["key"];
+    }
+
+    /**
+     * @return bool
+     */
+    public function isManuallyApprovesFollowers(): bool
+    {
+        return $this->manuallyApprovesFollowers;
+    }
+
+    /**
+     * @param bool $manuallyApprovesFollowers
+     */
+    public function setManuallyApprovesFollowers(bool $manuallyApprovesFollowers)
+    {
+        $this->manuallyApprovesFollowers = $manuallyApprovesFollowers;
     }
 }

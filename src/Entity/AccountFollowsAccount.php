@@ -43,6 +43,13 @@ class AccountFollowsAccount
      */
     private $followRequested = false;
 
+
+    /**
+     * @ORM\Column(name="actvitypub_follow_activity_data", type="json", nullable=true, options={"jsonb"=true})
+     */
+    private $activitypubFollowActivityData;
+
+
     /**
      * @return mixed
      */
@@ -105,5 +112,21 @@ class AccountFollowsAccount
     public function setFollowRequested(bool $followRequested)
     {
         $this->followRequested = $followRequested;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getActivitypubFollowActivityData()
+    {
+        return $this->activitypubFollowActivityData;
+    }
+
+    /**
+     * @param mixed $activitypubFollowActivityData
+     */
+    public function setActivitypubFollowActivityData($activitypubFollowActivityData)
+    {
+        $this->activitypubFollowActivityData = $activitypubFollowActivityData;
     }
 }

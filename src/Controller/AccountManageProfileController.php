@@ -24,22 +24,37 @@ class AccountManageProfileController extends AccountManageController
         $doctrine = $this->getDoctrine();
 
         if ($request->request->get('action') == 'unfollow') {
-
             # TODO CSFR
             $account = $doctrine->getRepository(Account::class)->findOneBy(['id'=>$request->request->get('guid')]);
             if ($account) {
                 $accountService->unfollow($this->account, $account);
                 return $this->redirectToRoute('account_manage_profile', ['account_username' => $this->account->getUsername()]);
             }
+        } elseif ($request->request->get('action') == 'acceptfollower') {
+            # TODO CSFR
+            $account = $doctrine->getRepository(Account::class)->findOneBy(['id'=>$request->request->get('guid')]);
+            if ($account) {
+                $accountService->acceptFollower($this->account->getAccountLocal(), $account);
+                return $this->redirectToRoute('account_manage_profile', ['account_username' => $this->account->getUsername()]);
+            }
+        } elseif ($request->request->get('action') == 'rejectfollower') {
+            # TODO CSFR
+            $account = $doctrine->getRepository(Account::class)->findOneBy(['id'=>$request->request->get('guid')]);
+            if ($account) {
+                $accountService->rejectFollower($this->account->getAccountLocal(), $account);
+                return $this->redirectToRoute('account_manage_profile', ['account_username' => $this->account->getUsername()]);
+            }
         }
 
         $accounts_following = $doctrine->getRepository(Account::class)->findFollowing($this->account);
         $accounts_followers = $doctrine->getRepository(Account::class)->findFollowers($this->account);
+        $accounts_followers_needing_approval = $doctrine->getRepository(Account::class)->findFollowersNeedingApproval($this->account);
 
         return $this->render('account/manage/profile/index.html.twig', $this->getTemplateVariables([
             'account' => $this->account,
             'accounts_following' => $accounts_following,
             'accounts_followers' => $accounts_followers,
+            'accounts_followers_needing_approval' => $accounts_followers_needing_approval,
         ]));
     }
 

@@ -34,7 +34,6 @@ class ProcessInboxSubmissionFollow extends ProcessInboxSubmissionBase
         $accountRemote = $this->accountRemoteService->getOrCreateByActorId($remoteServer, $actorId);
 
         // Save to database
-        // At moment we always accept follow request straight away TODO have a mode where they have to be approved
         $account_follows_account = $this->entityManager->getRepository(AccountFollowsAccount::class)->findOneBy(
             array('account' => $accountRemote->getAccount(), 'followsAccount' => $accountWantsToFollowLocal)
         );
@@ -43,19 +42,34 @@ class ProcessInboxSubmissionFollow extends ProcessInboxSubmissionBase
             $account_follows_account->setAccount($accountRemote->getAccount());
             $account_follows_account->setFollowsAccount($accountWantsToFollowLocal);
         }
-        $account_follows_account->setFollowRequested(false);
-        $account_follows_account->setFollows(true);
-        $this->entityManager->persist($account_follows_account);
-        $this->markInboxSubmissionProcessed($inboxSubmission);
-        $this->entityManager->flush();
 
-        $this->logger->info(
-            'Approving remote account wants to follow local account request',
-            ['local_account_id'=>$accountWantsToFollowLocal->getId(),'remote_account_id'=>$accountRemote->getAccount()->getId()]
-        );
+        if ($accountWantsToFollowLocal->getAccountLocal()->isManuallyApprovesFollowers()) {
+            $account_follows_account->setActivitypubFollowActivityData($inboxSubmission->getData());
+            $account_follows_account->setFollowRequested(true);
+            $account_follows_account->setFollows(false);
+            $this->entityManager->persist($account_follows_account);
+            $this->markInboxSubmissionProcessed($inboxSubmission);
+            $this->entityManager->flush();
 
+            $this->logger->info(
+                'Remote account wants to follow local account; needs approval',
+                ['local_account_id' => $accountWantsToFollowLocal->getId(), 'remote_account_id' => $accountRemote->getAccount()->getId()]
+            );
+        } else {
+            $account_follows_account->setActivitypubFollowActivityData(null);
+            $account_follows_account->setFollowRequested(false);
+            $account_follows_account->setFollows(true);
+            $this->entityManager->persist($account_follows_account);
+            $this->markInboxSubmissionProcessed($inboxSubmission);
+            $this->entityManager->flush();
 
-        // Send Accept back
-        $this->accountRemoteService->sendFollowAccept($accountRemote, $accountWantsToFollowLocal->getAccountLocal(), $inboxSubmission->getData());
+            $this->logger->info(
+                'Remote account wants to follow local account; approved automatically',
+                ['local_account_id' => $accountWantsToFollowLocal->getId(), 'remote_account_id' => $accountRemote->getAccount()->getId()]
+            );
+
+            // Send Accept back
+            $this->accountRemoteService->sendFollowAccept($accountRemote, $accountWantsToFollowLocal->getAccountLocal(), $inboxSubmission->getData());
+        }
     }
 }

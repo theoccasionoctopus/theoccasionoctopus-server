@@ -55,6 +55,39 @@
 
         {%  endif  %}
 
+        {%  if accounts_followers_needing_approval %}
+            <h3>Followers Requesting Approval</h3>
+
+            <ul class="mainListAccounts">
+                {%  for accounts_follower_needing_approval in accounts_followers_needing_approval %}
+                    <li class="account">
+                        {%  if accounts_follower_needing_approval.AccountLocal %}
+                            <i class="fas fa-user"></i> {{  accounts_follower_needing_approval.title }} ({{  accounts_follower_needing_approval.username }})
+                            <a href="{{ path('account_public',{'account_username':accounts_follower_needing_approval.username}) }}" class="button" role="button">View</a>
+                        {%  elseif accounts_follower_needing_approval.AccountRemote %}
+                            <i class="fas fa-user"></i> {{  accounts_follower_needing_approval.title }} on <i class="fas fa-database"></i> {{ accounts_follower_needing_approval.accountRemote.remoteServer.title }}
+                            {%  if accounts_follower_needing_approval.accountRemote.hasHumanURL %}
+                                <a href="{{ accounts_follower_needing_approval.accountRemote.humanURL }}" class="button" role="button" target="_blank">View</a>
+                            {% endif %}
+                        {%  endif %}
+
+                        <form action="#" method="post">
+                            <input type="hidden" name="action" value="acceptfollower">
+                            <input type="hidden" name="guid" value="{{  accounts_follower_needing_approval.id }}">
+                            <input type="submit" value="Accept" class="button">
+                        </form>
+
+                        <form action="#" method="post">
+                            <input type="hidden" name="action" value="rejectfollower">
+                            <input type="hidden" name="guid" value="{{  accounts_follower_needing_approval.id }}">
+                            <input type="submit" value="Reject" class="button">
+                        </form>
+                    </li>
+                {%  endfor %}
+            </ul>
+
+        {%  endif  %}
+
         <p>
             <i class="fas fa-globe-europe"></i> Public (<a href="{{ path('account_public_profile',{'account_username':account.username }) }}">See public view</a>)
         </p>

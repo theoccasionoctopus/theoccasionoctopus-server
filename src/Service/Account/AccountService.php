@@ -16,7 +16,9 @@ use App\Entity\History;
 use App\Entity\Account;
 use App\Entity\Event;
 use App\Library;
+use App\Message\NewAcceptRemoteAccountFollowingMessage;
 use App\Message\NewFollowRemoteAccountMessage;
+use App\Message\NewRejectRemoteAccountFollowingMessage;
 use App\Message\NewUnfollowRemoteAccountMessage;
 use App\Service\HistoryWorker\HistoryWorker;
 use App\Service\HistoryWorker\HistoryWorkerService;
@@ -68,9 +70,14 @@ class AccountService
             return;
         }
 
+        $account_follows_account->setActivitypubFollowActivityData(null);
+
         if ($wantsToFollowAccount->getAccountLocal()) {
-            // If $wantsToFollowAccount is local then it's accepted straight away.
-            $account_follows_account->setFollows(true);
+            if ($wantsToFollowAccount->getAccountLocal()->isManuallyApprovesFollowers()) {
+                $account_follows_account->setFollowRequested(true);
+            } else {
+                $account_follows_account->setFollows(true);
+            }
             $this->entityManager->persist($account_follows_account);
             $this->entityManager->flush();
             $this->logger->info('New follow request made from local account to local account; granted immediately', ['account_id'=>$account->getId(), 'wants_to_follow_account_id'=>$wantsToFollowAccount->getId()]);
@@ -104,6 +111,54 @@ class AccountService
 
         if ($wantsToUnfollowAccount->getAccountRemote()) {
             $this->messageBus->dispatch(new NewUnfollowRemoteAccountMessage($account->getId(), $wantsToUnfollowAccount->getId()));
+        }
+    }
+
+
+    public function acceptFollower(AccountLocal $accountAccepting, Account $wantsToBeFollowerAccount)
+    {
+        /** @var AccountFollowsAccount $account_follows_account */
+        $account_follows_account = $this->entityManager->getRepository(AccountFollowsAccount::class)->findOneBy(array('account' => $wantsToBeFollowerAccount, 'followsAccount' => $accountAccepting->getAccount()));
+        if (!$account_follows_account) {
+            return;
+        }
+        if ($account_follows_account->isFollows() || !$account_follows_account->isFollowRequested()) {
+            return;
+        }
+
+        $activtypubFollowActivityData = $account_follows_account->getActivitypubFollowActivityData();
+        $account_follows_account->setActivitypubFollowActivityData(null);
+        $account_follows_account->setFollows(true);
+        $account_follows_account->setFollowRequested(false);
+        $this->entityManager->persist($account_follows_account);
+        $this->entityManager->flush();
+        $this->logger->info('Account accepts follower', ['account_id'=>$accountAccepting->getAccount()->getId(), 'wants_to_be_follower_account_id'=>$wantsToBeFollowerAccount->getId()]);
+
+        if ($wantsToBeFollowerAccount->getAccountRemote()) {
+            $this->messageBus->dispatch(new NewAcceptRemoteAccountFollowingMessage($accountAccepting->getAccount()->getId(), $wantsToBeFollowerAccount->getId(), $activtypubFollowActivityData));
+        }
+    }
+
+    public function rejectFollower(AccountLocal $accountRejecting, Account $wantsToBeFollowerAccount)
+    {
+        $account_follows_account = $this->entityManager->getRepository(AccountFollowsAccount::class)->findOneBy(array('account' => $wantsToBeFollowerAccount, 'followsAccount' => $accountRejecting->getAccount()));
+        if (!$account_follows_account) {
+            return;
+        }
+        if (!$account_follows_account->isFollows() && !$account_follows_account->isFollowRequested()) {
+            return;
+        }
+
+        $activtypubFollowActivityData = $account_follows_account->getActivitypubFollowActivityData();
+        $account_follows_account->setActivitypubFollowActivityData(null);
+        $account_follows_account->setFollows(false);
+        $account_follows_account->setFollowRequested(false);
+        $this->entityManager->persist($account_follows_account);
+        $this->entityManager->flush();
+        $this->logger->info('Account rejects follower', ['account_id'=>$accountRejecting->getAccount()->getId(), 'wants_to_be_follower_account_id'=>$wantsToBeFollowerAccount->getId()]);
+
+        if ($wantsToBeFollowerAccount->getAccountRemote()) {
+            $this->messageBus->dispatch(new NewRejectRemoteAccountFollowingMessage($accountRejecting->getAccount()->getId(), $wantsToBeFollowerAccount->getId(), $activtypubFollowActivityData));
         }
     }
 }

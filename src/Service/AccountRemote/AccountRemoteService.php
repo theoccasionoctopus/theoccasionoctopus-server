@@ -205,6 +205,21 @@ class AccountRemoteService
         );
     }
 
+    public function sendFollowReject(AccountRemote $account, AccountLocal $wantsToFollowAccount, array $objectData)
+    {
+        $this->postToInbox(
+            $wantsToFollowAccount,
+            $account,
+            [
+                "id"=> $this->params->get('app.instance_url') . '/activitypubactivity/followrequestrejected/'.$wantsToFollowAccount->getAccount()->getId().'/'.urlencode($account->getActorDataId()),
+                "type"=> "Reject",
+                "actor"=> $this->params->get('app.instance_url') . $this->router->generate('account_public', ['account_username'=>$wantsToFollowAccount->getUsername()]),
+                "object"=> $objectData,
+                "@context"=> "https://www.w3.org/ns/activitystreams",
+            ]
+        );
+    }
+
     public function sendUnfollow(AccountLocal $account, AccountRemote $wantsToUnfollowAccount)
     {
         $this->postToInbox(

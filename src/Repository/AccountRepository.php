@@ -63,6 +63,22 @@ class AccountRepository extends ServiceEntityRepository
     }
 
 
+    public function findFollowersNeedingApproval(Account $account)
+    {
+        $entityManager = $this->getEntityManager();
+
+        $query = $entityManager->createQuery(
+            'SELECT a ' .
+            'FROM App\Entity\Account a ' .
+            'JOIN a.followsAccount afa '.
+            'WHERE afa.followsAccount = :a AND afa.followRequested = true AND afa.follows = false '.
+            'ORDER BY a.title ASC '
+        )->setParameter('a', $account);
+
+        return $query->execute();
+    }
+
+
     public function findAllLocal()
     {
         $entityManager = $this->getEntityManager();

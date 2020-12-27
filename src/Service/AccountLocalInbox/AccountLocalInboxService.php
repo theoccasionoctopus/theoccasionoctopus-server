@@ -70,6 +70,13 @@ class AccountLocalInboxService
                 $this->accountRemoteService,
                 $this->remoteServerService
             ),
+            new ProcessInboxSubmissionRejectFollow(
+                $this->entityManager,
+                $this->logger,
+                $this->requestHTTPService,
+                $this->accountRemoteService,
+                $this->remoteServerService
+            ),
             new ProcessInboxSubmissionUndoFollow(
                 $this->entityManager,
                 $this->logger,

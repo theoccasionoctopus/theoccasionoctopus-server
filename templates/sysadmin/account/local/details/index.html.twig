@@ -37,6 +37,17 @@
                     {%  endif %}
                 </td>
             </tr>
+
+            <tr>
+                <th>New Followers</th>
+                <td>
+                    {% if account.accountLocal.manuallyApprovesFollowers %}
+                        <i class="fas fa-question"></i> Must be approved
+                    {%  else %}
+                        <i class="fas fa-check"></i> Anyone can follow
+                    {%  endif %}
+                </td>
+            </tr>
             <tr>
                 <th>List in Directory</th>
                 <td>{%  if account.accountLocal.listInDirectory  %}<i class="fas fa-address-book"></i> Listed{%  else %}<i class="fas fa-ban"></i> Do not list{%  endif %}</td>
