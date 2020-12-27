@@ -21,7 +21,7 @@ class RemoteServerService
         $this->entityManager = $entityManager;
     }
 
-    public function add(string $url)
+    public function getOrCreateByUrl(string $url): RemoteServer
     {
         list($ssl, $host) = Library::parseURLToSSLAndHost($url);
 
@@ -61,7 +61,7 @@ class RemoteServerService
         }
     }
 
-    protected function addOccasionOctopusRemoteServer($data, RemoteServer $remoteServer)
+    protected function addOccasionOctopusRemoteServer($data, RemoteServer $remoteServer): RemoteServer
     {
         // TODO check api_version
         $remoteServer->setTitle($data['instance_name']);
@@ -73,7 +73,7 @@ class RemoteServerService
         return $remoteServer;
     }
 
-    protected function addActivityPubRemoteServer(RemoteServer $remoteServer)
+    protected function addActivityPubRemoteServer(RemoteServer $remoteServer): RemoteServer
     {
         $remoteServer->setTitle($remoteServer->getHost());
         $remoteServer->setOccasionOctopusSoftware(false);
@@ -88,9 +88,9 @@ class RemoteServerService
     {
         // We assume HTTPS - we should try and fall back to HTTP if it's not there
         try {
-            return $this->add('https://' . $host);
+            return $this->getOrCreateByUrl('https://' . $host);
         } catch (\GuzzleHttp\Exception\ConnectException $e) {
-            return $this->add('http://' . $host);
+            return $this->getOrCreateByUrl('http://' . $host);
         }
     }
 }

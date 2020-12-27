@@ -91,10 +91,10 @@ class AccountManageProfileController extends AccountManageController
 
             $remoteServer = $remoteServerService->addByHostName($hostname);
 
-            $remoteAccount = $remoteAccountService->addByUsername($remoteServer, $username);
+            $remoteAccount = $remoteAccountService->getOrCreateByUsername($remoteServer, $username);
 
             // Save
-            $accountService->follow($this->account, $remoteAccount);
+            $accountService->follow($this->account, $remoteAccount->getAccount());
 
             // Return
             return $this->redirectToRoute('account_manage_profile', ['account_username' => $this->account->getUsername()]);

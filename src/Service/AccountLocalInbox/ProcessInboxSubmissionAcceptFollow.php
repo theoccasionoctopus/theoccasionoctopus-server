@@ -27,7 +27,7 @@ class ProcessInboxSubmissionAcceptFollow extends ProcessInboxSubmissionBase
         $actorId = $inboxSubmission->getData()['actor'];
 
         // Sort out remote server
-        $remoteServer = $this->remoteServerService->add($actorId);
+        $remoteServer = $this->remoteServerService->getOrCreateByUrl($actorId);
 
         // Find accounts
         $accountFollowing = $inboxSubmission->getAccount();

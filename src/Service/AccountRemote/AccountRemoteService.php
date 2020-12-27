@@ -56,7 +56,7 @@ class AccountRemoteService
         $this->requestHTTPService = $requestHTTPService;
     }
 
-    public function addByUsername(RemoteServer $remoteServer, string $username): Account
+    public function getOrCreateByUsername(RemoteServer $remoteServer, string $username): AccountRemote
     {
         $resourceToGetFromWebFinger = 'acct:'. $username. '@'. $remoteServer->getHost();
         $responseWebFinger = $this->requestHTTPService->request(
@@ -76,7 +76,7 @@ class AccountRemoteService
             $account = $this->entityManager->getRepository(Account::class)->findOneById($dataWebFinger['occasion-octopus-id']);
             if ($account) {
                 // TODO check that account actually is a remote account on this server - if not we have an ID collision!
-                return $account;
+                return $account->getAccountRemote();
             }
         }
 
@@ -124,16 +124,16 @@ class AccountRemoteService
         $this->entityManager->persist($accountRemote);
         $this->entityManager->flush();
 
-        return $account;
+        return $accountRemote;
     }
 
 
-    public function addByActorId(RemoteServer $remoteServer, string $actorId): Account
+    public function getOrCreateByActorId(RemoteServer $remoteServer, string $actorId): AccountRemote
     {
         // Check account not already here
         $accountRemote = $this->entityManager->getRepository(AccountRemote::class)->findOneBy(['actorDataId'=>$actorId,'remoteServer'=>$remoteServer]);
         if ($accountRemote) {
-            return $accountRemote->getAccount();
+            return $accountRemote;
         }
 
         // Get account data
@@ -172,7 +172,7 @@ class AccountRemoteService
         $this->entityManager->persist($accountRemote);
         $this->entityManager->flush();
 
-        return $account;
+        return $accountRemote;
     }
 
     public function sendFollowRequest(AccountLocal $account, AccountRemote $wantsToFollowAccount)

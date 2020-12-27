@@ -41,7 +41,7 @@ class AddRemoteServerCommand extends Command
     {
         $url = $input->getArgument('url');
 
-        $remoteServer = $this->remoteServerService->add($url);
+        $remoteServer = $this->remoteServerService->getOrCreateByUrl($url);
         $output->writeln('Id='. $remoteServer->getId());
         return 0;
     }

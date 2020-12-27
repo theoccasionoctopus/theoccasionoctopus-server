@@ -112,12 +112,8 @@ class APIActivityStreamsController extends BaseController
         $psrRequest = $psrHttpFactory->createRequest($request);
 
         $actorId = $data['actor'];
-        $remoteServer = $remoteServerService->add($actorId);
-        $accountRemote = $entityManager->getRepository(AccountRemote::class)->findOneBy(array('actorDataId'=>$actorId,'remoteServer'=>$remoteServer));
-        if (!$accountRemote) {
-            $account = $accountRemoteService->addByActorId($remoteServer, $actorId);
-            $accountRemote = $account->getAccountRemote();
-        }
+        $remoteServer = $remoteServerService->getOrCreateByUrl($actorId);
+        $accountRemote = $accountRemoteService->getOrCreateByActorId($remoteServer, $actorId);
         $context = new Context([
             'keys' => [
                 $actorId.'#main-key' => $accountRemote->getActorData()['publicKey']['publicKeyPem']

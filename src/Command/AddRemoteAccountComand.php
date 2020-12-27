@@ -57,9 +57,9 @@ class AddRemoteAccountComand extends Command
 
         $username = $input->getArgument('username');
 
-        $account = $this->remoteAccountService->addByUsername($remoteServer, $username);
+        $account = $this->remoteAccountService->getOrCreateByUsername($remoteServer, $username);
 
-        $output->writeln('Id='. $account->getId());
+        $output->writeln('Id='. $account->getAccount()->getId());
         return 0;
     }
 }

@@ -27,16 +27,11 @@ class ProcessInboxSubmissionFollow extends ProcessInboxSubmissionBase
         $actorId = $inboxSubmission->getData()['actor'];
 
         // Sort out remote server
-        $remoteServer = $this->remoteServerService->add($actorId);
-
+        $remoteServer = $this->remoteServerService->getOrCreateByUrl($actorId);
 
         // Find or create Accounts in our database
         $accountWantsToFollowLocal = $inboxSubmission->getAccount();
-        $accountRemote = $this->entityManager->getRepository(AccountRemote::class)->findOneBy(array('actorDataId'=>$actorId,'remoteServer'=>$remoteServer));
-        if (!$accountRemote) {
-            $account = $this->accountRemoteService->addByActorId($remoteServer, $actorId);
-            $accountRemote = $account->getAccountRemote();
-        }
+        $accountRemote = $this->accountRemoteService->getOrCreateByActorId($remoteServer, $actorId);
 
         // Save to database
         // At moment we always accept follow request straight away TODO have a mode where they have to be approved
