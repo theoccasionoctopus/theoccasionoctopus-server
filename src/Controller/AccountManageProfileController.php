@@ -27,7 +27,7 @@ class AccountManageProfileController extends AccountManageController
             # TODO CSFR
             $account = $doctrine->getRepository(Account::class)->findOneBy(['id'=>$request->request->get('guid')]);
             if ($account) {
-                $accountService->unfollow($this->account, $account);
+                $accountService->unfollow($this->account->getAccountLocal(), $account);
                 return $this->redirectToRoute('account_manage_profile', ['account_username' => $this->account->getUsername()]);
             }
         } elseif ($request->request->get('action') == 'acceptfollower') {
@@ -71,7 +71,7 @@ class AccountManageProfileController extends AccountManageController
             # TODO CSFR
             $account_to_follow = $repository->findOneBy(array('id' => $request->request->get('guid')));
             if ($account_to_follow) {
-                $accountService->follow($this->account, $account_to_follow);
+                $accountService->follow($this->account->getAccountLocal(), $account_to_follow);
                 return $this->redirectToRoute('account_manage_profile', ['account_username' => $this->account->getUsername()]);
             }
         }
@@ -109,7 +109,7 @@ class AccountManageProfileController extends AccountManageController
             $remoteAccount = $remoteAccountService->getOrCreateByUsername($remoteServer, $username);
 
             // Save
-            $accountService->follow($this->account, $remoteAccount->getAccount());
+            $accountService->follow($this->account->getAccountLocal(), $remoteAccount->getAccount());
 
             // Return
             return $this->redirectToRoute('account_manage_profile', ['account_username' => $this->account->getUsername()]);

@@ -52,17 +52,17 @@ class AccountService
     }
 
 
-    public function follow(Account $account, Account $wantsToFollowAccount)
+    public function follow(AccountLocal $accountLocal, Account $wantsToFollowAccount)
     {
-        if ($account->getId() == $wantsToFollowAccount->getId()) {
+        if ($accountLocal->getAccount()->getId() == $wantsToFollowAccount->getId()) {
             return;
         }
 
         /** @var AccountFollowsAccount $account_follows_account */
-        $account_follows_account = $this->entityManager->getRepository(AccountFollowsAccount::class)->findOneBy(array('account' => $account, 'followsAccount' => $wantsToFollowAccount));
+        $account_follows_account = $this->entityManager->getRepository(AccountFollowsAccount::class)->findOneBy(array('account' => $accountLocal->getAccount(), 'followsAccount' => $wantsToFollowAccount));
         if (!$account_follows_account) {
             $account_follows_account = new AccountFollowsAccount();
-            $account_follows_account->setAccount($account);
+            $account_follows_account->setAccount($accountLocal->getAccount());
             $account_follows_account->setFollowsAccount($wantsToFollowAccount);
         }
         if ($account_follows_account->isFollows() || $account_follows_account->isFollowRequested()) {
@@ -80,22 +80,22 @@ class AccountService
             }
             $this->entityManager->persist($account_follows_account);
             $this->entityManager->flush();
-            $this->logger->info('New follow request made from local account to local account; granted immediately', ['account_id'=>$account->getId(), 'wants_to_follow_account_id'=>$wantsToFollowAccount->getId()]);
+            $this->logger->info('New follow request made from local account to local account; granted immediately', ['account_id'=>$accountLocal->getAccount()->getId(), 'wants_to_follow_account_id'=>$wantsToFollowAccount->getId()]);
         } else {
             // If remote we have to request
             $account_follows_account->setFollowRequested(true);
             $this->entityManager->persist($account_follows_account);
             $this->entityManager->flush();
-            $this->logger->info('New follow request made from local account to remote account; requested', ['account_id'=>$account->getId(), 'wants_to_follow_account_id'=>$wantsToFollowAccount->getId()]);
-            $this->messageBus->dispatch(new NewFollowRemoteAccountMessage($account->getId(), $wantsToFollowAccount->getId()));
+            $this->logger->info('New follow request made from local account to remote account; requested', ['account_id'=>$accountLocal->getAccount()->getId(), 'wants_to_follow_account_id'=>$wantsToFollowAccount->getId()]);
+            $this->messageBus->dispatch(new NewFollowRemoteAccountMessage($accountLocal->getAccount()->getId(), $wantsToFollowAccount->getId()));
         }
     }
 
 
-    public function unfollow(Account $account, Account $wantsToUnfollowAccount)
+    public function unfollow(AccountLocal $accountLocal, Account $wantsToUnfollowAccount)
     {
         /** @var AccountFollowsAccount $account_follows_account */
-        $account_follows_account = $this->entityManager->getRepository(AccountFollowsAccount::class)->findOneBy(array('account' => $account, 'followsAccount' => $wantsToUnfollowAccount));
+        $account_follows_account = $this->entityManager->getRepository(AccountFollowsAccount::class)->findOneBy(array('account' => $accountLocal->getAccount(), 'followsAccount' => $wantsToUnfollowAccount));
         if (!$account_follows_account) {
             return;
         }
@@ -107,10 +107,10 @@ class AccountService
         $account_follows_account->setFollowRequested(false);
         $this->entityManager->persist($account_follows_account);
         $this->entityManager->flush();
-        $this->logger->info('Account unfollow', ['account_id'=>$account->getId(), 'unfollow_account_id'=>$wantsToUnfollowAccount->getId()]);
+        $this->logger->info('Account unfollow', ['account_id'=>$accountLocal->getAccount()->getId(), 'unfollow_account_id'=>$wantsToUnfollowAccount->getId()]);
 
         if ($wantsToUnfollowAccount->getAccountRemote()) {
-            $this->messageBus->dispatch(new NewUnfollowRemoteAccountMessage($account->getId(), $wantsToUnfollowAccount->getId()));
+            $this->messageBus->dispatch(new NewUnfollowRemoteAccountMessage($accountLocal->getAccount()->getId(), $wantsToUnfollowAccount->getId()));
         }
     }
 
