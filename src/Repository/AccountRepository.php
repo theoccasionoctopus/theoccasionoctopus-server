@@ -94,7 +94,7 @@ class AccountRepository extends ServiceEntityRepository
     }
 
 
-    public function findAllLocalToFollow(Account $fromAccount)
+    public function findAllLocalInDirectoryToFollow(Account $fromAccount)
     {
         $entityManager = $this->getEntityManager();
 
@@ -104,7 +104,7 @@ class AccountRepository extends ServiceEntityRepository
             'SELECT a ' .
             'FROM App\Entity\Account a ' .
             'JOIN a.accountLocal al '.
-            'WHERE a.id != :fromAccountId AND al.locked = False ' .
+            'WHERE a.id != :fromAccountId AND al.locked = False AND al.list_in_directory = True ' .
             'ORDER BY a.title ASC '
         )->setParameter('fromAccountId', $fromAccount->getId());
 

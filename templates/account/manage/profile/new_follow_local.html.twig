@@ -6,7 +6,19 @@
     <div class="content">
 
 
+        <p>Enter the username:</p>
+
+
+        <form action="#" method="post">
+            <input type="hidden" name="action" value="follow">
+            <input type="text" name="username" value="">
+            <input type="submit" value="Follow" class="button">
+        </form>
+
+
         {%  if accounts_to_follow %}
+
+            <p>Or select from the directory:</p>
 
             {%  for account_to_follow in accounts_to_follow %}
                 <div>
@@ -18,8 +30,6 @@
                     </form>
                 </div>
             {%  endfor %}
-        {%  else %}
-            <p>There are no more accounts on this server you can follow!</p>
         {%  endif %}
 
     </div>

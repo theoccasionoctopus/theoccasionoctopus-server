@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\AccountLocal;
 use App\Message\NewFollowRemoteAccountMessage;
 use App\Service\Account\AccountService;
 use App\Service\AccountRemote\AccountRemoteService;
@@ -69,14 +70,29 @@ class AccountManageProfileController extends AccountManageController
 
 
             # TODO CSFR
-            $account_to_follow = $repository->findOneBy(array('id' => $request->request->get('guid')));
-            if ($account_to_follow) {
-                $accountService->follow($this->account->getAccountLocal(), $account_to_follow);
-                return $this->redirectToRoute('account_manage_profile', ['account_username' => $this->account->getUsername()]);
+            $account_to_follow = null;
+            if ($request->request->get('guid')) {
+                $account_to_follow = $repository->findOneBy(array('id' => $request->request->get('guid')));
+                if ($account_to_follow) {
+                    $accountService->follow($this->account->getAccountLocal(), $account_to_follow);
+                    return $this->redirectToRoute('account_manage_profile', ['account_username' => $this->account->getUsername()]);
+                }
+            } elseif ($request->request->get('username')) {
+                $account_to_follow_local = $doctrine->getRepository(AccountLocal::class)
+                    ->findOneBy(array('usernameCanonical' => Library::makeAccountUsernameCanonical($request->request->get('username')), 'locked'=>false));
+                if ($account_to_follow_local) {
+                    $accountService->follow($this->account->getAccountLocal(), $account_to_follow_local->getAccount());
+                    return $this->redirectToRoute('account_manage_profile', ['account_username' => $this->account->getUsername()]);
+                } else {
+                    $this->addFlash(
+                        'warning',
+                        'Sorry, we could not find that account'
+                    );
+                }
             }
         }
 
-        $accounts_to_follow = $repository->findAllLocalToFollow($this->account);
+        $accounts_to_follow = $repository->findAllLocalInDirectoryToFollow($this->account);
 
         return $this->render('account/manage/profile/new_follow_local.html.twig', $this->getTemplateVariables([
             'account' => $this->account,
