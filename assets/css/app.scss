@@ -248,6 +248,9 @@ form.styled {
     text-decoration: none;
     font-size: 1rem;
   }
+  .choiceWidgetExpandedChild > label {
+    display: inline-block;
+  }
   button[type="submit"].button:hover, button[type="submit"].button:focus {
     background-color: blue;
     text-decoration: underline;
