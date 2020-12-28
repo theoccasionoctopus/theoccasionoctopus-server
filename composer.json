@@ -8,6 +8,7 @@
         "ext-ctype": "*",
         "ext-iconv": "*",
         "ext-openssl": "*",
+        "bugsnag/bugsnag-symfony": "^1.5",
         "guzzlehttp/guzzle": "^7.1",
         "jmbtechnologylimited/linkify": "^1.1",
         "liamdennehy/http-signatures-php": "11.*",

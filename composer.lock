@@ -4,8 +4,212 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "8cbafa52f8c9ce03e4e7e8629d1bf4c9",
+    "content-hash": "b2336a84aa2da18916620ccde92a01dc",
     "packages": [
+        {
+            "name": "bugsnag/bugsnag",
+            "version": "v3.25.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/bugsnag/bugsnag-php.git",
+                "reference": "5a62ea2449e090ac103b1e9883a8fc33567d4241"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/bugsnag/bugsnag-php/zipball/5a62ea2449e090ac103b1e9883a8fc33567d4241",
+                "reference": "5a62ea2449e090ac103b1e9883a8fc33567d4241",
+                "shasum": ""
+            },
+            "require": {
+                "composer/ca-bundle": "^1.0",
+                "guzzlehttp/guzzle": "^5.0|^6.0|^7.0",
+                "php": ">=5.5"
+            },
+            "require-dev": {
+                "guzzlehttp/psr7": "^1.3",
+                "mtdowling/burgomaster": "dev-master#72151eddf5f0cf101502b94bf5031f9c53501a04",
+                "php-mock/php-mock-phpunit": "^1.1|^2.1",
+                "phpunit/phpunit": "^4.8.36|^7.5.15|^9.3.10",
+                "sebastian/version": ">=1.0.3"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "3.20-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Bugsnag\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "James Smith",
+                    "email": "notifiers@bugsnag.com",
+                    "homepage": "https://bugsnag.com"
+                }
+            ],
+            "description": "Official Bugsnag notifier for PHP applications.",
+            "homepage": "https://github.com/bugsnag/bugsnag-php",
+            "keywords": [
+                "bugsnag",
+                "errors",
+                "exceptions",
+                "logging",
+                "tracking"
+            ],
+            "support": {
+                "issues": "https://github.com/bugsnag/bugsnag-php/issues",
+                "source": "https://github.com/bugsnag/bugsnag-php/tree/v3.25.0"
+            },
+            "time": "2020-11-25T13:15:13+00:00"
+        },
+        {
+            "name": "bugsnag/bugsnag-symfony",
+            "version": "v1.8.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/bugsnag/bugsnag-symfony.git",
+                "reference": "6f3c821029cfdec1df6520882e97c9895239c357"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/bugsnag/bugsnag-symfony/zipball/6f3c821029cfdec1df6520882e97c9895239c357",
+                "reference": "6f3c821029cfdec1df6520882e97c9895239c357",
+                "shasum": ""
+            },
+            "require": {
+                "bugsnag/bugsnag": "^3.20",
+                "php": ">=5.5",
+                "symfony/config": "^2.7|^3|^4|^5",
+                "symfony/console": "^2.7|^3|^4|^5",
+                "symfony/dependency-injection": "^2.7|^3|^4|^5",
+                "symfony/http-foundation": "^2.7|^3|^4|^5",
+                "symfony/http-kernel": "^2.7|^3|^4|^5",
+                "symfony/security-core": "^2.7|^3|^4|^5"
+            },
+            "require-dev": {
+                "graham-campbell/testbench-core": "^1.1",
+                "mockery/mockery": "^0.9.4|^1.3.1",
+                "phpunit/phpunit": "^4.8.36|^7.5.15|^9.3.10"
+            },
+            "type": "symfony-bundle",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.6-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Bugsnag\\BugsnagBundle\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "James Smith",
+                    "email": "notifiers@bugsnag.com"
+                }
+            ],
+            "description": "Official Bugsnag notifier for Symfony applications.",
+            "homepage": "https://github.com/bugsnag/bugsnag-symfony",
+            "keywords": [
+                "bugsnag",
+                "errors",
+                "exceptions",
+                "logging",
+                "symfony",
+                "tracking"
+            ],
+            "support": {
+                "issues": "https://github.com/bugsnag/bugsnag-symfony/issues",
+                "source": "https://github.com/bugsnag/bugsnag-symfony/tree/v1.8.0"
+            },
+            "time": "2020-11-25T13:21:19+00:00"
+        },
+        {
+            "name": "composer/ca-bundle",
+            "version": "1.2.8",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/composer/ca-bundle.git",
+                "reference": "8a7ecad675253e4654ea05505233285377405215"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/composer/ca-bundle/zipball/8a7ecad675253e4654ea05505233285377405215",
+                "reference": "8a7ecad675253e4654ea05505233285377405215",
+                "shasum": ""
+            },
+            "require": {
+                "ext-openssl": "*",
+                "ext-pcre": "*",
+                "php": "^5.3.2 || ^7.0 || ^8.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^4.8.35 || ^5.7 || 6.5 - 8",
+                "psr/log": "^1.0",
+                "symfony/process": "^2.5 || ^3.0 || ^4.0 || ^5.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Composer\\CaBundle\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Jordi Boggiano",
+                    "email": "j.boggiano@seld.be",
+                    "homepage": "http://seld.be"
+                }
+            ],
+            "description": "Lets you find a path to the system CA bundle, and includes a fallback to the Mozilla CA bundle.",
+            "keywords": [
+                "cabundle",
+                "cacert",
+                "certificate",
+                "ssl",
+                "tls"
+            ],
+            "support": {
+                "irc": "irc://irc.freenode.org/composer",
+                "issues": "https://github.com/composer/ca-bundle/issues",
+                "source": "https://github.com/composer/ca-bundle/tree/1.2.8"
+            },
+            "funding": [
+                {
+                    "url": "https://packagist.com",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/composer",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/composer/composer",
+                    "type": "tidelift"
+                }
+            ],
+            "time": "2020-08-23T12:54:47+00:00"
+        },
         {
             "name": "composer/package-versions-deprecated",
             "version": "1.11.99",

@@ -1,0 +1,3 @@
+bugsnag:
+  api_key: '%env(string:default::BUGSNAG_API_KEY)%'
+

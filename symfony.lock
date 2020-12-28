@@ -1,4 +1,13 @@
 {
+    "bugsnag/bugsnag": {
+        "version": "v3.25.0"
+    },
+    "bugsnag/bugsnag-symfony": {
+        "version": "v1.8.0"
+    },
+    "composer/ca-bundle": {
+        "version": "1.2.8"
+    },
     "composer/package-versions-deprecated": {
         "version": "1.11.99"
     },

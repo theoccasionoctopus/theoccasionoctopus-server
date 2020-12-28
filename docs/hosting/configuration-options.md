@@ -18,6 +18,13 @@ APP_ENV=prod
 APP_SECRET="A-RANDOM-STRING-SET-ONCE-AND-DONT-CHANGE"
 ```
 
+## BUGSNAG_API_KEY
+
+See [Logging](logging.md).
+
+```
+BUGSNAG_API_KEY=a03aaxxxxxxxxxxxxxxxxxxxxxxx6cd
+```
 
 ## DATABASE_URL
 
