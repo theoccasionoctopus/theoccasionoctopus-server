@@ -7,6 +7,7 @@ use App\Entity\EmailUserUpcomingEventsForAccount;
 use App\Entity\Import;
 use App\Entity\User;
 use App\FilterParams\EventListFilterParams;
+use App\Form\AccountEditSettingsType;
 use App\Form\ImportNewType;
 use App\RepositoryQuery\EventRepositoryQuery;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -119,6 +120,47 @@ class AccountManageSettingsController extends AccountManageController
         }
 
         return $this->render('account/manage/settings/newImport.html.twig', $this->getTemplateVariables([
+            'account'=> $this->account,
+            'form' => $form->createView(),
+        ]));
+    }
+
+
+    public function edit($account_username, Request $request, LoggerInterface $logger)
+    {
+        $this->build($account_username);
+
+        // build the form
+
+        $form = $this->createForm(AccountEditSettingsType::class, $this->account->getAccountLocal(), array(
+            'account'=>$this->account,
+        ));
+
+        // handle the submit (will only happen on POST)
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+
+            // Save
+            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager->persist($this->account->getAccountLocal());
+            $this->account->setTitle($form->get('title')->getData());
+            $entityManager->persist($this->account);
+            $entityManager->flush();
+
+            // Log
+            $logger->info(
+                'Account Settings Edited',
+                [
+                    'user_id'=>$this->get('security.token_storage')->getToken()->getUser()->getId(),
+                    'account_id'=>$this->account->getId(),
+                ]
+            );
+
+            // redirect
+            return $this->redirectToRoute('account_manage_settings', ['account_username' => $this->account->getUsername() ]);
+        }
+
+        return $this->render('account/manage/settings/edit.html.twig', $this->getTemplateVariables([
             'account'=> $this->account,
             'form' => $form->createView(),
         ]));

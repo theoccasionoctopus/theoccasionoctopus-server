@@ -1,0 +1,35 @@
+{%  extends "account/manage/base.html.twig" %}
+
+{% block body %}
+
+    <div class="content">
+
+
+        <h3>Account settings</h3>
+
+        {{ form_start(form) }}
+        {{ form_errors(form) }}
+
+
+        <h4>About</h4>
+        {{ form_row(form.title) }}
+        <p>(You can't edit your username yet, and you can't edit your account ID.)</p>
+
+        <h4>Account Privacy</h4>
+        {{ form_row(form.manuallyApprovesFollowers) }}
+        {{ form_row(form.listInDirectory) }}
+        {{ form_row(form.seo_index_follow) }}
+        <p>(Basic details of your account are always public, but you can control how people find you and follow you.)</p>
+
+        <h4>Your Defaults</h4>
+        {{ form_row(form.default_country) }}
+        {{ form_row(form.default_timezone) }}
+        {{ form_row(form.default_privacy) }}
+        <p>(You can choose to change these for individual events later.)</p>
+
+        <button type="submit" class="button">Save</button>
+        {{ form_end(form) }}
+
+    </div>
+
+{% endblock %}
