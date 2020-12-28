@@ -10,6 +10,7 @@ monolog:
             type: stream
             path: "%kernel.logs_dir%/%kernel.environment%.log"
             level: debug
+            formatter: logging.webProcessorFormatting
         app:
             type: stream
             path: "%kernel.logs_dir%/%kernel.environment%-app.log"
