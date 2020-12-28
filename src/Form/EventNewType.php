@@ -71,6 +71,9 @@ class EventNewType extends AbstractType
             'data' => $options['account']->getAccountLocal()->getDefaultTimezone(),
         ]);
         $builder->add('privacy', ChoiceType::class, [
+            'expanded'=>true,
+            'multiple'=>false,
+            'label'=>'Can be seen by',
             'choices' => [
                 'Public' => Constants::PRIVACY_LEVEL_PUBLIC,
                 'Only Followers'=>Constants::PRIVACY_LEVEL_ONLY_FOLLOWERS,

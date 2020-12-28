@@ -70,6 +70,9 @@ class EventEditDetailsType extends AbstractType
 
         if (in_array('privacy', $options['editableFields'])) {
             $builder->add('privacy', ChoiceType::class, [
+                'label'=>'Can be seen by',
+                'expanded'=>true,
+                'multiple'=>false,
                 'choices' => [
                     'Public' => Constants::PRIVACY_LEVEL_PUBLIC,
                     'Only Followers'=>Constants::PRIVACY_LEVEL_ONLY_FOLLOWERS,

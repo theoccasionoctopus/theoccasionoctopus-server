@@ -22,6 +22,9 @@ class ImportNewType extends AbstractType
         $builder->add('url', UrlType::class, array('required' => true));
 
         $builder->add('privacy', ChoiceType::class, [
+                'expanded'=>true,
+                'multiple'=>false,
+                'label'=>'Any events imported can be seen by',
                 'choices'  => [
                     'Public' => Constants::PRIVACY_LEVEL_PUBLIC,
                     'Only Followers'=>Constants::PRIVACY_LEVEL_ONLY_FOLLOWERS,

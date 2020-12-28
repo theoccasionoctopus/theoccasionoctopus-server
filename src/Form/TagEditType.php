@@ -22,6 +22,9 @@ class TagEditType extends AbstractType
 
 
         $builder->add('privacy', ChoiceType::class, [
+                'expanded'=>true,
+                'multiple'=>false,
+                'label'=>'Can be seen by',
                 'choices'  => [
                     'Public' => Constants::PRIVACY_LEVEL_PUBLIC,
                     'Only Followers'=>Constants::PRIVACY_LEVEL_ONLY_FOLLOWERS,
