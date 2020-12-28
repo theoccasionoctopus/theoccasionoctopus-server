@@ -1,6 +1,7 @@
 <?php
 namespace App\Form;
 
+use App\Constants;
 use App\Entity\Tag;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -22,8 +23,9 @@ class TagEditType extends AbstractType
 
         $builder->add('privacy', ChoiceType::class, [
                 'choices'  => [
-                    'Public' => 0,
-                    'Private' => 10000,
+                    'Public' => Constants::PRIVACY_LEVEL_PUBLIC,
+                    'Only Followers'=>Constants::PRIVACY_LEVEL_ONLY_FOLLOWERS,
+                    'Only You' => Constants::PRIVACY_LEVEL_PRIVATE,
                 ],
             ])
         ;

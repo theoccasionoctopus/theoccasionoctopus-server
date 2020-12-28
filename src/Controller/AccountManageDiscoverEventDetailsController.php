@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Constants;
 use App\Entity\EventHasSourceEvent;
 use App\FilterParams\AccountDiscoverEventListFilterParams;
 use App\Service\HistoryWorker\HistoryWorkerService;
@@ -38,7 +39,7 @@ class AccountManageDiscoverEventDetailsController extends AccountManageControlle
         if (!$this->discoverEvent) {
             throw new  NotFoundHttpException('Not found');
         }
-        if ($this->discoverEvent->getPrivacy() > 0) {
+        if ($this->discoverEvent->getPrivacy() > Constants::PRIVACY_LEVEL_ONLY_FOLLOWERS) {
             throw new  NotFoundHttpException('Not found');
         }
     }

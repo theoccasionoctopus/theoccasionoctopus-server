@@ -1,6 +1,7 @@
 <?php
 namespace App\Tests\API1;
 
+use App\Constants;
 use App\Entity\Account;
 use App\Entity\APIAccessToken;
 use App\Entity\Country;
@@ -38,7 +39,7 @@ class ShowEventTest extends BaseWebTestWithDataBase
         $event->setEndWithInts(2025, 1, 1, 10, 0, 0);
         $event->setTitle('Title');
         $event->setId('36573fb9-a021-4005-9fd2-3034cda50a72');
-        $event->setPrivacy(0);
+        $event->setPrivacy(Constants::PRIVACY_LEVEL_PUBLIC);
 
         $this->entityManager->persist($event);
         $this->entityManager->flush();
@@ -50,6 +51,87 @@ class ShowEventTest extends BaseWebTestWithDataBase
 
         $this->assertSame('Title', $responseData['event']['title']);
         $this->assertSame('public', $responseData['event']['privacy']);
+    }
+
+    public function testShowOnlyFollowers() {
+
+        $this->setupCommon();
+
+        $event = new Event();
+        $event->setAccount($this->account);
+        $event->setTimezone($this->timezone);
+        $event->setCountry($this->country);
+        $event->setStartWithObject(new \DateTime('2025-01-01 10:00:00', new \DateTimeZone('Europe/London')));
+        $event->setEndWithObject(new \DateTime('2025-01-01 10:00:00', new \DateTimeZone('Europe/London')));
+        $event->setTitle('Title');
+        $event->setId('36573fb9-a021-4005-9fd2-3034cda50a72');
+        $event->setPrivacy(Constants::PRIVACY_LEVEL_ONLY_FOLLOWERS);
+
+        $this->entityManager->persist($event);
+        $this->entityManager->flush();
+
+        $this->client->request('GET', '/api/v1/account/'.$this->account->getId().'/event/36573fb9-a021-4005-9fd2-3034cda50a72.json');
+        $response = $this->client->getResponse();
+        $this->assertSame(404, $response->getStatusCode());
+
+    }
+
+    public function testShowOnlyFollowersWithCorrectToken() {
+
+        $this->setupCommon();
+
+        list($followerUser, $followerAccount) = $this->createUserAndAccountThatFollowsOtherAccount('testFollower', $this->country, $this->timezone, $this->account);
+
+        $token = new APIAccessToken();
+        // TODO when we change what binding an token to an account means, we should be able to put this back in
+        // $token->setAccount($followerAccount);
+        $token->setUser($followerUser);
+        $token->setEnabled(true);
+        $token->setToken('CAT');
+        $this->entityManager->persist($token);
+
+        $event = new Event();
+        $event->setAccount($this->account);
+        $event->setTimezone($this->timezone);
+        $event->setCountry($this->country);
+        $event->setStartWithObject(new \DateTime('2025-01-01 10:00:00', new \DateTimeZone('Europe/London')));
+        $event->setEndWithObject(new \DateTime('2025-01-01 10:00:00', new \DateTimeZone('Europe/London')));
+        $event->setTitle('Title');
+        $event->setId('36573fb9-a021-4005-9fd2-3034cda50a72');
+        $event->setPrivacy(Constants::PRIVACY_LEVEL_ONLY_FOLLOWERS);
+        $this->entityManager->persist($event);
+
+        $this->entityManager->flush();
+
+        ############################ TEST 1 - with GET param, hacky way
+        $this->client->request(
+            'GET',
+            '/api/v1/account/'.$this->account->getId().'/event/36573fb9-a021-4005-9fd2-3034cda50a72.json' .
+            '?access_token=CAT'
+        );
+        $response = $this->client->getResponse();
+        $this->assertSame(200, $response->getStatusCode());
+        $responseData = json_decode($response->getContent(), true);
+
+        $this->assertSame('Title', $responseData['event']['title']);
+        $this->assertSame('only-followers', $responseData['event']['privacy']);
+
+        ############################ TEST 2 - with Header param, proper way
+        $this->client->request(
+            'GET',
+            '/api/v1/account/'.$this->account->getId().'/event/36573fb9-a021-4005-9fd2-3034cda50a72.json',
+            [],
+            [],
+            [
+                'HTTP_AUTHORIZATION' => "Bearer CAT",
+            ]
+        );
+        $response = $this->client->getResponse();
+        $this->assertSame(200, $response->getStatusCode());
+        $responseData = json_decode($response->getContent(), true);
+
+        $this->assertSame('Title', $responseData['event']['title']);
+        $this->assertSame('only-followers', $responseData['event']['privacy']);
     }
 
     public function testShowPrivate() {
@@ -64,7 +146,7 @@ class ShowEventTest extends BaseWebTestWithDataBase
         $event->setEndWithObject(new \DateTime('2025-01-01 10:00:00', new \DateTimeZone('Europe/London')));
         $event->setTitle('Title');
         $event->setId('36573fb9-a021-4005-9fd2-3034cda50a72');
-        $event->setPrivacy(10000);
+        $event->setPrivacy(Constants::PRIVACY_LEVEL_PRIVATE);
 
         $this->entityManager->persist($event);
         $this->entityManager->flush();
@@ -94,7 +176,7 @@ class ShowEventTest extends BaseWebTestWithDataBase
         $event->setEndWithObject(new \DateTime('2025-01-01 10:00:00', new \DateTimeZone('Europe/London')));
         $event->setTitle('Title');
         $event->setId('36573fb9-a021-4005-9fd2-3034cda50a72');
-        $event->setPrivacy(10000);
+        $event->setPrivacy(Constants::PRIVACY_LEVEL_PRIVATE);
         $this->entityManager->persist($event);
 
         $this->entityManager->flush();

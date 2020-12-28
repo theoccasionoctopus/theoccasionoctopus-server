@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Constants;
 use App\Service\HistoryWorker\HistoryWorkerService;
 use App\RepositoryQuery\TagRepositoryQuery;
 use stdClass;
@@ -31,7 +32,13 @@ class APIV1AccountTagDetailsController extends APIV1AccountController
         if (!$this->tag) {
             throw new  NotFoundHttpException('Not found');
         }
-        if (!$this->account_permission_read_private && $this->tag->getPrivacy() > 0) {
+        if (
+            $this->tag->getPrivacy() == Constants::PRIVACY_LEVEL_PUBLIC ||
+            ($this->account_permission_read_private && $this->tag->getPrivacy() == Constants::PRIVACY_LEVEL_PRIVATE) ||
+            ($this->account_permission_read_only_followers && $this->tag->getPrivacy() == Constants::PRIVACY_LEVEL_ONLY_FOLLOWERS)
+        ) {
+            // Great!
+        } else {
             throw new  NotFoundHttpException('Not found');
         }
     }
@@ -45,7 +52,7 @@ class APIV1AccountTagDetailsController extends APIV1AccountController
             'id'=> $this->tag->getId(),
             'title'=>$this->tag->getTitle(),
             'description'=>$this->tag->getDescription(),
-            'privacy'=>($this->tag->getPrivacy() == 0 ? 'public' : 'private'),
+            'privacy'=>$this->privacyLevelToAPIString($this->tag->getPrivacy()),
             'extra_fields'=>($this->tag->getExtraFields() ? $this->tag->getExtraFields() : new stdClass()),
         );
 

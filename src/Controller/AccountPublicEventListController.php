@@ -22,7 +22,11 @@ class AccountPublicEventListController extends AccountPublicController
         $params = new EventListFilterParams($this->getDoctrine(), $this->account);
         $params->build($request->query);
 
-        $params->getRepositoryQuery()->setPublicOnly();
+        if ($this->account_permission_read_only_followers) {
+            $params->getRepositoryQuery()->setPrivacyLevelOnlyFollowers();
+        } else {
+            $params->getRepositoryQuery()->setPublicOnly();
+        }
         $eventOccurrences = $params->getRepositoryQuery()->getEventOccurrences();
 
         return $this->render('account/public/event/index.html.twig', $this->getTemplateVariables([
@@ -55,7 +59,11 @@ class AccountPublicEventListController extends AccountPublicController
 
         $repositoryQuery = new EventRepositoryQuery($this->getDoctrine());
         $repositoryQuery->setAccountEvents($this->account);
-        $repositoryQuery->setPublicOnly();
+        if ($this->account_permission_read_only_followers) {
+            $repositoryQuery->setPrivacyLevelOnlyFollowers();
+        } else {
+            $repositoryQuery->setPublicOnly();
+        }
         $repositoryQuery->setFrom($from);
         $repositoryQuery->setTo($to);
         $repositoryQuery->setShowDeleted(false);

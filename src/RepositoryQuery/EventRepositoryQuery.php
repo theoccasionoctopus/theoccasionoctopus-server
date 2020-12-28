@@ -2,6 +2,7 @@
 
 namespace App\RepositoryQuery;
 
+use App\Constants;
 use App\Entity\Account;
 use App\Entity\Event;
 use App\Entity\EventOccurrence;
@@ -38,7 +39,7 @@ class EventRepositoryQuery
 
     protected $showCancelled = true;
 
-    protected $max_privacy_allowed = 10000;
+    protected $max_privacy_allowed = Constants::PRIVACY_LEVEL_PRIVATE;
 
     /** @var null Int */
     protected $limit = null;
@@ -62,9 +63,17 @@ class EventRepositoryQuery
         $this->accountDiscoverEvents = $accountDiscoverEvents;
     }
 
+    /**
+     * @TODO Name setPrivacyLevelPublic
+     */
     public function setPublicOnly()
     {
-        $this->max_privacy_allowed = 0;
+        $this->max_privacy_allowed = Constants::PRIVACY_LEVEL_PUBLIC;
+    }
+
+    public function setPrivacyLevelOnlyFollowers()
+    {
+        $this->max_privacy_allowed = Constants::PRIVACY_LEVEL_ONLY_FOLLOWERS;
     }
 
     public function setFrom(\DateTime $from)
@@ -139,8 +148,12 @@ class EventRepositoryQuery
 
         if ($this->accountDiscoverEvents) {
             $qb->join('e.account', 'a');
-            $qb->join('a.followsAccountFollows', 'afa', 'WITH', 'afa.account  = :account AND (afa.follows = true OR afa.followRequested = true)');
+            $qb->join('a.followsAccountFollows', 'afa', 'WITH', 'afa.account  = :account AND afa.follows = true');
             $qb->setParameter('account', $this->accountDiscoverEvents);
+            // TODO Can we have (... or OR afa.followRequested = true)?
+            // To do this, must check
+            // * privacy is Public if only followRequested = true
+            // * privacy is Public or Only Followers if afa.follows = true
         }
 
         if ($this->from) {

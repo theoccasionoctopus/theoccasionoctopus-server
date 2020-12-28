@@ -1,6 +1,7 @@
 <?php
 namespace App\Form;
 
+use App\Constants;
 use App\Entity\Account;
 use App\Entity\AccountLocal;
 use App\Entity\Country;
@@ -30,9 +31,12 @@ class AccountRegisterType extends AbstractType
                 'label'=>'User name',
             ])
             ->add('default_privacy', ChoiceType::class, [
+                'expanded'=>true,
+                'multiple'=>false,
+                'label'=>'Privacy',
                 'choices'  => [
-                    'Public' => 0,
-                    'Private' => 10000,
+                    'Public' => Constants::PRIVACY_LEVEL_PUBLIC,
+                    'Protected; Only Followers can see events; followers must be approved' => Constants::PRIVACY_LEVEL_ONLY_FOLLOWERS,
                 ]])
             ->add('default_country', EntityType::class, [
                 'class'=>Country::class,
@@ -41,6 +45,7 @@ class AccountRegisterType extends AbstractType
                     return $cr->createQueryBuilder('c')
                         ->orderBy('c.title', 'ASC');
                 },
+                'label'=>'Country',
             ])
             ->add('default_timezone', EntityType::class, [
                 'class'=>TimeZone::class,
@@ -49,6 +54,7 @@ class AccountRegisterType extends AbstractType
                     return $tzr->createQueryBuilder('tz')
                         ->orderBy('tz.title', 'ASC');
                 },
+                'label'=>'Timezone',
             ])
         ;
 

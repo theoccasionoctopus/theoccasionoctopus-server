@@ -61,7 +61,15 @@
             </tr>
             <tr>
                 <th>Default Privacy</th>
-                <td>{%  if account.accountLocal.defaultPrivacy == 0 %}<i class="fas fa-globe-europe"></i> Public{%  else %}<i class="fas fa-lock"></i> Private{%  endif %}</td>
+                <td>
+                    {% if account.accountLocal.defaultPrivacy == PRIVACY_LEVEL_PRIVATE %}
+                        <i class="fas fa-lock"></i> Only You
+                    {%  elseif account.accountLocal.defaultPrivacy == PRIVACY_LEVEL_ONLY_FOLLOWERS %}
+                        <i class="fas fa-user-lock"></i> Only Followers
+                    {%  else %}
+                        <i class="fas fa-globe-europe"></i> Public
+                    {%  endif %}
+                </td>
             </tr>
             <tr>
                 <th></th>
@@ -115,7 +123,15 @@
                         <td>{{  import.title }}</td>
                         <td>{{  import.description }}</td>
                         <td><a href="{{  import.url }}">{{  import.url }}</a></td>
-                        <td>{%  if import.privacy == 0 %}Public{%  else %}Private{%  endif %}</td>
+                        <td>
+                            {% if import.privacy == PRIVACY_LEVEL_PRIVATE %}
+                                <i class="fas fa-lock"></i> Only You
+                            {%  elseif import.privacy == PRIVACY_LEVEL_ONLY_FOLLOWERS %}
+                                <i class="fas fa-user-lock"></i> Only Followers
+                            {%  else %}
+                                <i class="fas fa-globe-europe"></i> Public
+                            {%  endif %}
+                        </td>
                         <td>{%  if import.defaultCountry %}{{  import.defaultCountry.title }}{%  endif %}</td>
                         <td>{{  import.defaultTimezone.code }}</td>
                         <td>{%  if import.enabled %}Enabled{%  else %}-{%  endif %}</td>

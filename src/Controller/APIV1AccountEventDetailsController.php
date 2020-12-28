@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\APIV1\ICalBuilderForAccount;
+use App\Constants;
 use App\Entity\EventHasTag;
 use App\Entity\Tag;
 use App\Service\HistoryWorker\HistoryWorkerService;
@@ -34,7 +35,13 @@ class APIV1AccountEventDetailsController extends APIV1AccountController
         if (!$this->event) {
             throw new  NotFoundHttpException('Not found');
         }
-        if (!$this->account_permission_read_private && $this->event->getPrivacy() > 0) {
+        if (
+            $this->event->getPrivacy() == Constants::PRIVACY_LEVEL_PUBLIC ||
+            ($this->account_permission_read_private && $this->event->getPrivacy() == Constants::PRIVACY_LEVEL_PRIVATE) ||
+            ($this->account_permission_read_only_followers && $this->event->getPrivacy() == Constants::PRIVACY_LEVEL_ONLY_FOLLOWERS)
+        ) {
+            // Great!
+        } else {
             throw new  NotFoundHttpException('Not found');
         }
     }
@@ -62,7 +69,7 @@ class APIV1AccountEventDetailsController extends APIV1AccountController
             'end_epoch'=>$this->event->getEndAtTimeZone()->getTimestamp(),
             'end_utc'=>Library::getAPIJSONResponseForDateTime($this->event->getEnd('UTC')),
             'end_timezone'=>Library::getAPIJSONResponseForDateTime($this->event->getEndAtTimeZone()),
-            'privacy'=>($this->event->getPrivacy() == 0 ? 'public' : 'private'),
+            'privacy'=>$this->privacyLevelToAPIString($this->event->getPrivacy()),
             'extra_fields'=>($this->event->getExtraFields() ? $this->event->getExtraFields() : new stdClass()),
             'editable_mode'=>$this->event->getEditableFieldsMode(),
             'editable_fields'=>$this->event->getEditableFieldsList(),

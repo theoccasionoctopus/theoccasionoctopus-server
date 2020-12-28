@@ -1,6 +1,7 @@
 <?php
 namespace App\Form;
 
+use App\Constants;
 use App\Entity\Account;
 use App\Entity\AccountLocal;
 use App\Entity\Country;
@@ -35,8 +36,9 @@ class AccountEditSettingsType extends AbstractType
                 'expanded'=>true,
                 'multiple'=>false,
                 'choices'  => [
-                    'Public' => 0,
-                    'Private' => 10000,
+                    'Public' => Constants::PRIVACY_LEVEL_PUBLIC,
+                    'Only Followers'=>Constants::PRIVACY_LEVEL_ONLY_FOLLOWERS,
+                    'Only You' => Constants::PRIVACY_LEVEL_PRIVATE,
                 ]
             ])
             ->add('default_country', EntityType::class, [

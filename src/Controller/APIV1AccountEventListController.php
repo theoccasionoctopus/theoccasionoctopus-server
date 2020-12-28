@@ -28,7 +28,11 @@ class APIV1AccountEventListController extends APIV1AccountController
         # Set up search with security filters
         $repositoryQuery = new EventRepositoryQuery($this->getDoctrine());
         $repositoryQuery->setAccountEvents($this->account);
-        if (!$this->account_permission_read_private) {
+        if ($this->account_permission_read_private) {
+            // Great
+        } elseif ($this->account_permission_read_only_followers) {
+            $repositoryQuery->setPrivacyLevelOnlyFollowers();
+        } else {
             $repositoryQuery->setPublicOnly();
         }
 
@@ -69,7 +73,11 @@ class APIV1AccountEventListController extends APIV1AccountController
         # Set up search with security filters
         $repositoryQuery = new EventRepositoryQuery($this->getDoctrine());
         $repositoryQuery->setAccountEvents($this->account);
-        if (!$this->account_permission_read_private) {
+        if ($this->account_permission_read_private) {
+            // Great
+        } elseif ($this->account_permission_read_only_followers) {
+            $repositoryQuery->setPrivacyLevelOnlyFollowers();
+        } else {
             $repositoryQuery->setPublicOnly();
         }
 
@@ -109,7 +117,7 @@ class APIV1AccountEventListController extends APIV1AccountController
                 'end_epoch'=>$event->getEndAtTimeZone()->getTimestamp(),
                 'end_utc'=>Library::getAPIJSONResponseForDateTime($event->getEnd('UTC')),
                 'end_timezone'=>Library::getAPIJSONResponseForDateTime($event->getEndAtTimeZone()),
-                'privacy'=>($event->getPrivacy() == 0 ? 'public' : 'private'),
+                'privacy'=>$this->privacyLevelToAPIString($event->getPrivacy()),
                 'extra_fields'=>($event->getExtraFields() ? $event->getExtraFields() : new stdClass()),
             );
         }

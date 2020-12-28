@@ -141,4 +141,22 @@ class AccountRepository extends ServiceEntityRepository
 
         return $query->execute();
     }
+
+
+    public function findAccountsManagedByUserThatFollowsThisAccount(User $user, Account $account)
+    {
+        $entityManager = $this->getEntityManager();
+
+        $query = $entityManager->createQuery(
+            'SELECT a ' .
+            'FROM App\Entity\Account a ' .
+            'JOIN a.accountLocal al '.
+            'JOIN a.managedByUser uma '.
+            'JOIN a.followsAccount afa '.
+            'WHERE afa.followsAccount = :a AND afa.follows = true AND uma.user = :u AND al.locked = false '.
+            ''
+        )->setParameter('u', $user)->setParameter('a', $account);
+
+        return $query->execute();
+    }
 }

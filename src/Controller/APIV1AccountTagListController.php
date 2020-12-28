@@ -24,7 +24,11 @@ class APIV1AccountTagListController extends APIV1AccountController
         );
 
         $repositoryQuery = new TagRepositoryQuery($this->getDoctrine(), $this->account);
-        if (!$this->account_permission_read_private) {
+        if ($this->account_permission_read_private) {
+            // Great
+        } elseif ($this->account_permission_read_only_followers) {
+            $repositoryQuery->setPrivacyLevelOnlyFollowers();
+        } else {
             $repositoryQuery->setPublicOnly();
         }
         $tags = $repositoryQuery->getTags();
@@ -35,7 +39,7 @@ class APIV1AccountTagListController extends APIV1AccountController
                 'id'=> $tag->getId(),
                 'title'=>$tag->getTitle(),
                 'description'=>$tag->getDescription(),
-                'privacy'=>($tag->getPrivacy() == 0 ? 'public' : 'private'),
+                'privacy'=>$this->privacyLevelToAPIString($tag->getPrivacy()),
                 'extra_fields'=>($tag->getExtraFields() ? $tag->getExtraFields() : new stdClass()),
             );
         }

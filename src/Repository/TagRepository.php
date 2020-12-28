@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Constants;
 use App\Entity\Event;
 use App\Entity\Source;
 use App\Entity\Tag;
@@ -43,7 +44,24 @@ class TagRepository extends ServiceEntityRepository
             'SELECT t ' .
             'FROM App\Entity\Tag t ' .
             'JOiN t.events et ' .
-            'WHERE et.event = :event AND et.enabled = :enabled AND t.privacy = 0'.
+            'WHERE et.event = :event AND et.enabled = :enabled AND t.privacy = '.Constants::PRIVACY_LEVEL_PUBLIC.' ',
+            'ORDER BY t.title ASC '
+        )->setParameter('event', $event)
+            ->setParameter('enabled', true)
+        ;
+
+        return $query->execute();
+    }
+
+    public function findFollowerOnlyByEvent(Event $event)
+    {
+        $entityManager = $this->getEntityManager();
+
+        $query = $entityManager->createQuery(
+            'SELECT t ' .
+            'FROM App\Entity\Tag t ' .
+            'JOiN t.events et ' .
+            'WHERE et.event = :event AND et.enabled = :enabled AND t.privacy <= '.Constants::PRIVACY_LEVEL_ONLY_FOLLOWERS.' ',
             'ORDER BY t.title ASC '
         )->setParameter('event', $event)
             ->setParameter('enabled', true)

@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Constants;
 use App\Entity\EventHasImport;
 use App\Entity\EventHasSourceEvent;
 use App\Entity\EventOccurrence;
@@ -28,7 +29,12 @@ class AccountPublicEventDetailsController extends AccountPublicController
         if (!$this->event) {
             throw new  NotFoundHttpException('Not found');
         }
-        if ($this->event->getPrivacy() > 0) {
+        if (
+            ($this->event->getPrivacy() == Constants::PRIVACY_LEVEL_PUBLIC) ||
+            ($this->event->getPrivacy() == Constants::PRIVACY_LEVEL_ONLY_FOLLOWERS && $this->account_permission_read_only_followers)
+        ) {
+            // Great
+        } else {
             throw new  NotFoundHttpException('Not found');
         }
     }
@@ -39,7 +45,12 @@ class AccountPublicEventDetailsController extends AccountPublicController
 
         $doctrine = $this->getDoctrine();
 
-        $currentTags = $doctrine->getRepository(Tag::class)->findPublicByEvent($this->event);
+        // TODO include follower tags if user is a follower
+        $currentTags = (
+            $this->account_permission_read_only_followers ?
+            $doctrine->getRepository(Tag::class)->findFollowerOnlyByEvent($this->event) :
+            $doctrine->getRepository(Tag::class)->findPublicByEvent($this->event)
+        );
         $eventHasImports = $doctrine->getRepository(EventHasImport::class)->findByEvent($this->event);
         $eventHasSourceEvents = $doctrine->getRepository(EventHasSourceEvent::class)->findByEvent($this->event);
 

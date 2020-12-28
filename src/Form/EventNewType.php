@@ -1,6 +1,7 @@
 <?php
 namespace App\Form;
 
+use App\Constants;
 use App\Entity\Country;
 use App\Entity\Event;
 use App\Entity\TimeZone;
@@ -71,8 +72,9 @@ class EventNewType extends AbstractType
         ]);
         $builder->add('privacy', ChoiceType::class, [
             'choices' => [
-                'Public' => 0,
-                'Private' => 10000,
+                'Public' => Constants::PRIVACY_LEVEL_PUBLIC,
+                'Only Followers'=>Constants::PRIVACY_LEVEL_ONLY_FOLLOWERS,
+                'Only You' => Constants::PRIVACY_LEVEL_PRIVATE,
             ],
             'data' => $options['account']->getAccountLocal()->getDefaultPrivacy(),
         ]);

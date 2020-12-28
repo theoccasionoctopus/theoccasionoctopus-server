@@ -26,6 +26,7 @@ class AccountDiscoverEventListFilterParams
     {
         $this->repositoryQuery = new EventRepositoryQuery($doctrine);
         $this->repositoryQuery->setAccountDiscoverEvents($account);
+        $this->repositoryQuery->setPrivacyLevelOnlyFollowers();
     }
 
 

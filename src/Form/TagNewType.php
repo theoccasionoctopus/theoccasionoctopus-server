@@ -1,6 +1,7 @@
 <?php
 namespace App\Form;
 
+use App\Constants;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
@@ -20,8 +21,9 @@ class TagNewType extends AbstractType
 
         $builder->add('privacy', ChoiceType::class, [
                 'choices'  => [
-                    'Public' => 0,
-                    'Private' => 10000,
+                    'Public' => Constants::PRIVACY_LEVEL_PUBLIC,
+                    'Only Followers'=>Constants::PRIVACY_LEVEL_ONLY_FOLLOWERS,
+                    'Only You' => Constants::PRIVACY_LEVEL_PRIVATE,
                 ],
                 'data' => $options['account']->getAccountLocal()->getDefaultPrivacy(),
             ])

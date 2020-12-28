@@ -18,7 +18,11 @@ class AccountPublicTagListController extends AccountPublicController
         $this->setUpAccountPublic($account_username, $request);
 
         $repositoryQuery = new TagRepositoryQuery($this->getDoctrine(), $this->account);
-        $repositoryQuery->setPublicOnly();
+        if ($this->account_permission_read_only_followers) {
+            $repositoryQuery->setPrivacyLevelOnlyFollowers();
+        } else {
+            $repositoryQuery->setPublicOnly();
+        }
         $tags = $repositoryQuery->getTags();
 
 

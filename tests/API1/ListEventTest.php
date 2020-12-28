@@ -1,6 +1,7 @@
 <?php
 namespace App\Tests\API1;
 
+use App\Constants;
 use App\Entity\Account;
 use App\Entity\APIAccessToken;
 use App\Entity\Country;
@@ -27,7 +28,7 @@ class ListEventTest extends BaseWebTestWithDataBase
 
     }
 
-    public function testBasic()
+    public function testListPublic()
     {
 
         $this->setupCommon();
@@ -41,7 +42,7 @@ class ListEventTest extends BaseWebTestWithDataBase
         $event->setTitle('Title');
         $event->setUrl('https://www.theoccasionoctopus.net/');
         $event->setId('36573fb9-a021-4005-9fd2-3034cda50a72');
-        $event->setPrivacy(0);
+        $event->setPrivacy(Constants::PRIVACY_LEVEL_PUBLIC);
 
         $this->entityManager->persist($event);
         $this->entityManager->flush();
@@ -54,6 +55,138 @@ class ListEventTest extends BaseWebTestWithDataBase
         $this->assertEquals(1, count($responseData['events']));
         $this->assertSame('Title', $responseData['events'][0]['title']);
         $this->assertSame('public', $responseData['events'][0]['privacy']);
+
+    }
+
+    public function testListOnlyFollowers()
+    {
+        $this->setupCommon();
+
+        $event = new Event();
+        $event->setAccount($this->account);
+        $event->setTimezone($this->timezone);
+        $event->setCountry($this->country);
+        $event->setStartWithObject(new \DateTime('2025-01-01 10:00:00', new \DateTimeZone('UTC')));
+        $event->setEndWithObject(new \DateTime('2025-01-01 10:00:00', new \DateTimeZone('UTC')));
+        $event->setTitle('Title');
+        $event->setUrl('https://www.theoccasionoctopus.net/');
+        $event->setId('36573fb9-a021-4005-9fd2-3034cda50a72');
+        $event->setPrivacy(Constants::PRIVACY_LEVEL_ONLY_FOLLOWERS);
+
+        $this->entityManager->persist($event);
+        $this->entityManager->flush();
+
+        $this->client->request('GET', '/api/v1/account/'.$this->account->getId().'/events.json');
+        $response = $this->client->getResponse();
+        $this->assertSame(200, $response->getStatusCode());
+        $responseData = json_decode($response->getContent(), true);
+
+        $this->assertEquals(0, count($responseData['events']));
+
+    }
+
+    public function testListOnlyFollowersWithCorrectToken()
+    {
+        $this->setupCommon();
+
+        list($followerUser, $followerAccount) = $this->createUserAndAccountThatFollowsOtherAccount('testFollower', $this->country, $this->timezone, $this->account);
+
+        $token = new APIAccessToken();
+        // TODO when we change what binding an token to an account means, we should be able to put this back in
+        // $token->setAccount($followerAccount);
+        $token->setUser($followerUser);
+        $token->setEnabled(true);
+        $token->setToken('CAT');
+        $this->entityManager->persist($token);
+
+        $event = new Event();
+        $event->setAccount($this->account);
+        $event->setTimezone($this->timezone);
+        $event->setCountry($this->country);
+        $event->setStartWithObject(new \DateTime('2025-01-01 10:00:00', new \DateTimeZone('UTC')));
+        $event->setEndWithObject(new \DateTime('2025-01-01 10:00:00', new \DateTimeZone('UTC')));
+        $event->setTitle('Title');
+        $event->setUrl('https://www.theoccasionoctopus.net/');
+        $event->setId('36573fb9-a021-4005-9fd2-3034cda50a72');
+        $event->setPrivacy(Constants::PRIVACY_LEVEL_ONLY_FOLLOWERS);
+
+        $this->entityManager->persist($event);
+        $this->entityManager->flush();
+
+        $this->client->request('GET', '/api/v1/account/'.$this->account->getId().'/events.json?access_token=CAT');
+        $response = $this->client->getResponse();
+        $this->assertSame(200, $response->getStatusCode());
+        $responseData = json_decode($response->getContent(), true);
+
+        $this->assertEquals(1, count($responseData['events']));
+        $this->assertSame('Title', $responseData['events'][0]['title']);
+        $this->assertSame('only-followers', $responseData['events'][0]['privacy']);
+
+    }
+
+    public function testListPrivate()
+    {
+
+        $this->setupCommon();
+
+        $event = new Event();
+        $event->setAccount($this->account);
+        $event->setTimezone($this->timezone);
+        $event->setCountry($this->country);
+        $event->setStartWithObject(new \DateTime('2025-01-01 10:00:00', new \DateTimeZone('UTC')));
+        $event->setEndWithObject(new \DateTime('2025-01-01 10:00:00', new \DateTimeZone('UTC')));
+        $event->setTitle('Title');
+        $event->setUrl('https://www.theoccasionoctopus.net/');
+        $event->setId('36573fb9-a021-4005-9fd2-3034cda50a72');
+        $event->setPrivacy(Constants::PRIVACY_LEVEL_PRIVATE);
+
+        $this->entityManager->persist($event);
+        $this->entityManager->flush();
+
+        $this->client->request('GET', '/api/v1/account/'.$this->account->getId().'/events.json');
+        $response = $this->client->getResponse();
+        $this->assertSame(200, $response->getStatusCode());
+        $responseData = json_decode($response->getContent(), true);
+
+        $this->assertEquals(0, count($responseData['events']));
+
+    }
+
+    public function testListPrivateWithCorrectToken()
+    {
+
+        $this->setupCommon();
+
+
+        $token = new APIAccessToken();
+        $token->setAccount($this->account);
+        $token->setUser($this->owner);
+        $token->setEnabled(true);
+        $token->setToken('CAT');
+        $this->entityManager->persist($token);
+
+        $event = new Event();
+        $event->setAccount($this->account);
+        $event->setTimezone($this->timezone);
+        $event->setCountry($this->country);
+        $event->setStartWithObject(new \DateTime('2025-01-01 10:00:00', new \DateTimeZone('UTC')));
+        $event->setEndWithObject(new \DateTime('2025-01-01 10:00:00', new \DateTimeZone('UTC')));
+        $event->setTitle('Title');
+        $event->setUrl('https://www.theoccasionoctopus.net/');
+        $event->setId('36573fb9-a021-4005-9fd2-3034cda50a72');
+        $event->setPrivacy(Constants::PRIVACY_LEVEL_PRIVATE);
+
+        $this->entityManager->persist($event);
+        $this->entityManager->flush();
+
+        $this->client->request('GET', '/api/v1/account/'.$this->account->getId().'/events.json?access_token=CAT');
+        $response = $this->client->getResponse();
+        $this->assertSame(200, $response->getStatusCode());
+        $responseData = json_decode($response->getContent(), true);
+
+        $this->assertEquals(1, count($responseData['events']));
+        $this->assertSame('Title', $responseData['events'][0]['title']);
+        $this->assertSame('private', $responseData['events'][0]['privacy']);
 
     }
 

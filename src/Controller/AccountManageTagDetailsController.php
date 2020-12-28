@@ -37,6 +37,7 @@ class AccountManageTagDetailsController extends AccountManageController
     {
         $this->buildTag($account_username, $tag_id);
 
+        // TODO should show occurrences, not just events!
         $repositoryQuery = new EventRepositoryQuery($this->getDoctrine());
         $repositoryQuery->setAccountEvents($this->account);
         $repositoryQuery->setFromNow();

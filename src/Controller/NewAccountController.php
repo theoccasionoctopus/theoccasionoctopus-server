@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Constants;
 use App\Entity\AccountLocal;
 use App\Entity\Country;
 use App\Entity\EmailUserUpcomingEventsForAccount;
@@ -76,9 +77,9 @@ class NewAccountController extends BaseController
                 $account->setTitle($form->get('username')->getData());
                 $entityManager->persist($account);
 
-                $accountLocal->setSEOIndexFollow($accountLocal->getDefaultPrivacy() == 0);
-                $accountLocal->setListInDirectory($accountLocal->getDefaultPrivacy() == 0);
-                $accountLocal->setManuallyApprovesFollowers($accountLocal->getDefaultPrivacy() == 10000);
+                $accountLocal->setSEOIndexFollow($accountLocal->getDefaultPrivacy() == Constants::PRIVACY_LEVEL_PUBLIC);
+                $accountLocal->setListInDirectory($accountLocal->getDefaultPrivacy() == Constants::PRIVACY_LEVEL_PUBLIC);
+                $accountLocal->setManuallyApprovesFollowers($accountLocal->getDefaultPrivacy() != Constants::PRIVACY_LEVEL_PUBLIC);
                 $accountLocal->generateNewKey();
                 $entityManager->persist($accountLocal);
 

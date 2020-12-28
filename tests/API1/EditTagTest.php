@@ -1,6 +1,7 @@
 <?php
 namespace App\Tests\API1;
 
+use App\Constants;
 use App\Entity\Account;
 use App\Entity\APIAccessToken;
 use App\Entity\Country;
@@ -31,7 +32,7 @@ class EditTagTest extends BaseWebTestWithDataBase
         $this->tag->setAccount($this->account);
         $this->tag->setTitle('Title');
         $this->tag->setId('36573fb9-a021-4005-9fd2-3034cda50a72');
-        $this->tag->setPrivacy(0);
+        $this->tag->setPrivacy(Constants::PRIVACY_LEVEL_PUBLIC);
         $this->tag->setEnabled(True);
         $this->entityManager->persist($this->tag);
 

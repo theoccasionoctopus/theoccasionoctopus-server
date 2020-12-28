@@ -4,6 +4,7 @@ namespace App\Tests;
 
 
 use App\Entity\Account;
+use App\Entity\AccountFollowsAccount;
 use App\Entity\AccountLocal;
 use App\Entity\Country;
 use App\Entity\TimeZone;
@@ -108,6 +109,45 @@ abstract class BaseWebTestWithDataBase extends WebTestCase
         $userManageAccount->setAccount($account);
         $userManageAccount->setUser($user);
         $this->entityManager->persist($userManageAccount);
+
+        $this->entityManager->flush();
+
+        return [ $user, $account ];
+
+    }
+
+    protected  function createUserAndAccountThatFollowsOtherAccount($name, $country, $timezone, Account $followsAccount): array {
+
+        $user = new User();
+        $user->setEmail($name."@example.com");
+        $user->setPassword('1234');
+        $this->entityManager->persist($user);
+
+        $account = new Account();
+        $account->setId(Library::GUID());
+        $account->setTitle($name);
+        $this->entityManager->persist($account);
+
+        $accountLocal = new AccountLocal();
+        $accountLocal->setAccount($account);
+        $accountLocal->setUsername($name);
+        $accountLocal->setDefaultTimezone($timezone);
+        $accountLocal->setDefaultCountry($country);
+        $accountLocal->setDefaultPrivacy(0);
+        $accountLocal->setSEOIndexFollow(true);
+        $accountLocal->setListInDirectory(true);
+        $this->entityManager->persist($accountLocal);
+
+        $userManageAccount = new UserManageAccount();
+        $userManageAccount->setAccount($account);
+        $userManageAccount->setUser($user);
+        $this->entityManager->persist($userManageAccount);
+
+        $accountFollowsAccount = new AccountFollowsAccount();
+        $accountFollowsAccount->setAccount($account);
+        $accountFollowsAccount->setFollowsAccount($followsAccount);
+        $accountFollowsAccount->setFollows(true);
+        $this->entityManager->persist($accountFollowsAccount);
 
         $this->entityManager->flush();
 

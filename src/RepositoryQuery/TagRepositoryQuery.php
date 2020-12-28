@@ -2,6 +2,7 @@
 
 namespace App\RepositoryQuery;
 
+use App\Constants;
 use App\Entity\Account;
 use App\Entity\Event;
 use App\Entity\Tag;
@@ -15,7 +16,7 @@ class TagRepositoryQuery
     protected $account;
 
 
-    protected $max_privacy_allowed = 10000;
+    protected $max_privacy_allowed = Constants::PRIVACY_LEVEL_PRIVATE;
 
     /**
      * EventRepositoryQuery constructor.
@@ -28,11 +29,18 @@ class TagRepositoryQuery
         $this->account = $account;
     }
 
+    /**
+     * @TODO Name setPrivacyLevelPublic
+     */
     public function setPublicOnly()
     {
-        $this->max_privacy_allowed = 0;
+        $this->max_privacy_allowed = Constants::PRIVACY_LEVEL_PUBLIC;
     }
 
+    public function setPrivacyLevelOnlyFollowers()
+    {
+        $this->max_privacy_allowed = Constants::PRIVACY_LEVEL_ONLY_FOLLOWERS;
+    }
 
     public function getTags()
     {

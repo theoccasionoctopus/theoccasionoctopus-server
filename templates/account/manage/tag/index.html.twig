@@ -11,7 +11,15 @@
                     <p>{{  tag.title }}</p>
                     <p>{{  tag.description | nl2br }}</p>
                     <p>{% if tag.enabled %}Enabled{%  else %}Disabled{%  endif %}</p>
-                    <p>{% if tag.privacy == 10000 %}<i class="fas fa-lock"></i> Private{%  else %}<i class="fas fa-globe-europe"></i> Public{%  endif %}</p>
+                    <p>
+                        {% if tag.privacy == PRIVACY_LEVEL_PRIVATE %}
+                            <i class="fas fa-lock"></i> Only You
+                        {%  elseif tag.privacy == PRIVACY_LEVEL_ONLY_FOLLOWERS %}
+                            <i class="fas fa-user-lock"></i> Only Followers
+                        {%  else %}
+                            <i class="fas fa-globe-europe"></i> Public
+                        {%  endif %}
+                    </p>
                     <a class="button" href="{{ path('account_manage_tag_show_tag',{'account_username':account.username,'tag_id': tag.id }) }}">Details</a>
                 </li>
 
