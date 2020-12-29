@@ -9,6 +9,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Cookie;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class IndexController extends BaseController
 {
@@ -93,5 +94,14 @@ class IndexController extends BaseController
         return $this->render('index/directory.html.twig', $this->getTemplateVariables([
             'accounts_in_directory'=>$accounts_in_directory,
         ]));
+    }
+
+    public function send404()
+    {
+        return new Response(
+            "404 not found",
+            404,
+            ['content-type' => 'text/html']
+        );
     }
 }

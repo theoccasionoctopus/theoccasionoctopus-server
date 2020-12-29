@@ -220,6 +220,14 @@ account_activity_streams_outbox:
     path: /activitystreams/{account_id}/outbox
     controller: App\Controller\APIActivityStreamsController::outbox
 
+nodeinfo:
+    path: /.well-known/nodeinfo
+    controller: App\Controller\APIIndexController::nodeinfo
+
+nodeinfo_2_0:
+    path: /nodeinfo/2.0.json
+    controller: App\Controller\APIIndexController::nodeinfo20
+
 # API 1
 
 api1_account_profile_json:
@@ -311,3 +319,44 @@ sysadmin_account_remote:
 sysadmin_account_remote_show_account:
     path: /sysadmin/account/remote/{account_id}
     controller: App\Controller\SysAdminAccountRemoteShowController::index
+
+
+# A whole bunch of URL's that are routinely hit on ActivityPub servers that we don't handle - just 404 them to avoid error log entries
+
+not_handled_url_1:
+    path: /api/v1/instance
+    controller: App\Controller\IndexController::send404
+
+not_handled_url_2:
+    path: /api/statusnet/config.json
+    controller: App\Controller\IndexController::send404
+
+not_handled_url_3:
+    path: /api/v1/timelines/public
+    controller: App\Controller\IndexController::send404
+
+not_handled_url_4:
+    path: /api/v1/instance/peers
+    controller: App\Controller\IndexController::send404
+
+not_handled_url_5:
+    path: /api/nodeinfo/2.0.json
+    controller: App\Controller\IndexController::send404
+
+not_handled_url_6:
+    path: /main/nodeinfo/2.0
+    controller: App\Controller\IndexController::send404
+
+not_handled_url_7:
+    path: /api/statusnet/config
+    controller: App\Controller\IndexController::send404
+
+not_handled_url_8:
+    path: /api/nodeinfo
+    controller: App\Controller\IndexController::send404
+
+not_handled_url_9:
+    path: /statistics.json
+    controller: App\Controller\IndexController::send404
+
+

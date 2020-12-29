@@ -30,7 +30,33 @@ class APIIndexController extends BaseController
     }
 
 
+    public function nodeinfo()
+    {
+        // TODO Should maybe be an absolute URL, not relative? https://github.com/jhass/nodeinfo/blob/master/PROTOCOL.md
+        $out = '{ "links": [ { "rel": "http://nodeinfo.diaspora.software/ns/schema/2.0", "href": "/nodeinfo/2.0.json" } ] }';
+        return new Response(
+            $out,
+            Response::HTTP_OK,
+            ['content-type' => 'application/json']
+        );
+    }
 
+    public function nodeinfo20()
+    {
+        // TODO return more info https://github.com/jhass/nodeinfo/blob/master/PROTOCOL.md
+        $out = [
+            'version'=> '2.0',
+            'software' => [
+                'name'=>'The Occasion Octopus',
+                'version'=>'alpha'
+            ]
+        ];
+        return new Response(
+            json_encode($out),
+            Response::HTTP_OK,
+            ['content-type' => 'application/json']
+        );
+    }
 
     public function webfinger(Request $request)
     {
