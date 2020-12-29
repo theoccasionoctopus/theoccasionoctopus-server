@@ -23,6 +23,7 @@ class UserManageAccount
     private $user;
 
     /**
+     * This should really be AccountLocal, as users can't manage remote accounts, but for historical reasons it is Account
      * @ORM\Id()
      * @Assert\NotNull
      * @ORM\JoinColumn(name="account_id", referencedColumnName="id", nullable=false)
