@@ -291,7 +291,10 @@ Create the file `/etc/logrotate.d/occ_oct_app` and set the contents:
     delaycompress
     notifempty
     create 664 www-data www-data
-    su www-data www-data
+    postrotate
+        /etc/init.d/php7.4-fpm reload
+        su -c "/home/occ_oct/softwarex/bin/console messenger:stop-workers" occ_oct
+    endscript
 }
 ```
 
