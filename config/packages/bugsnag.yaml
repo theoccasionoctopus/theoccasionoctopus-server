@@ -1,3 +1,4 @@
 bugsnag:
   api_key: '%env(string:default::BUGSNAG_API_KEY)%'
 
+# Also see callback in src/Kernel.php
