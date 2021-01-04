@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\APIV1\ICalBuilderForAccount;
+use App\Entity\EventHasTag;
 use App\Entity\Tag;
 use App\Service\HistoryWorker\HistoryWorkerService;
 use App\Library;
@@ -25,6 +26,8 @@ class APIV1AccountEventNewController extends APIV1AccountController
             throw new AccessDeniedHttpException('This Token Can Not Write');
         }
 
+        $doctrine = $this->getDoctrine();
+
         $event = new Event();
         $event->setAccount($this->account);
         $event->setId(Library::GUID());
@@ -32,6 +35,8 @@ class APIV1AccountEventNewController extends APIV1AccountController
         $event->setCountry($this->account->getAccountLocal()->getDefaultCountry());
         $event->setTimezone($this->account->getAccountLocal()->getDefaultTimezone());
 
+        $historyWorker = $historyWorkerService->getHistoryWorker($this->account, $this->accessToken->getUser());
+        $historyWorker->addEvent($event);
 
         if ($request->get('title')) {
             $event->setTitle($request->get('title'));
@@ -106,6 +111,24 @@ class APIV1AccountEventNewController extends APIV1AccountController
             $event->setEndWithObject($end);
         }
 
+        if ($request->get('add_tag_0')) {
+            $tagRepository = $this->getDoctrine()->getRepository(Tag::class);
+            $count = 0;
+            while ($request->request->get('add_tag_' . $count)) {
+                $tag = $tagRepository->findOneBy(['id' => $request->request->get('add_tag_' . $count), 'account' => $this->account]);
+                if ($tag) {
+                    $eventTag = new EventHasTag();
+                    $eventTag->setEvent($event);
+                    $eventTag->setTag($tag);
+                    $eventTag->setEnabled(true);
+                    $historyWorker->addEventHasTag($eventTag);
+                } else {
+                    // TODO should show this 404 to user somehow?
+                }
+                $count++;
+            }
+        }
+
         // TODO start & end are required fields - make sure they are set
 
         $count = 0;
@@ -114,8 +137,6 @@ class APIV1AccountEventNewController extends APIV1AccountController
             $count++;
         }
 
-        $historyWorker = $historyWorkerService->getHistoryWorker($this->account, $this->accessToken->getUser());
-        $historyWorker->addEvent($event);
         $historyWorkerService->persistHistoryWorker($historyWorker);
 
         $out = [
