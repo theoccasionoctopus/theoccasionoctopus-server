@@ -37,7 +37,9 @@ class AccountRegisterType extends AbstractType
                 'choices'  => [
                     'Public' => Constants::PRIVACY_LEVEL_PUBLIC,
                     'Protected; Only Followers can see events; followers must be approved' => Constants::PRIVACY_LEVEL_ONLY_FOLLOWERS,
-                ]])
+                ],
+                'data'=>Constants::PRIVACY_LEVEL_PUBLIC,
+            ])
             ->add('default_country', EntityType::class, [
                 'class'=>Country::class,
                 'choice_label' => 'title',
