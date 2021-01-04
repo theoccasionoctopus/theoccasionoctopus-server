@@ -62,9 +62,19 @@ class AccountManageDiscoverEventDetailsController extends AccountManageControlle
     {
         $this->buildEvent($account_username, $discover_account_id, $discover_event_id);
 
-        // TODO CSFR
+        $doctrine = $this->getDoctrine();
 
-        // TODO Check we haven't already added this event
+        // Check we haven't already added this event
+        $eventHasSourceEvent = $doctrine->getRepository(EventHasSourceEvent::class)->findOneBySourceEventAndDestinationAccount($this->discoverEvent, $this->account);
+        if ($eventHasSourceEvent) {
+            $this->addFlash(
+                'success',
+                'This was already added to your account'
+            );
+            return $this->redirectToRoute('account_manage_event_show_event', ['account_username' => $this->account->getUsername(),'event_id' => $eventHasSourceEvent->getEvent()->getId() ]);
+        }
+
+        // TODO CSFR
 
         $event = new Event();
         $event->setAccount($this->account);
