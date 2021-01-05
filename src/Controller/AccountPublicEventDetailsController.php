@@ -7,6 +7,7 @@ use App\Entity\EventHasImport;
 use App\Entity\EventHasSourceEvent;
 use App\Entity\EventOccurrence;
 use App\Entity\Tag;
+use App\Entity\User;
 use App\Library;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -45,7 +46,7 @@ class AccountPublicEventDetailsController extends AccountPublicController
 
         $doctrine = $this->getDoctrine();
 
-        // TODO include follower tags if user is a follower
+        # Tags
         $currentTags = (
             $this->account_permission_read_only_followers ?
             $doctrine->getRepository(Tag::class)->findFollowerOnlyByEvent($this->event) :
@@ -54,6 +55,7 @@ class AccountPublicEventDetailsController extends AccountPublicController
         $eventHasImports = $doctrine->getRepository(EventHasImport::class)->findByEvent($this->event);
         $eventHasSourceEvents = $doctrine->getRepository(EventHasSourceEvent::class)->findByEvent($this->event);
 
+        # A specific event occurrence?
         $eventOccurrence = null;
         if ($this->event->hasReoccurence() && $request->query->get('startutc')) {
             $bits = explode('-', $request->query->get('startutc'));
@@ -63,6 +65,21 @@ class AccountPublicEventDetailsController extends AccountPublicController
             $eventOccurrence = $doctrine->getRepository(EventOccurrence::class)->findOneBy(['event'=>$this->event, 'startEpoch'=>$startutc->getTimestamp()]);
         }
 
+        # Add to account buttons?
+        $addedToAccountsUserManages = [];
+        $user = $this->get('security.token_storage')->getToken()->getUser();
+        if ($user instanceof User) {
+            foreach ($doctrine->getRepository(Account::class)->findUserCanManage($user) as $addToAccount) {
+                if ($addToAccount->getId() != $this->account->getId()) {
+                    $eventHasSourceEvent = $doctrine->getRepository(EventHasSourceEvent::class)->findOneBySourceEventAndDestinationAccount($this->event, $addToAccount);
+                    $addedToAccountsUserManages[] = [
+                        'account' => $addToAccount,
+                        'event' => ($eventHasSourceEvent ? $eventHasSourceEvent->getEvent() : null)
+                    ];
+                }
+            }
+        }
+
         return $this->render('account/public/event/details/index.html.twig', $this->getTemplateVariables([
             'account'=> $this->account,
             'event' => $this->event,
@@ -70,6 +87,7 @@ class AccountPublicEventDetailsController extends AccountPublicController
             'eventHasImports' => $eventHasImports,
             'eventHasSourceEvents' => $eventHasSourceEvents,
             'eventOccurrence' => $eventOccurrence,
+            'addedToAccountsUserManages' => $addedToAccountsUserManages,
         ]));
     }
 

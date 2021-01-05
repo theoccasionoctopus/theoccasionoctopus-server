@@ -111,6 +111,24 @@
 
             <a class="button" href="{{ url('api1_account_events_show_event_json',{'account_id':account.id ,'event_id':event.id}) }}">Export JSON</a>
 
+
+            {%  for addToAccountData in addedToAccountsUserManages %}
+                {%  if addToAccountData.event %}
+                    <a class="button"
+                       href="{{ path('account_manage_event_show_event',{'account_username':addToAccountData.account.username,'event_id': addToAccountData.event.id }) }}"
+                    >
+                        Already added to your account ({{ addToAccountData.account.username }})
+                    </a>
+                {%  else %}
+                    <a class="button"
+                       href="{{ path('account_manage_discover_event_add',{'account_username':addToAccountData.account.username, 'discover_account_id':account.id,'discover_event_id': event.id }) }}"
+                    >
+                        Add to my events ({{ addToAccountData.account.username }})
+                    </a>
+
+                {%  endif %}
+            {%  endfor %}
+
         </div>
 
     </div>
