@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Constants;
 use App\Entity\EventHasSourceEvent;
 use App\FilterParams\AccountDiscoverEventListFilterParams;
+use App\Form\EventAddToAccountType;
 use App\Service\HistoryWorker\HistoryWorkerService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -74,25 +75,41 @@ class AccountManageDiscoverEventDetailsController extends AccountManageControlle
             return $this->redirectToRoute('account_manage_event_show_event', ['account_username' => $this->account->getUsername(),'event_id' => $eventHasSourceEvent->getEvent()->getId() ]);
         }
 
-        // TODO CSFR
-
+        // build the form
         $event = new Event();
+        $event->copyFromEvent($this->discoverEvent);
         $event->setAccount($this->account);
         $event->setId(Library::GUID());
         $event->setPrivacy($this->account->getAccountLocal()->getDefaultPrivacy());
-        $event->copyFromEvent($this->discoverEvent);
 
-        $eventHasSourceEvent = new EventHasSourceEvent();
-        $eventHasSourceEvent->setSourceEvent($this->discoverEvent);
-        $eventHasSourceEvent->setEvent($event);
+        $form = $this->createForm(EventAddToAccountType::class, $event, array(
+            'account' => $this->account,
+        ));
 
-        $historyWorker = $historyWorkerService->getHistoryWorker($this->account, $this->get('security.token_storage')->getToken()->getUser());
-        $historyWorker->addEvent($event);
-        $historyWorker->addEventHasSourceEvent($eventHasSourceEvent);
-        $historyWorkerService->persistHistoryWorker($historyWorker);
+        // Process
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $eventHasSourceEvent = new EventHasSourceEvent();
+            $eventHasSourceEvent->setSourceEvent($this->discoverEvent);
+            $eventHasSourceEvent->setEvent($event);
 
-        // TODO write a record to say we have added this event
+            $historyWorker = $historyWorkerService->getHistoryWorker($this->account, $this->get('security.token_storage')->getToken()->getUser());
+            $historyWorker->addEvent($event);
+            $historyWorker->addEventHasSourceEvent($eventHasSourceEvent);
+            $historyWorkerService->persistHistoryWorker($historyWorker);
 
-        return $this->redirectToRoute('account_manage_event_show_event', ['account_username' => $this->account->getUsername(),'event_id' => $event->getId() ]);
+            $this->addFlash(
+                'success',
+                'Event added to your account'
+            );
+            return $this->redirectToRoute('account_manage_event_show_event', ['account_username' => $this->account->getUsername(),'event_id' => $event->getId() ]);
+        };
+
+        return $this->render('account/manage/discover/event/details/add.html.twig', $this->getTemplateVariables([
+            'account'=> $this->account,
+            'discoverAccount' => $this->discoverAccount,
+            'discoverEvent' => $this->discoverEvent,
+            'form' => $form->createView(),
+        ]));
     }
 }
