@@ -81,6 +81,18 @@ class APIActivityStreamsController extends BaseController
             );
         }
 
+        // In case it crashes later in this block, we still want to know what the message was
+        // Our use of fingers_crossed monolog logger means this is not loged normally, but is logged if there is a crash
+        $logger->debug(
+            "Account Inbox got message",
+            [
+                'account_id'=>$this->account->getId(),
+                'data'=>$data,
+                'user_agent'=>$request->headers->get('User-Agent'),
+                'ip'=>$request->getClientIp(),
+            ]
+        );
+
         $inboxSubmission = new InboxSubmission();
         $inboxSubmission->setId(Library::GUID());
         $inboxSubmission->setAccount($this->account);
