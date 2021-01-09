@@ -1,8 +1,14 @@
 {%  if entity.extraFields %}
-    {% for k,v in entity.extraFields %}
-        <p><strong>{{  k }}:</strong></p>
-        <p>
-            {{ v | nl2br | linkify }}
-        </p>
-    {%  endfor %}
+    <table class="table">
+        <tr>
+            <th>Extra Key</th>
+            <th>Value</th>
+        </tr>
+        {% for k,v in entity.extraFields %}
+            <tr>
+                <td>{{  k }}</td>
+                <td>{{   v | nl2br | linkify }}</td>
+            </tr>
+        {%  endfor %}
+    </table>
 {%  endif %}
