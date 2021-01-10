@@ -165,6 +165,14 @@
             {%  endfor %}
         </table>
 
+        <h3>History</h3>
+
+        <p>You can see a basic history of all changes to Events and Tags.</p>
+
+        <p>
+            <a class="button" role="button" href="{{ path('account_manage_history',{'account_username':account.username}) }}"><i class="fas fa-history"></i> History</a>
+        </p>
+
     </div>
 
 {% endblock %}

@@ -1,0 +1,20 @@
+{%  extends "account/manage/base.html.twig" %}
+
+{% block body %}
+
+    <div class="content">
+
+        <ul class="">
+
+            {% for history in histories %}
+
+                <li class="">
+                    At {{  history.created |date("D F jS Y g:ia", userTimeZone)  }} {%  if history.creator %}by {{  history.creator.email }}{%  endif %}
+                </li>
+            {%  endfor %}
+
+        </ul>
+
+    </div>
+
+{% endblock %}

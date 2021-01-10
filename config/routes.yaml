@@ -192,9 +192,17 @@ account_manage_settings_edit:
     path: /a/{account_username}/manage/settings/edit
     controller: App\Controller\AccountManageSettingsController::edit
 
+# Manage Account - import
 account_manage_import_new:
     path: /a/{account_username}/manage/settings/newImport
     controller: App\Controller\AccountManageSettingsController::newImport
+
+
+# Manage Account - history
+account_manage_history:
+    path: /a/{account_username}/manage/history
+    controller: App\Controller\AccountManageHistoryListController::index
+
 
 
 
