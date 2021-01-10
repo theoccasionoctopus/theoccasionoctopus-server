@@ -84,6 +84,10 @@ services:
         class: App\Service\RequestHTTP\RequestHTTPService
         public: true
 
+    app.purge:
+        class: App\Service\Purge\PurgeService
+        public: true
+
     logging.webProcessor:
         class: Symfony\Bridge\Monolog\Processor\WebProcessor
         tags:
