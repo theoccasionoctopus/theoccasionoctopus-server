@@ -6,6 +6,7 @@ use App\APIV1\ICalBuilderForAccount;
 use App\Entity\AccountRemote;
 use App\Entity\InboxSubmission;
 use App\Entity\UserManageAccount;
+use App\FilterParams\EventListFilterParams;
 use App\Library;
 use App\Message\NewInboxSubmissionMessage;
 use App\Service\AccountLocalInbox\AccountLocalInboxService;
@@ -183,6 +184,38 @@ class APIActivityStreamsController extends BaseController
         }
         $this->buildAccount($account_id, $request);
 
-        // TODO
+        $out = [
+            "@context"=> ["https://www.w3.org/ns/activitystreams"],
+            "type"=> "OrderedCollectionPage",
+            # TOOD "id": "",
+            "orderedItems"=> [],
+        ];
+
+        $params = new EventListFilterParams($this->getDoctrine(), $this->account);
+        $params->build($request->query);
+        $params->getRepositoryQuery()->setPublicOnly();
+        $events = $params->getRepositoryQuery()->getEvents();
+
+        /** @var Event $event */
+        foreach ($events as $event) {
+            $out['orderedItems'][] = [
+                'type'=> 'Create',
+                'object'=>[
+                    'type'=>'Event',
+                    'id'=>$this->getParameter('app.instance_url').$this->generateUrl('account_public_event_show_event', ['account_username'=>$this->account->getUsername(),'event_id'=>$event->getId()]),
+                    'name'=>$event->getTitle(),
+                    'summary'=>str_replace("\n", '<p>', htmlspecialchars($event->getDescription())),
+                    'startTime'=>$event->getStart('UTC')->format('Y-m-d\TH:i:s'),
+                    'endTime'=>$event->getEnd('UTC')->format('Y-m-d\TH:i:s'),
+                    'url'=>$this->getParameter('app.instance_url').$this->generateUrl('account_public_event_show_event', ['account_username'=>$this->account->getUsername(),'event_id'=>$event->getId()]),
+                ]
+            ];
+        }
+
+        return new Response(
+            json_encode($out),
+            Response::HTTP_OK,
+            ['content-type' => 'application/json']
+        );
     }
 }

@@ -270,6 +270,17 @@ class Event
     }
 
     /**
+     * @param mixed $description
+     * @return bool Was there any changes?
+     */
+    public function setDescriptionFromHTML($description): bool
+    {
+        // TODO this is a terrible way to make sure we get new lines properly and we need to better.
+        $description = str_replace("<p>", "\n", $description);
+        return $this->setDescription(strip_tags($description));
+    }
+
+    /**
      * @return mixed
      */
     public function getStart($timezone = null)

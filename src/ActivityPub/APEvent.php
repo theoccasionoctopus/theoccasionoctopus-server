@@ -19,6 +19,10 @@ class APEvent
     {
         return $this->data['name'];
     }
+    public function getSummary()
+    {
+        return $this->data['summary'];
+    }
     public function getURL()
     {
         return $this->data['url'];

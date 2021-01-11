@@ -163,6 +163,7 @@ class RemoteAccountContentService
                         }
 
                         $event->setTitle($apEvent->getName());
+                        $event->setDescriptionFromHTML($apEvent->getSummary());
                         $event->setUrl($apEvent->getURL());
                         $event->setUrlTickets($apEvent->getURL());
 
