@@ -88,6 +88,10 @@ services:
         class: App\Service\Purge\PurgeService
         public: true
 
+    app.activityPubData:
+        class: App\Service\ActivityPubData\ActivityPubDataService
+        public: true
+
     logging.webProcessor:
         class: Symfony\Bridge\Monolog\Processor\WebProcessor
         tags:

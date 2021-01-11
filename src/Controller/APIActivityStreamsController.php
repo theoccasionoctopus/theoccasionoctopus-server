@@ -11,6 +11,7 @@ use App\Library;
 use App\Message\NewInboxSubmissionMessage;
 use App\Service\AccountLocalInbox\AccountLocalInboxService;
 use App\Service\AccountRemote\AccountRemoteService;
+use App\Service\ActivityPubData\ActivityPubDataService;
 use App\Service\RemoteServer\RemoteServerService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -173,7 +174,7 @@ class APIActivityStreamsController extends BaseController
         );
     }
 
-    public function outbox($account_id, Request $request)
+    public function outbox($account_id, Request $request, ActivityPubDataService $activityPubDataService)
     {
         if (!$this->getParameter('app.instance_federation')) {
             return new Response(
@@ -200,15 +201,7 @@ class APIActivityStreamsController extends BaseController
         foreach ($events as $event) {
             $out['orderedItems'][] = [
                 'type'=> 'Create',
-                'object'=>[
-                    'type'=>'Event',
-                    'id'=>$this->getParameter('app.instance_url').$this->generateUrl('account_public_event_show_event', ['account_username'=>$this->account->getUsername(),'event_id'=>$event->getId()]),
-                    'name'=>$event->getTitle(),
-                    'summary'=>str_replace("\n", '<p>', htmlspecialchars($event->getDescription())),
-                    'startTime'=>$event->getStart('UTC')->format('Y-m-d\TH:i:s'),
-                    'endTime'=>$event->getEnd('UTC')->format('Y-m-d\TH:i:s'),
-                    'url'=>$this->getParameter('app.instance_url').$this->generateUrl('account_public_event_show_event', ['account_username'=>$this->account->getUsername(),'event_id'=>$event->getId()]),
-                ]
+                'object'=>$activityPubDataService->generateEventObject($event),
             ];
         }
 
