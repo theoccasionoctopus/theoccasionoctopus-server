@@ -7,9 +7,11 @@ use App\Entity\HistoryHasTag;
 use App\Entity\User;
 use App\Entity\Account;
 use App\Entity\HistoryHasEvent;
+use App\Message\NewHistoryMessage;
 use App\SymfonyEvent\HistorySavedEvent;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\Messenger\MessageBusInterface;
 
 class HistoryWorkerService
 {
@@ -22,14 +24,18 @@ class HistoryWorkerService
     /** @var  EventDispatcherInterface */
     protected $eventDispatcher;
 
+    /** @var MessageBusInterface  */
+    protected $messageBus;
+
     /**
      * HistoryWorker constructor.
      * @param EntityManagerInterface $entityManager
      */
-    public function __construct(EntityManagerInterface $entityManager, EventDispatcherInterface $eventDispatcher)
+    public function __construct(EntityManagerInterface $entityManager, EventDispatcherInterface $eventDispatcher, MessageBusInterface $bus)
     {
         $this->entityManager = $entityManager;
         $this->eventDispatcher = $eventDispatcher;
+        $this->messageBus = $bus;
     }
 
 
@@ -99,5 +105,6 @@ class HistoryWorkerService
         $this->entityManager->flush();
 
         $this->eventDispatcher->dispatch(new HistorySavedEvent($history), HistorySavedEvent::NAME);
+        $this->messageBus->dispatch(new NewHistoryMessage($history->getId()));
     }
 }

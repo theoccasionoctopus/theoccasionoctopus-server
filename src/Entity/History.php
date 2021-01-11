@@ -110,4 +110,9 @@ class History
         $dt->setTimestamp($this->created);
         return $dt;
     }
+
+    public function getHistoryHasEvents()
+    {
+        return $this->historyHasEvents;
+    }
 }

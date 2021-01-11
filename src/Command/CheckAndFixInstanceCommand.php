@@ -3,6 +3,8 @@ namespace App\Command;
 
 use App\Entity\AccountLocal;
 use App\Entity\Event;
+use App\Entity\EventHasSourceEvent;
+use App\Service\UpdateSourcedEvent\UpdateSourcedEventService;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -22,13 +24,17 @@ class CheckAndFixInstanceCommand extends Command
     /** @var  ContainerInterface */
     protected $container;
 
+    /** @var UpdateSourcedEventService */
+    protected $updateSourcedEventService;
+
     /**
      * LoadCountryData constructor.
      */
-    public function __construct(ContainerInterface $container)
+    public function __construct(ContainerInterface $container, UpdateSourcedEventService $updateSourcedEventService)
     {
         parent::__construct();
         $this->container = $container;
+        $this->updateSourcedEventService = $updateSourcedEventService;
     }
 
     protected function configure()
@@ -48,6 +54,8 @@ class CheckAndFixInstanceCommand extends Command
         $this->dataMigrationAllLocalUsersHaveKeys($output);
         $output->writeln("Event to Event Occurrences");
         $this->eventToEventOccurrenceFixer($output);
+        $output->writeln("Sourced Events");
+        $this->updateSourcedEventsFixer($output);
         return 0;
     }
 
@@ -61,8 +69,15 @@ class CheckAndFixInstanceCommand extends Command
             $output->writeln("Event " . $event->getId());
             $service->process($event);
         }
+    }
 
-        return 0;
+    protected function updateSourcedEventsFixer(OutputInterface $output)
+    {
+        $doctrine = $this->container->get('doctrine');
+        /** @var EventHasSourceEvent $eventHasSourceEvent */
+        foreach ($doctrine->getRepository(EventHasSourceEvent::class)->findAll() as $eventHasSourceEvent) {
+            $this->updateSourcedEventService->update($eventHasSourceEvent);
+        }
     }
 
 

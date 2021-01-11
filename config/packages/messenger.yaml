@@ -17,3 +17,4 @@ framework:
             'App\Message\NewUnfollowRemoteAccountMessage': async
             'App\Message\NewRejectRemoteAccountFollowingMessage': async
             'App\Message\NewAcceptRemoteAccountFollowingMessage': async
+            'App\Message\NewHistoryMessage': async
