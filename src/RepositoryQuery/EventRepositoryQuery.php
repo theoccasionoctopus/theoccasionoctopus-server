@@ -185,7 +185,10 @@ class EventRepositoryQuery
             $qb->setMaxResults($this->limit);
         }
 
-        $qb->orderBy('e.cachedStartEpoch', 'ASC');
+        $qb->addOrderBy('e.cachedStartEpoch', 'ASC');
+        // If multiple events on at same time, make sure we always have a consistent ordering anyway.
+        $qb->addOrderBy('e.title', 'ASC');
+
 
         return $qb->getQuery()->execute();
     }
@@ -240,7 +243,9 @@ class EventRepositoryQuery
             $qb->setMaxResults($this->limit);
         }
 
-        $qb->orderBy('eo.startEpoch', 'ASC');
+        $qb->addOrderBy('eo.startEpoch', 'ASC');
+        // If multiple events on at same time, make sure we always have a consistent ordering anyway.
+        $qb->addOrderBy('e.title', 'ASC');
 
         return $qb->getQuery()->execute();
     }
