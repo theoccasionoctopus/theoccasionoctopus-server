@@ -25,7 +25,7 @@ class APEvent
     }
     public function getURL()
     {
-        return $this->data['url'];
+        return array_key_exists('url', $this->data) ? $this->data['url'] : null;
     }
 
 

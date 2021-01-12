@@ -4,6 +4,7 @@ namespace App\Service\AccountLocalInbox;
 
 use App\Entity\InboxSubmission;
 use App\Service\AccountRemote\AccountRemoteService;
+use App\Service\RemoteAccountContent\RemoteAccountContentService;
 use App\Service\RemoteServer\RemoteServerService;
 use App\Service\RequestHTTP\RequestHTTPService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -37,6 +38,11 @@ abstract class ProcessInboxSubmissionBase
     protected $remoteServerService;
 
     /**
+     * @var RemoteAccountContentService
+     */
+    protected $remoteAccountContentService;
+
+    /**
      * @param EntityManagerInterface $entityManager
      */
     public function __construct(
@@ -44,13 +50,15 @@ abstract class ProcessInboxSubmissionBase
         LoggerInterface $logger,
         RequestHTTPService $requestHTTPService,
         AccountRemoteService $accountRemoteService,
-        RemoteServerService $remoteServerService
+        RemoteServerService $remoteServerService,
+        RemoteAccountContentService $remoteAccountContentService
     ) {
         $this->entityManager = $entityManager;
         $this->logger = $logger;
         $this->requestHTTPService = $requestHTTPService;
         $this->accountRemoteService = $accountRemoteService;
         $this->remoteServerService = $remoteServerService;
+        $this->remoteAccountContentService = $remoteAccountContentService;
     }
 
     protected function markInboxSubmissionProcessed(InboxSubmission $inboxSubmission)

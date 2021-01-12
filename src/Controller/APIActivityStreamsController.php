@@ -199,10 +199,7 @@ class APIActivityStreamsController extends BaseController
 
         /** @var Event $event */
         foreach ($events as $event) {
-            $out['orderedItems'][] = [
-                'type'=> 'Create',
-                'object'=>$activityPubDataService->generateEventObject($event),
-            ];
+            $out['orderedItems'][] = $activityPubDataService->generateCreateActivityForEvent($event);
         }
 
         return new Response(

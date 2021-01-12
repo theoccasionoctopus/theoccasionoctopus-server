@@ -20,7 +20,15 @@ use App\Import\ImportRunner;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Twig\Environment;
 
-// TODO This should be called DownloadRemoteAccountContentCommand! Need to change cron entries at same time.
+/**
+ * Class DownloadRemoteUserContentCommand
+ * @package App\Command
+ *
+ * This is maybe not needed any more; now ActivityPub messages tell remote servers there is new content to get.
+ * But leaving so that any errors there are corrected.
+ *
+ * TODO This should be called DownloadRemoteAccountContentCommand! Need to change cron entries at same time.
+ */
 class DownloadRemoteUserContentCommand extends Command
 {
     protected static $defaultName = 'theocasionoctupus:download-remote-user-content';

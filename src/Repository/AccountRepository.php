@@ -62,6 +62,22 @@ class AccountRepository extends ServiceEntityRepository
         return $query->execute();
     }
 
+    public function findRemoteFollowers(Account $account)
+    {
+        $entityManager = $this->getEntityManager();
+
+        $query = $entityManager->createQuery(
+            'SELECT a ' .
+            'FROM App\Entity\Account a ' .
+            'JOIN a.followsAccount afa '.
+            'JOIN a.accountRemote ar '.
+            'WHERE afa.followsAccount = :a AND afa.follows = true '.
+            'ORDER BY a.title ASC '
+        )->setParameter('a', $account);
+
+        return $query->execute();
+    }
+
 
     public function findFollowersNeedingApproval(Account $account)
     {

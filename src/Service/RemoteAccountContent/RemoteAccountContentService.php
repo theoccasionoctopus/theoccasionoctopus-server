@@ -2,6 +2,7 @@
 
 namespace App\Service\RemoteAccountContent;
 
+use App\ActivityPub\APEvent;
 use App\ActivityPub\APOutbox;
 use App\Entity\Account;
 use App\Entity\AccountRemote;
@@ -76,62 +77,92 @@ class RemoteAccountContentService
         $APIEventListData = json_decode($response->getBody(), true);
 
         foreach ($APIEventListData['events'] as $eventData) {
-            $event = $this->entityManager->getRepository(Event::class)->findOneBy(array('id'=>$eventData['id'], 'account'=>$account));
-            if (!$event) {
-                $event = new Event();
-                $event->setId($eventData['id']);
-                $event->setAccount($account);
-                $event->setPrivacy(0);
-            }
-
-            $event->setTitle($eventData['title']);
-            $event->setDescription($eventData['description']);
-            $event->setUrl($eventData['url']);
-            $event->setUrlTickets($eventData['url_tickets']);
-
-            $country = $this->entityManager->getRepository(Country::class)->findOneBy(array('iso3166_two_char'=>$eventData['country']['code']));
-            if (!$country) {
-                throw new Exception("Country not known! " . $eventData['country']['code']);
-            }
-            $event->setCountry($country);
-
-            $timezone = $this->entityManager->getRepository(TimeZone::class)->findOneBy(array('code'=>$eventData['timezone']['code']));
-            if (!$timezone) {
-                throw new Exception("Timezone not known! " . $eventData['timezone']['code']);
-            }
-            $event->setTimezone($timezone);
-
-            $event->setStartWithInts(
-                $eventData['start_timezone']['year'],
-                $eventData['start_timezone']['month'],
-                $eventData['start_timezone']['day'],
-                $eventData['start_timezone']['hour'],
-                $eventData['start_timezone']['minute'],
-                $eventData['start_timezone']['second']
-            );
-
-            $event->setEndWithInts(
-                $eventData['end_timezone']['year'],
-                $eventData['end_timezone']['month'],
-                $eventData['end_timezone']['day'],
-                $eventData['end_timezone']['hour'],
-                $eventData['end_timezone']['minute'],
-                $eventData['end_timezone']['second']
-            );
-
-            // TODO extra fields
-            // TODO Cancelled
-            // TODO Deleted
-
-            $this->entityManager->persist($event);
-            $this->entityManager->flush();
-
-            // Event to event occurrence!
-            $this->eventToEventOccurrenceService->process($event);
-
-            // TODO this wont deal with things that were once public, new private! Special flag in API?
+            $this->updateEventWithOccasionOctopusData($accountRemote, $eventData);
         }
     }
+
+    public function downloadEventFromOccasionOctopus(AccountRemote $accountRemote, string $eventId)
+    {
+        /** @var Account $account */
+        $account = $accountRemote->getAccount();
+
+        $this->logger->info('Downloading remote user content', ['account_id'=>$account->getId(),'server_software'=>'occasion_octopus']);
+
+        // Check if remote server is still running our software
+        // TODO Do we need to?
+
+        // Get Event
+        $guzzle = new Client(array('defaults' => array('headers' => array(  'User-Agent'=> 'Prototype Software') )));
+        $response = $guzzle->request("GET", $accountRemote->getRemoteServer()->getURL()."/api/v1/account/".$account->getId()."/event/".$eventId.".json", array());
+        if ($response->getStatusCode() != 200) {
+            throw new Exception("When Getting Event, Got Status " . $response->getStatusCode());
+        }
+
+        $APIEventData = json_decode($response->getBody(), true);
+
+        $this->updateEventWithOccasionOctopusData($accountRemote, $APIEventData['event']);
+    }
+
+    protected function updateEventWithOccasionOctopusData(AccountRemote $accountRemote, array $eventData)
+    {
+        // We don't bother checking event is in future here; we assume those checks are done upstream
+        $event = $this->entityManager->getRepository(Event::class)->findOneBy(array('id'=>$eventData['id'], 'account'=>$accountRemote->getAccount()));
+        if (!$event) {
+            $event = new Event();
+            $event->setId($eventData['id']);
+            $event->setAccount($accountRemote->getAccount());
+            $event->setPrivacy(0);
+        }
+
+        $event->setTitle($eventData['title']);
+        $event->setDescription($eventData['description']);
+        $event->setUrl($eventData['url']);
+        $event->setUrlTickets($eventData['url_tickets']);
+
+        $country = $this->entityManager->getRepository(Country::class)->findOneBy(array('iso3166_two_char'=>$eventData['country']['code']));
+        if (!$country) {
+            throw new Exception("Country not known! " . $eventData['country']['code']);
+        }
+        $event->setCountry($country);
+
+        $timezone = $this->entityManager->getRepository(TimeZone::class)->findOneBy(array('code'=>$eventData['timezone']['code']));
+        if (!$timezone) {
+            throw new Exception("Timezone not known! " . $eventData['timezone']['code']);
+        }
+        $event->setTimezone($timezone);
+
+        $event->setStartWithInts(
+            $eventData['start_timezone']['year'],
+            $eventData['start_timezone']['month'],
+            $eventData['start_timezone']['day'],
+            $eventData['start_timezone']['hour'],
+            $eventData['start_timezone']['minute'],
+            $eventData['start_timezone']['second']
+        );
+
+        $event->setEndWithInts(
+            $eventData['end_timezone']['year'],
+            $eventData['end_timezone']['month'],
+            $eventData['end_timezone']['day'],
+            $eventData['end_timezone']['hour'],
+            $eventData['end_timezone']['minute'],
+            $eventData['end_timezone']['second']
+        );
+
+        // TODO extra fields
+        // TODO Cancelled
+        // TODO Deleted
+
+        $this->entityManager->persist($event);
+        $this->entityManager->flush();
+
+        // Event to event occurrence!
+        $this->eventToEventOccurrenceService->process($event);
+
+        // TODO this wont deal with things that were once public, new private! Special flag in API?
+    }
+
+
 
 
     protected function downloadAccountRemoteFromActivityPubServer(AccountRemote $accountRemote)
@@ -146,44 +177,47 @@ class RemoteAccountContentService
 
             foreach ($outbox->getItems() as $item) {
                 if ($item->isObjectTypeEvent() && $item->isTypeCreate()) {
-                    /** @var \App\ActivityPub\APEvent $apEvent */
-                    $apEvent = $item->getObject();
-
-                    if ($apEvent->getEnd()->getTimestamp() > time()) {
-                        $event = $this->entityManager->getRepository(Event::class)->findOneBy(array('activitypubId' => $apEvent->getId(), 'account' => $accountRemote->getAccount()));
-                        if (!$event) {
-                            $event = new Event();
-                            $event->setId(Library::GUID());
-                            $event->setAccount($accountRemote->getAccount());
-                            $event->setPrivacy(0);
-                            $event->setActivitypubId($apEvent->getId());
-                            // TODO better setCountry and setTimezone needed
-                            $event->setCountry($this->entityManager->getRepository(Country::class)->findOneBy(['iso3166_two_char' => 'GB']));
-                            $event->setTimezone($this->entityManager->getRepository(TimeZone::class)->findOneByCode('Europe/London'));
-                        }
-
-                        $event->setTitle($apEvent->getName());
-                        $event->setDescriptionFromHTML($apEvent->getSummary());
-                        $event->setUrl($apEvent->getURL());
-                        $event->setUrlTickets($apEvent->getURL());
-
-                        $event->setStartWithObject($apEvent->getStart());
-                        $event->setEndWithObject($apEvent->getEnd());
-
-                        // TODO extra fields
-                        // TODO Cancelled
-                        // TODO Deleted
-
-                        $this->entityManager->persist($event);
-                        $this->entityManager->flush();
-
-                        // Event to event occurrence!
-                        $this->eventToEventOccurrenceService->process($event);
-                    }
+                    $this->updateEventWithActivityPubServerData($accountRemote, $item->getObject());
                 }
             }
 
             $outboxNextURL = $outbox->getNextURL();
+        }
+    }
+
+    public function updateEventWithActivityPubServerData(AccountRemote $accountRemote, APEvent $apEvent)
+    {
+        if ($apEvent->getEnd()->getTimestamp() > time()) {
+            $event = $this->entityManager->getRepository(Event::class)->findOneBy(array('activitypubId' => $apEvent->getId(), 'account' => $accountRemote->getAccount()));
+            if (!$event) {
+                $event = new Event();
+                $event->setId(Library::GUID());
+                $event->setAccount($accountRemote->getAccount());
+                $event->setPrivacy(0);
+                $event->setActivitypubId($apEvent->getId());
+                // TODO better setCountry and setTimezone needed
+                $event->setCountry($this->entityManager->getRepository(Country::class)->findOneBy(['iso3166_two_char' => 'GB']));
+                $event->setTimezone($this->entityManager->getRepository(TimeZone::class)->findOneByCode('Europe/London'));
+            }
+
+            $event->setTitle($apEvent->getName());
+            $event->setDescriptionFromHTML($apEvent->getSummary());
+            $event->setUrl($apEvent->getURL());
+            $event->setUrlTickets($apEvent->getURL());
+
+            $event->setStartWithObject($apEvent->getStart());
+            $event->setEndWithObject($apEvent->getEnd());
+
+            // TODO extra fields
+            // TODO Cancelled
+            // TODO Deleted
+
+            $this->entityManager->persist($event);
+            $this->entityManager->flush();
+
+            // Event to event occurrence!
+            $this->eventToEventOccurrenceService->process($event);
+            // TODO: also if any events are sourced from this event, need to update them straight away
         }
     }
 }

@@ -5,6 +5,7 @@ namespace App\Service\AccountLocalInbox;
 use App\Entity\AccountRemote;
 use App\Entity\InboxSubmission;
 use App\Service\AccountRemote\AccountRemoteService;
+use App\Service\RemoteAccountContent\RemoteAccountContentService;
 use App\Service\RemoteServer\RemoteServerService;
 use App\Service\RequestHTTP\RequestHTTPService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -37,6 +38,11 @@ class AccountLocalInboxService
     protected $accountRemoteService;
 
     /**
+     * @var RemoteAccountContentService
+     */
+    protected $remoteAccountContentService;
+
+    /**
      * @param EntityManagerInterface $entityManager
      */
     public function __construct(
@@ -44,13 +50,15 @@ class AccountLocalInboxService
         LoggerInterface $logger,
         RequestHTTPService $requestHTTPService,
         AccountRemoteService $accountRemoteService,
-        RemoteServerService $remoteServerService
+        RemoteServerService $remoteServerService,
+        RemoteAccountContentService $remoteAccountContentService
     ) {
         $this->entityManager = $entityManager;
         $this->logger = $logger;
         $this->requestHTTPService = $requestHTTPService;
         $this->accountRemoteService = $accountRemoteService;
         $this->remoteServerService = $remoteServerService;
+        $this->remoteAccountContentService = $remoteAccountContentService;
     }
 
     protected function getHandlers(): array
@@ -61,28 +69,40 @@ class AccountLocalInboxService
                 $this->logger,
                 $this->requestHTTPService,
                 $this->accountRemoteService,
-                $this->remoteServerService
+                $this->remoteServerService,
+                $this->remoteAccountContentService
             ),
             new ProcessInboxSubmissionAcceptFollow(
                 $this->entityManager,
                 $this->logger,
                 $this->requestHTTPService,
                 $this->accountRemoteService,
-                $this->remoteServerService
+                $this->remoteServerService,
+                $this->remoteAccountContentService
             ),
             new ProcessInboxSubmissionRejectFollow(
                 $this->entityManager,
                 $this->logger,
                 $this->requestHTTPService,
                 $this->accountRemoteService,
-                $this->remoteServerService
+                $this->remoteServerService,
+                $this->remoteAccountContentService
             ),
             new ProcessInboxSubmissionUndoFollow(
                 $this->entityManager,
                 $this->logger,
                 $this->requestHTTPService,
                 $this->accountRemoteService,
-                $this->remoteServerService
+                $this->remoteServerService,
+                $this->remoteAccountContentService
+            ),
+            new ProcessInboxSubmissionCreateUpdateEvent(
+                $this->entityManager,
+                $this->logger,
+                $this->requestHTTPService,
+                $this->accountRemoteService,
+                $this->remoteServerService,
+                $this->remoteAccountContentService
             )
         ];
     }
