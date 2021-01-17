@@ -34,7 +34,7 @@ abstract class APIV1Controller extends BaseController
             $repository = $doctrine->getRepository(APIAccessToken::class);
             $this->accessToken = $repository->findOneBy(['token'=>$accessTokenString]);
             if (!$this->accessToken) {
-                throw new  AccessDeniedException('Bad Token!');
+                throw new  AccessDeniedHttpException('Bad Token!');
             }
             if (!$this->accessToken->getEnabled()) {
                 throw new AccessDeniedHttpException('Token Disabled!');
