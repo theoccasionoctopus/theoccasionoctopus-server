@@ -68,16 +68,17 @@ class AccountPublicEventListController extends AccountPublicController
         $repositoryQuery->setTo($to);
         $repositoryQuery->setShowDeleted(false);
 
-        $events = $repositoryQuery->getEvents();
+        $eventOccurrences = $repositoryQuery->getEventOccurrences();
 
         $data = [];
-        /** @var Event $event */
-        foreach ($events as $event) {
+        /** @var EventOccurrence $event */
+        foreach ($eventOccurrences as $eventOccurrence) {
             $data[] = array(
-                'id'=>$event->getId(),
-                'title'=> $event->getTitle(),
-                'start'=> $event->getStart('UTC')->format('Y-m-d'),
-                'end'=> $event->getEnd('UTC')->format('Y-m-d'),
+                // TODO need to find a way to link to the right event occurrence - at moment will always link to first event occurrence
+                'id'=>$eventOccurrence->getEvent()->getId(),
+                'title'=> $eventOccurrence->getEvent()->getTitle(),
+                'start'=> $eventOccurrence->getStart('UTC')->format('Y-m-d'),
+                'end'=> $eventOccurrence->getEnd('UTC')->format('Y-m-d'),
             );
         }
 
