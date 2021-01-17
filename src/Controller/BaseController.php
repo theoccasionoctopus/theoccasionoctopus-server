@@ -84,6 +84,8 @@ abstract class BaseController extends AbstractController
             'outbox'=>$this->getParameter('app.instance_url').$this->generateUrl('account_activity_streams_outbox', ['account_id'=>$account->getId()]),
             'preferredUsername'=>$account->getAccountLocal()->getUsername(),
             'name'=>$account->getTitle(),
+            // TODO description should have links turned to tags too
+            'summary'=>nl2br($account->getAccountLocal()->getDescription()),
             'url'=>$id_and_url,
             'occasion-octopus-id'=>$account->getId(),
             'publicKey'=>[

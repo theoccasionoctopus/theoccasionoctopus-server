@@ -3,6 +3,12 @@
 {% block body %}
 
     <div class="content">
+
+        {%  if account.accountLocal.description %}
+            <h3>About {{  account.title }}</h3>
+            {{  account.accountLocal.description|nl2br|linkify }}
+        {%  endif %}
+
         <h3>Following</h3>
 
         {%  if accounts_following %}

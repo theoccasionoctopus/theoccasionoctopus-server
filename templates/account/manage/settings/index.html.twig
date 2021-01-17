@@ -18,6 +18,10 @@
                 <td>{{  account.title }}</td>
             </tr>
             <tr>
+                <th>Description</th>
+                <td>{{  account.accountLocal.description|nl2br|linkify }}</td>
+            </tr>
+            <tr>
                 <th>Account ID (for API Access)</th>
                 <td>{{  account.id }}</td>
             </tr>

@@ -7,6 +7,11 @@
     <div class="content">
         <p>Welcome to this account</p>
 
+        {%  if account.accountLocal.description %}
+            <h3>About {{  account.title }}</h3>
+            {{  account.accountLocal.description|nl2br|linkify }}
+        {%  endif %}
+
         <h3>Events</h3>
 
         <a  class="button" role="button"    href="{{ path('account_public_event',{'account_username':account.username}) }}"><i class="fas fa-calendar"></i> Events</a>

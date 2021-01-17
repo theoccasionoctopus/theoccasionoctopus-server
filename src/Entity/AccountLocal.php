@@ -35,6 +35,11 @@ class AccountLocal
     private $usernameCanonical;
 
     /**
+     * @ORM\Column(type="text", nullable=true)
+     */
+    private $description;
+
+    /**
      * @var Country
      * @ORM\JoinColumn(name="default_country_id", referencedColumnName="id", nullable=true)
      * @ORM\ManyToOne(targetEntity="App\Entity\Country", inversedBy="accounts")
@@ -133,6 +138,16 @@ class AccountLocal
     public function getUsernameCanonical()
     {
         return $this->usernameCanonical;
+    }
+
+    public function getDescription()
+    {
+        return $this->description;
+    }
+
+    public function setDescription(string $description)
+    {
+        $this->description = $description;
     }
 
     /**

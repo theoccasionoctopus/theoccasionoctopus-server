@@ -18,6 +18,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
@@ -31,6 +32,9 @@ class AccountEditSettingsType extends AbstractType
                 'mapped'=>false,
                 'label'=>'Account name',
                 'data'=>$options['account']->getTitle(),
+            ])
+            ->add('description', TextAreaType::class, [
+                'label'=>'Description',
             ])
             ->add('default_privacy', ChoiceType::class, [
                 'expanded'=>true,
