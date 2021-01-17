@@ -84,4 +84,30 @@ class PurgeService
 
         $this->logger->info('Account was purged', ['account_id'=>$account->getId()]);
     }
+
+
+    public function purgeEvent(Event $event)
+    {
+        $this->entityManager->transactional(function ($em) use ($event) {
+            $sqls = [
+                // History
+                ' DELETE FROM history_has_event WHERE event_id = :event_id',
+                ' DELETE FROM history_has_event_has_tag WHERE event_id = :event_id',
+                // Import
+                ' DELETE FROM event_has_import WHERE event_id = :event_id',
+                // Event
+                ' DELETE FROM event_has_source_event WHERE event_id = :event_id',
+                ' DELETE FROM event_has_tag WHERE event_id = :event_id',
+                ' DELETE FROM event_occurrence WHERE event_id = :event_id',
+                ' DELETE FROM event WHERE id = :event_id',
+            ];
+            foreach ($sqls as $sql) {
+                $em->getConnection()->prepare($sql)->execute(['event_id' => $event->getId()]);
+            }
+            // TODO also need to purge any histories with no content now
+        });
+
+
+        $this->logger->info('Event was purged', ['event_id'=>$event->getId()]);
+    }
 }
