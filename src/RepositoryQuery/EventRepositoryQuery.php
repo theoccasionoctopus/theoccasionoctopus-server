@@ -215,11 +215,11 @@ class EventRepositoryQuery
         }
 
         if ($this->from) {
-            $qb->andWhere('e.cachedEndEpoch >= :from')->setParameter('from', $this->from->getTimestamp());
+            $qb->andWhere('eo.endEpoch >= :from')->setParameter('from', $this->from->getTimestamp());
         }
 
         if ($this->to) {
-            $qb->andWhere('e.cachedStartEpoch <= :to')->setParameter('to', $this->to->getTimestamp());
+            $qb->andWhere('eo.startEpoch <= :to')->setParameter('to', $this->to->getTimestamp());
         }
 
         if ($this->url) {
