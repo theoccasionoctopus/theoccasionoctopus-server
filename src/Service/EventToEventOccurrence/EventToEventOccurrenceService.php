@@ -91,11 +91,15 @@ class EventToEventOccurrenceService
 
             $transformer = new \Recurr\Transformer\ArrayTransformer();
 
-            // TODO make some constraits for account years ahead and behind, apply here
-            // $constraint = new \Recurr\Transformer\Constraint\BetweenConstraint();
+            # TODO TimeZone? But at granularity of a year, I don't think it's important
+            $fromConstraint = new \DateTime();
+            $fromConstraint->sub(new \DateInterval("P".$event->getAccount()->getYearsBehind()."Y"));
+            $toConstraint = new \DateTime();
+            $toConstraint->add(new \DateInterval("P".$event->getAccount()->getYearsAhead()."Y"));
+            $constraint = new \Recurr\Transformer\Constraint\BetweenConstraint($fromConstraint, $toConstraint, true);
 
             $out = [];
-            foreach ($transformer->transform($rule) as $r) {
+            foreach ($transformer->transform($rule, $constraint) as $r) {
                 $startUTC = clone $r->getStart();
                 $startUTC->setTimezone(new \DateTimeZone('UTC'));
                 $endUTC = clone $r->getEnd();
