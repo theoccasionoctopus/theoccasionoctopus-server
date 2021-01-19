@@ -20,9 +20,9 @@ class AccountManageTagDetailsController extends AccountManageController
     /** @var  Tag */
     protected $tag;
 
-    protected function buildTag($account_username, $tag_id)
+    protected function buildTag($account_username, $tag_id, Request $request)
     {
-        $this->build($account_username);
+        $this->setUpAccountManage($account_username, $request);
 
         $doctrine = $this->getDoctrine();
         $repository = $doctrine->getRepository(Tag::class);
@@ -35,7 +35,7 @@ class AccountManageTagDetailsController extends AccountManageController
 
     public function indexShow($account_username, $tag_id, Request $request)
     {
-        $this->buildTag($account_username, $tag_id);
+        $this->buildTag($account_username, $tag_id, $request);
 
         // TODO should show occurrences, not just events!
         $repositoryQuery = new EventRepositoryQuery($this->getDoctrine());
@@ -54,7 +54,7 @@ class AccountManageTagDetailsController extends AccountManageController
 
     public function indexEditDetails($account_username, $tag_id, Request $request, HistoryWorkerService $historyWorkerService)
     {
-        $this->buildTag($account_username, $tag_id);
+        $this->buildTag($account_username, $tag_id, $request);
 
         // build the form
         $form = $this->createForm(TagEditType::class, $this->tag);

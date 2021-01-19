@@ -16,7 +16,7 @@ class AccountManageTagNewController extends AccountManageController
 {
     public function newTag($account_username, Request $request, HistoryWorkerService $historyWorkerService)
     {
-        $this->build($account_username);
+        $this->setUpAccountManage($account_username, $request);
 
         // build the form
         $form = $this->createForm(TagNewType::class, null, array(

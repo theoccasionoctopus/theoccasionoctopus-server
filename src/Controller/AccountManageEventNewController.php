@@ -16,7 +16,7 @@ class AccountManageEventNewController extends AccountManageController
 {
     public function newEvent($account_username, Request $request, HistoryWorkerService $historyWorkerService)
     {
-        $this->build($account_username);
+        $this->setUpAccountManage($account_username, $request);
 
         // build the form
         $event = new Event();

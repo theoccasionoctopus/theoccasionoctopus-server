@@ -24,7 +24,7 @@ class AccountManageSettingsController extends AccountManageController
 {
     public function index($account_username, Request $request)
     {
-        $this->build($account_username);
+        $this->setUpAccountManage($account_username, $request);
 
         $doctrine = $this->getDoctrine();
         $imports = $doctrine->getRepository(Import::class)->findBy(['account'=>$this->account]);
@@ -78,7 +78,7 @@ class AccountManageSettingsController extends AccountManageController
 
     public function newImport($account_username, Request $request, LoggerInterface $logger)
     {
-        $this->build($account_username);
+        $this->setUpAccountManage($account_username, $request);
 
         // build the form
         $import = new Import();
@@ -128,7 +128,7 @@ class AccountManageSettingsController extends AccountManageController
 
     public function edit($account_username, Request $request, LoggerInterface $logger)
     {
-        $this->build($account_username);
+        $this->setUpAccountManage($account_username, $request);
 
         // build the form
 

@@ -20,7 +20,7 @@ class AccountManageProfileController extends AccountManageController
 {
     public function indexManageProfile($account_username, Request $request, AccountService $accountService)
     {
-        $this->build($account_username);
+        $this->setUpAccountManage($account_username, $request);
 
         $doctrine = $this->getDoctrine();
 
@@ -61,7 +61,7 @@ class AccountManageProfileController extends AccountManageController
 
     public function indexNewFollowLocal($account_username, Request $request, AccountService $accountService)
     {
-        $this->build($account_username);
+        $this->setUpAccountManage($account_username, $request);
 
         $doctrine = $this->getDoctrine();
         $repository = $doctrine->getRepository(Account::class);
@@ -103,15 +103,14 @@ class AccountManageProfileController extends AccountManageController
     public function indexNewFollowRemote($account_username, Request $request, RemoteServerService $remoteServerService, AccountRemoteService $remoteAccountService, AccountService $accountService)
     {
         if (!$this->getParameter('app.instance_federation')) {
+            # TODO this could be a human error message, not a computer error message
             return new Response(
                 json_encode(['error'=>'federation_off']),
                 Response::HTTP_SERVICE_UNAVAILABLE,
                 ['content-type' => 'application/json']
             );
         }
-        $this->build($account_username);
-
-        $doctrine = $this->getDoctrine();
+        $this->setUpAccountManage($account_username, $request);
 
         if ($request->request->get('action') == 'follow') {
             list($username, $hostname) = Library::parseAccountHandleWithServerToUsernameAndHost($request->request->get('username'));

@@ -21,7 +21,7 @@ class AccountManageController extends BaseController
     protected $account;
 
 
-    protected function build($account_username)
+    protected function setUpAccountManage($account_username, Request $request)
     {
         // If no user don't even bother
         $user= $this->get('security.token_storage')->getToken()->getUser();
@@ -44,7 +44,7 @@ class AccountManageController extends BaseController
         }
 
         // Now other stuff
-        // TODO only when we have a request - $this->setUp($request);
+        $this->setUp($request);
     }
 
 
@@ -56,7 +56,7 @@ class AccountManageController extends BaseController
 
     public function index($account_username, Request $request)
     {
-        $this->build($account_username);
+        $this->setUpAccountManage($account_username, $request);
 
         return $this->render('account/manage/index.html.twig', $this->getTemplateVariables([
             'account'=> $this->account,

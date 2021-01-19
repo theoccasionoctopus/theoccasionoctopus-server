@@ -16,7 +16,7 @@ class AccountManageHistoryListController extends AccountManageController
 {
     public function index($account_username, Request $request)
     {
-        $this->build($account_username);
+        $this->setUpAccountManage($account_username, $request);
 
         $doctrine = $this->getDoctrine();
         $histories = $doctrine->getRepository(History::class)->findBy(['account'=>$this->account], ['created'=>'DESC'], 100);

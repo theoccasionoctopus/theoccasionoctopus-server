@@ -15,7 +15,7 @@ class AccountManageTagListController extends AccountManageController
 {
     public function indexManageTag($account_username, Request $request)
     {
-        $this->build($account_username);
+        $this->setUpAccountManage($account_username, $request);
 
         $repositoryQuery = new TagRepositoryQuery($this->getDoctrine(), $this->account);
         $tags = $repositoryQuery->getTags();

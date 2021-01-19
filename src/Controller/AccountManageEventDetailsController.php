@@ -21,9 +21,9 @@ class AccountManageEventDetailsController extends AccountManageController
     /** @var  Event */
     protected $event;
 
-    protected function buildEvent($account_username, $event_id)
+    protected function buildEvent($account_username, $event_id, Request $request)
     {
-        $this->build($account_username);
+        $this->setUpAccountManage($account_username, $request);
 
         $doctrine = $this->getDoctrine();
         $repository = $doctrine->getRepository(Event::class);
@@ -36,7 +36,7 @@ class AccountManageEventDetailsController extends AccountManageController
 
     public function indexShow($account_username, $event_id, Request $request)
     {
-        $this->buildEvent($account_username, $event_id);
+        $this->buildEvent($account_username, $event_id, $request);
 
         $doctrine = $this->getDoctrine();
         $currentTags = $doctrine->getRepository(Tag::class)->findByEvent($this->event);
@@ -66,7 +66,7 @@ class AccountManageEventDetailsController extends AccountManageController
 
     public function indexShowSeries($account_username, $event_id, Request $request)
     {
-        $this->buildEvent($account_username, $event_id);
+        $this->buildEvent($account_username, $event_id, $request);
 
         $doctrine = $this->getDoctrine();
 
@@ -87,7 +87,7 @@ class AccountManageEventDetailsController extends AccountManageController
 
     public function indexEditDetails($account_username, $event_id, Request $request, HistoryWorkerService $historyWorkerService)
     {
-        $this->buildEvent($account_username, $event_id);
+        $this->buildEvent($account_username, $event_id, $request);
 
         // build the form
         $timeZone = $this->event->getTimezone()->getCode();
@@ -163,7 +163,7 @@ class AccountManageEventDetailsController extends AccountManageController
 
     public function indexEditTags($account_username, $event_id, Request $request, HistoryWorkerService $historyWorkerService)
     {
-        $this->buildEvent($account_username, $event_id);
+        $this->buildEvent($account_username, $event_id, $request);
 
         // build the form
         $doctrine = $this->getDoctrine();
@@ -220,7 +220,7 @@ class AccountManageEventDetailsController extends AccountManageController
 
     public function indexEditCancel($account_username, $event_id, Request $request, HistoryWorkerService $historyWorkerService)
     {
-        $this->buildEvent($account_username, $event_id);
+        $this->buildEvent($account_username, $event_id, $request);
 
 
         # TODO check below is POST too, and CSFR
@@ -248,7 +248,7 @@ class AccountManageEventDetailsController extends AccountManageController
 
     public function indexEditDelete($account_username, $event_id, Request $request, HistoryWorkerService $historyWorkerService)
     {
-        $this->buildEvent($account_username, $event_id);
+        $this->buildEvent($account_username, $event_id, $request);
 
 
         # @TODO check below is POST too,

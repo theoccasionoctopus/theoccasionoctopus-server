@@ -17,7 +17,7 @@ class AccountManageEventListController extends AccountManageController
 {
     public function indexManageEvent($account_username, Request $request)
     {
-        $this->build($account_username);
+        $this->setUpAccountManage($account_username, $request);
 
 
         $params = new EventListFilterParams($this->getDoctrine(), $this->account);
@@ -35,7 +35,7 @@ class AccountManageEventListController extends AccountManageController
 
     public function calendar($account_username, Request $request)
     {
-        $this->build($account_username);
+        $this->setUpAccountManage($account_username, $request);
 
         // TODO use EventListFilterParams
 
@@ -47,7 +47,7 @@ class AccountManageEventListController extends AccountManageController
 
     public function calendarData($account_username, Request $request)
     {
-        $this->build($account_username);
+        $this->setUpAccountManage($account_username, $request);
 
         $from = new \DateTime($request->query->get('start'));
         $from->setTime(0, 0, 0);

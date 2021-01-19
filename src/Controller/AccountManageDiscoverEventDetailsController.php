@@ -25,9 +25,9 @@ class AccountManageDiscoverEventDetailsController extends AccountManageControlle
     /** @var  Event */
     protected $discoverEvent;
 
-    protected function buildEvent($account_username, $discover_account_id, $discover_event_id)
+    protected function buildEvent($account_username, $discover_account_id, $discover_event_id, Request $request)
     {
-        $this->build($account_username);
+        $this->setUpAccountManage($account_username, $request);
 
         $doctrine = $this->getDoctrine();
 
@@ -48,7 +48,7 @@ class AccountManageDiscoverEventDetailsController extends AccountManageControlle
 
     public function indexEventDetails($account_username, $discover_account_id, $discover_event_id, Request $request)
     {
-        $this->buildEvent($account_username, $discover_account_id, $discover_event_id);
+        $this->buildEvent($account_username, $discover_account_id, $discover_event_id, $request);
 
         // TODO look up details of existing links, show to user
 
@@ -61,7 +61,7 @@ class AccountManageDiscoverEventDetailsController extends AccountManageControlle
 
     public function indexEventAdd($account_username, $discover_account_id, $discover_event_id, HistoryWorkerService $historyWorkerService, Request $request)
     {
-        $this->buildEvent($account_username, $discover_account_id, $discover_event_id);
+        $this->buildEvent($account_username, $discover_account_id, $discover_event_id, $request);
 
         $doctrine = $this->getDoctrine();
 

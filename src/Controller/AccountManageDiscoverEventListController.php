@@ -15,7 +15,7 @@ class AccountManageDiscoverEventListController extends AccountManageController
 {
     public function indexDiscover($account_username, Request $request)
     {
-        $this->build($account_username);
+        $this->setUpAccountManage($account_username, $request);
 
         $params = new AccountDiscoverEventListFilterParams($this->getDoctrine(), $this->account);
         $params->build($_GET);
