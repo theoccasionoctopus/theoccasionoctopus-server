@@ -21,7 +21,7 @@
                 <li class="event">
                     <h2>{{  event.title }}</h2>
                     <p>{{  event.description | u.truncate(event_list_description_truncate_limit, event_list_description_truncate_more, event_list_description_truncate_whole_words) | nl2br }}</p>
-                    {%  include '/common/eventStartEndLine.html.twig' with { 'start':event.start, 'end':event.end, 'timezone': event.timezone.code } %}
+                    {%  include '/common/eventStartEndLine.html.twig' with { 'start':event.start, 'end':event.end, 'timezone': userTimeZone , 'showTimeZone': true  } %}
                     <a class="button" href="{{ path('account_public_event_show_event',{'account_username':account.username,'event_id': event.id }) }}">Details</a>
                 </li>
 
