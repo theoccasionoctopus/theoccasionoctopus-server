@@ -97,7 +97,7 @@ abstract class BaseController extends AbstractController
         return new Response(
             json_encode($out),
             Response::HTTP_OK,
-            ['content-type' => 'application/json']
+            ['content-type' => 'application/activity+json']
         );
     }
 }

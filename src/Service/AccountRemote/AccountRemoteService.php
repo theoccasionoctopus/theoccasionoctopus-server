@@ -101,7 +101,7 @@ class AccountRemoteService
         if (!$isOccasionOctopus) {
             $account = $this->entityManager->getRepository(AccountRemote::class)->findOneBy(['actorDataId'=>$dataActor['id'],'remoteServer'=>$remoteServer]);
             if ($account) {
-                return $account->getAccount();
+                return $account;
             }
         }
 
@@ -266,8 +266,7 @@ class AccountRemoteService
             'algorithm' => 'rsa-sha256',
             'headers' => ['(request-target)', 'date'],
         ]);
-        $psrRequest = $context->signer()->sign($psrRequest);
-        // TODO Digest? $psrRequest = $context->signer()->signWithDigest($psrRequest);
+        $psrRequest = $context->signer()->signWithDigest($psrRequest);
 
         // Send
         $response = $this->requestHTTPService->send(
@@ -276,8 +275,16 @@ class AccountRemoteService
                 'http_errors' => false,
             )
         );
-        if ($response->getStatusCode() != 200) {
-            throw new \Exception("When Posting to inbox, Got Status " . $response->getStatusCode());
+        if ($response->getStatusCode() != 200 && $response->getStatusCode() != 202) {
+            $this->logger->error(
+                'When Posting to inbox, Got Status other than 200 or 202',
+                [
+                    'response_status'=>$response->getStatusCode(),
+                    'response_content'=>$response->getBody(),
+                    'remote_account_id'=>$toAccount->getAccount()->getId(),
+                ]
+            );
+            throw new \Exception("When Posting to inbox, Got Status " . $response->getStatusCode() . " And content ". $response->getBody());
         }
         $this->logger->info('Posted to ActivityPub inbox', ['url'=>$url, 'data'=>json_encode($data)]);
     }
