@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\APIV1\ICalBuilderForAccount;
 use App\Entity\AccountRemote;
 use App\Entity\InboxSubmission;
+use App\Entity\Note;
 use App\Entity\UserManageAccount;
 use App\FilterParams\EventListFilterParams;
 use App\Library;
@@ -192,6 +193,7 @@ class APIActivityStreamsController extends BaseController
             "orderedItems"=> [],
         ];
 
+        # Events
         $params = new EventListFilterParams($this->getDoctrine(), $this->account);
         $params->build($request->query);
         $params->getRepositoryQuery()->setPublicOnly();
@@ -200,6 +202,12 @@ class APIActivityStreamsController extends BaseController
         /** @var Event $event */
         foreach ($events as $event) {
             $out['orderedItems'][] = $activityPubDataService->generateCreateActivityForEvent($event);
+        }
+
+        # Notes
+        $notes = $this->getDoctrine()->getRepository(Note::class)->getForOutboxOfAccount($this->account);
+        foreach ($notes as $note) {
+            $out['orderedItems'][] = $activityPubDataService->generateCreateActivityForNote($note);
         }
 
         return new Response(

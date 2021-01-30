@@ -18,3 +18,4 @@ framework:
             'App\Message\NewRejectRemoteAccountFollowingMessage': async
             'App\Message\NewAcceptRemoteAccountFollowingMessage': async
             'App\Message\NewHistoryMessage': async
+            'App\Message\SendRemoteServerSendDataMessage': async

@@ -3,6 +3,7 @@
 namespace App\Service\ActivityPubData;
 
 use App\Entity\Event;
+use App\Entity\Note;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Psr\Log\LoggerInterface;
@@ -65,5 +66,27 @@ class ActivityPubDataService
             ]
         ];
         return $out;
+    }
+
+
+    public function generateCreateActivityForNote(Note $note): array
+    {
+        $published = new \DateTime('', new \DateTimeZone('UTC'));
+        $published->setTimestamp($note->getCreated());
+        return [
+            "@context"=> "https://www.w3.org/ns/activitystreams",
+            "type"=> "Create",
+            "id"=> $this->params->get('app.instance_url') . '/activitypubactivity/notecreate/'.$note->getId(),
+            "to"=> "https://www.w3.org/ns/activitystreams#Public",
+            "actor"=> $this->params->get('app.instance_url') . $this->router->generate('account_public', ['account_username'=>$note->getAccount()->getUsername()]),
+            "object"=>[
+                "id"=> $this->params->get('app.instance_url') . '/activitypubobject/note/'.$note->getId(),
+                "type"=> "Note",
+                "attributedTo"=> $this->params->get('app.instance_url') . $this->router->generate('account_public', ['account_username'=>$note->getAccount()->getUsername()]),
+                "content"=> $note->getContent(),
+                "@context"=> "https://www.w3.org/ns/activitystreams",
+                "published"=>$published->format('Y-m-d\TH:i:s\Z')
+            ],
+        ];
     }
 }

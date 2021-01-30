@@ -5,8 +5,12 @@ namespace App\Service\AccountRemote;
 use App\Entity\Account;
 use App\Entity\AccountLocal;
 use App\Entity\AccountRemote;
+use App\Entity\Note;
 use App\Entity\RemoteServer;
+use App\Entity\RemoteServerSendData;
 use App\Library;
+use App\Message\SendRemoteServerSendDataMessage;
+use App\Service\ActivityPubData\ActivityPubDataService;
 use App\Service\RequestHTTP\RequestHTTPService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
@@ -14,6 +18,8 @@ use Psr\Log\LoggerInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use GuzzleHttp\Psr7\Request as Psr7Request;
 use HttpSignatures\Context;
+use Symfony\Component\Messenger\MessageBusInterface;
+use Symfony\Component\Messenger\Stamp\DelayStamp;
 
 class AccountRemoteService
 {
@@ -39,6 +45,12 @@ class AccountRemoteService
      */
     protected $requestHTTPService;
 
+    /** @var  ActivityPubDataService */
+    protected $activityPubDataService;
+
+    /** @var MessageBusInterface  */
+    protected $messageBus;
+
     /**
      * @param EntityManagerInterface $entityManager
      */
@@ -47,13 +59,17 @@ class AccountRemoteService
         ParameterBagInterface $params,
         LoggerInterface $logger,
         UrlGeneratorInterface $router,
-        RequestHTTPService $requestHTTPService
+        RequestHTTPService $requestHTTPService,
+        ActivityPubDataService $activityPubDataService,
+        MessageBusInterface $bus
     ) {
         $this->entityManager = $entityManager;
         $this->params = $params;
         $this->logger = $logger;
         $this->router = $router;
         $this->requestHTTPService = $requestHTTPService;
+        $this->activityPubDataService = $activityPubDataService;
+        $this->messageBus = $bus;
     }
 
     public function getOrCreateByUsername(RemoteServer $remoteServer, string $username): AccountRemote
@@ -246,41 +262,63 @@ class AccountRemoteService
     }
 
 
-    public function sendPublicNote(AccountLocal $fromAccountLocal, $content)
+    public function sendPublicNote(Note $note)
     {
-
-        // TODO should save this somewhere and put in outbox too.
-        $data = [
-            "@context"=> "https://www.w3.org/ns/activitystreams",
-            "type"=> "Create",
-            "id"=> $this->params->get('app.instance_url') . '/activitypubactivity/notecreate/'.$fromAccountLocal->getAccount()->getId().'/'.time(),
-            "to"=> [],
-            "actor"=> $this->params->get('app.instance_url') . $this->router->generate('account_public', ['account_username'=>$fromAccountLocal->getUsername()]),
-            "object"=>[
-                "id"=> $this->params->get('app.instance_url') . '/activitypubactivity/note/'.$fromAccountLocal->getAccount()->getId().'/'.time(),
-                "type"=> "Note",
-                "attributedTo"=> $this->params->get('app.instance_url') . $this->router->generate('account_public', ['account_username'=>$fromAccountLocal->getUsername()]),
-                "content"=> $content,
-                "@context"=> "https://www.w3.org/ns/activitystreams",
-            ],
-        ] ;
-
+        $data = $this->activityPubDataService->generateCreateActivityForNote($note);
         /** @var Account $remoteFollowerAccount */
-        foreach ($this->entityManager->getRepository(Account::class)->findRemoteFollowers($fromAccountLocal->getAccount()) as $remoteFollowerAccount) {
+        foreach ($this->entityManager->getRepository(Account::class)->findRemoteFollowers($note->getAccount()) as $remoteFollowerAccount) {
             $data['to'] = [
                 $remoteFollowerAccount->getAccountRemote()->getActorDataId(),
                 "https://www.w3.org/ns/activitystreams#Public",
             ];
-            $this->postToInbox($fromAccountLocal, $remoteFollowerAccount->getAccountRemote(), $data);
+            $this->postToInbox($note->getAccount()->getAccountLocal(), $remoteFollowerAccount->getAccountRemote(), $data);
         }
     }
 
     public function postToInbox(AccountLocal $fromAccountLocal, AccountRemote $toAccount, $data)
     {
-        if (!$toAccount->getActorData() || !array_key_exists('inbox', $toAccount->getActorData())) {
-            throw new \Exception('Can not find inbox of remote account');
+        $remoteServerSendData = new RemoteServerSendData();
+        $remoteServerSendData->setFromAccount($fromAccountLocal->getAccount());
+        $remoteServerSendData->setToAccount($toAccount->getAccount());
+        $remoteServerSendData->setData($data);
+
+        $this->entityManager->persist($remoteServerSendData);
+        $this->entityManager->flush();
+
+        $this->messageBus->dispatch(
+            new SendRemoteServerSendDataMessage($remoteServerSendData->getId())
+        );
+    }
+
+    protected function errorInSendRemoteServerSendData(RemoteServerSendData $remoteServerSendData)
+    {
+        // TODO put all these constants in parameters
+        $remoteServerSendData->increaseFailedCount();
+        $this->entityManager->persist($remoteServerSendData);
+        $this->entityManager->flush();
+        if ($remoteServerSendData->getFailedCount() < 10) {
+            $this->messageBus->dispatch(
+                new SendRemoteServerSendDataMessage($remoteServerSendData->getId()),
+                [
+                    new DelayStamp(5*60*1000*$remoteServerSendData->getFailedCount())
+                ]
+            );
         }
-        $url = $toAccount->getActorData()['inbox'];
+    }
+
+    public function sendRemoteServerSendData(RemoteServerSendData $remoteServerSendData)
+    {
+        $toAccountActorData = $remoteServerSendData->getToAccount()->getAccountRemote()->getActorData();
+        if (!$toAccountActorData || !array_key_exists('inbox', $toAccountActorData)) {
+            $this->logger->error(
+                'When Posting to inbox, Can not find inbox of remote account',
+                [
+                    'remote_server_send_data_id'=>$remoteServerSendData->getId()
+                ]
+            );
+            return $this->errorInSendRemoteServerSendData($remoteServerSendData);
+        }
+        $url = $toAccountActorData['inbox'];
 
         // Request
         $psrRequest = new Psr7Request(
@@ -289,13 +327,13 @@ class AccountRemoteService
             [
                 'date'=>(new \DateTime('', new \DateTimeZone('UTC')))->format('D, d M Y H:i:s \G\M\T'),
             ],
-            json_encode($data)
+            json_encode($remoteServerSendData->getData())
         );
 
         // Sign
         $context = new Context([
             'keys' => [
-                $data['actor'].'#main-key' => $fromAccountLocal->getKeyPrivate()
+                $remoteServerSendData->getData()['actor'].'#main-key' => $remoteServerSendData->getFromAccount()->getAccountLocal()->getKeyPrivate()
             ],
             'algorithm' => 'rsa-sha256',
             'headers' => ['(request-target)', 'date'],
@@ -303,23 +341,40 @@ class AccountRemoteService
         $psrRequest = $context->signer()->signWithDigest($psrRequest);
 
         // Send
-        $response = $this->requestHTTPService->send(
-            $psrRequest,
-            array(
-                'http_errors' => false,
-            )
-        );
-        if ($response->getStatusCode() != 200 && $response->getStatusCode() != 202) {
+        try {
+            $response = $this->requestHTTPService->send(
+                $psrRequest,
+                array(
+                    'http_errors' => false,
+                )
+            );
+            # TODO I would like to catch Guzzle errors only here but that is more difficult than it should be, for some reason
+        } catch (\Exception $e) {
+            $this->logger->error(
+                'When Posting to inbox, got exception',
+                [
+                    'error'=>$e->getMessage(),
+                    'error_class'=>get_class($e),
+                    'remote_server_send_data_id'=>$remoteServerSendData->getId()
+                ]
+            );
+            return $this->errorInSendRemoteServerSendData($remoteServerSendData);
+        }
+        if ($response->getStatusCode() == 200 || $response->getStatusCode() == 202) {
+            $this->logger->info('Posted to ActivityPub inbox', ['url'=>$url, 'remote_server_send_data_id'=>$remoteServerSendData->getId()]);
+            $remoteServerSendData->setSucceededNow();
+            $this->entityManager->persist($remoteServerSendData);
+            $this->entityManager->flush();
+        } else {
             $this->logger->error(
                 'When Posting to inbox, Got Status other than 200 or 202',
                 [
                     'response_status'=>$response->getStatusCode(),
                     'response_content'=>$response->getBody(),
-                    'remote_account_id'=>$toAccount->getAccount()->getId(),
+                    'remote_server_send_data_id'=>$remoteServerSendData->getId()
                 ]
             );
-            throw new \Exception("When Posting to inbox, Got Status " . $response->getStatusCode() . " And content ". $response->getBody());
+            return $this->errorInSendRemoteServerSendData($remoteServerSendData);
         }
-        $this->logger->info('Posted to ActivityPub inbox', ['url'=>$url, 'data'=>json_encode($data)]);
     }
 }

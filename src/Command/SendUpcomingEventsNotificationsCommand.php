@@ -4,7 +4,9 @@ namespace App\Command;
 use App\Entity\AccountLocal;
 use App\Entity\EmailUserUpcomingEventsForAccount;
 use App\Entity\EventOccurrence;
+use App\Entity\Note;
 use App\Entity\User;
+use App\Library;
 use App\Repository\AccountLocalRepository;
 use App\RepositoryQuery\EventRepositoryQuery;
 use App\Service\AccountRemote\AccountRemoteService;
@@ -156,7 +158,15 @@ class SendUpcomingEventsNotificationsCommand extends Command
                 $url = $this->container->getParameter('app.instance_url') . $this->router->generate('account_public_event', ['account_username'=>$accountLocal->getUsername()]);
                 $msg .= '<p/>More at: <a href="'.$url.'">'.$url.'</a>';
 
-                $this->accountRemoteService->sendPublicNote($accountLocal, $msg);
+                # We save the note *before* checking if there is anyone to send it to.
+                # Even if there isn't, it will still be in the outbox for people to read later.
+                $note = new Note();
+                $note->setAccount($accountLocal->getAccount());
+                $note->setContent($msg);
+                $doctrine->getManager()->persist($note);
+                $doctrine->getManager()->flush();
+
+                $this->accountRemoteService->sendPublicNote($note);
             }
         }
     }

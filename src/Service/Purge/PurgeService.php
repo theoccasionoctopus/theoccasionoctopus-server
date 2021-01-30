@@ -63,12 +63,15 @@ class PurgeService
                 ' DELETE FROM event WHERE account_id=:account_id',
                 // Tags
                 ' DELETE FROM tag WHERE account_id=:account_id',
+                // Note
+                ' DELETE FROM note WHERE account_id=:account_id',
                 // Follows
                 ' DELETE FROM account_follows_account WHERE account_id = :account_id OR follows_account_id = :account_id',
                 // API Keys
                 ' DELETE FROM api_access_token WHERE account_id=:account_id',
                 // Activity Pub
-                ' DELETE FROM tag WHERE account_id=:account_id',
+                ' DELETE FROM inbox_submission WHERE account_id=:account_id',
+                ' DELETE FROM remote_server_send_data WHERE from_account_id=:account_id OR to_account_id=:account_id ',
                 // User links
                 ' DELETE FROM email_user_upcoming_events_for_account WHERE account_id=:account_id',
                 ' DELETE FROM user_manage_account WHERE account_id=:account_id',
