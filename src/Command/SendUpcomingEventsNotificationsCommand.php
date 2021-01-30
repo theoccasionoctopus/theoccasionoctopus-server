@@ -150,7 +150,7 @@ class SendUpcomingEventsNotificationsCommand extends Command
                 $msg = "Events today: <p/><p/>";
                 /** @var EventOccurrence $eventOccurrence */
                 foreach ($eventOccurrences as $eventOccurrence) {
-                    $msg .= $eventOccurrence->getEvent()->getTitle()."<p/>";
+                    $msg .= $eventOccurrence->getEvent()->getTitle()."<br/>";
                 }
                 $url = $this->container->getParameter('app.instance_url') . $this->router->generate('account_public_event', ['account_username'=>$accountLocal->getUsername()]);
                 $msg .= '<p/>More at: <a href="'.$url.'">'.$url.'</a>';
