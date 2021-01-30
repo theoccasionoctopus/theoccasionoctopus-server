@@ -35,6 +35,7 @@ class AccountEditSettingsType extends AbstractType
             ])
             ->add('description', TextAreaType::class, [
                 'label'=>'Description',
+                'required' => false,
             ])
             ->add('default_privacy', ChoiceType::class, [
                 'expanded'=>true,
