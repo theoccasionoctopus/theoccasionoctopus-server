@@ -142,6 +142,7 @@ class SendUpcomingEventsNotificationsCommand extends Command
             $eventRepositoryBuilder->setTo($end);
             $eventRepositoryBuilder->setShowCancelled(false);
             $eventRepositoryBuilder->setShowDeleted(false);
+            $eventRepositoryBuilder->setPublicOnly();
             $eventOccurrences = $eventRepositoryBuilder->getEventOccurrences();
 
             if ($eventOccurrences) {
