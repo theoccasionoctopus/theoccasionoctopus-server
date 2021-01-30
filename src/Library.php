@@ -138,7 +138,7 @@ class Library
 
     public static function parseURLToSSLAndHost($url)
     {
-        $url_bits = parse_url($url);
+        $url_bits = parse_url(trim($url));
         if (!$url_bits) {
             throw new Exception("Are you sure this is a URL? " . $url);
         }
