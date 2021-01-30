@@ -245,6 +245,36 @@ class AccountRemoteService
         );
     }
 
+
+    public function sendPublicNote(AccountLocal $fromAccountLocal, $content)
+    {
+
+        // TODO should save this somewhere and put in outbox too.
+        $data = [
+            "@context"=> "https://www.w3.org/ns/activitystreams",
+            "type"=> "Create",
+            "id"=> $this->params->get('app.instance_url') . '/activitypubactivity/notecreate/'.$fromAccountLocal->getAccount()->getId().'/'.time(),
+            "to"=> [],
+            "actor"=> $this->params->get('app.instance_url') . $this->router->generate('account_public', ['account_username'=>$fromAccountLocal->getUsername()]),
+            "object"=>[
+                "id"=> $this->params->get('app.instance_url') . '/activitypubactivity/note/'.$fromAccountLocal->getAccount()->getId().'/'.time(),
+                "type"=> "Note",
+                "attributedTo"=> $this->params->get('app.instance_url') . $this->router->generate('account_public', ['account_username'=>$fromAccountLocal->getUsername()]),
+                "content"=> $content,
+                "@context"=> "https://www.w3.org/ns/activitystreams",
+            ],
+        ] ;
+
+        /** @var Account $remoteFollowerAccount */
+        foreach ($this->entityManager->getRepository(Account::class)->findRemoteFollowers($fromAccountLocal->getAccount()) as $remoteFollowerAccount) {
+            $data['to'] = [
+                $remoteFollowerAccount->getAccountRemote()->getActorDataId(),
+                "https://www.w3.org/ns/activitystreams#Public",
+            ];
+            $this->postToInbox($fromAccountLocal, $remoteFollowerAccount->getAccountRemote(), $data);
+        }
+    }
+
     public function postToInbox(AccountLocal $fromAccountLocal, AccountRemote $toAccount, $data)
     {
         if (!$toAccount->getActorData() || !array_key_exists('inbox', $toAccount->getActorData())) {

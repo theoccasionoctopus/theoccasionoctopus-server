@@ -2,7 +2,6 @@
 
 namespace App\Controller;
 
-use App\Command\SendEmailUpcomingEventsCommand;
 use App\Entity\EmailUserUpcomingEventsForAccount;
 use App\Entity\Import;
 use App\Entity\User;

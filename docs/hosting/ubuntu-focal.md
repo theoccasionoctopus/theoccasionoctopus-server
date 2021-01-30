@@ -221,7 +221,7 @@ Add the following entries:
 0 2 * * * cd /home/occ_oct/software; ./bin/console theocasionoctupus:download-import-content
 0 3 * * * cd /home/occ_oct/software; ./bin/console theocasionoctupus:download-remote-user-content
 0 4 * * * cd /home/occ_oct/software; ./bin/console theocasionoctupus:update-sourced-events-command
-0 5 * * * cd /home/occ_oct/software; ./bin/console theocasionoctupus:send-email-upcoming-events
+0 5 * * * cd /home/occ_oct/software; ./bin/console theocasionoctupus:send-upcoming-events-notifications
 ```
 
 ### Congratulations! 
