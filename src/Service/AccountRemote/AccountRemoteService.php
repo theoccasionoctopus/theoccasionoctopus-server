@@ -108,7 +108,11 @@ class AccountRemoteService
         // Now save.
         $account = new Account();
         $account->setId($isOccasionOctopus ? $dataWebFinger['occasion-octopus-id'] : Library::GUID());
-        $account->setTitle($isOccasionOctopus ? $dataWebFinger['occasion-octopus-title'] : $dataActor['name']);
+        if ($isOccasionOctopus) {
+            $account->setTitle($dataWebFinger['occasion-octopus-title']);
+        } else {
+            $account->setTitle($dataActor['name'] ? $dataActor['name'] : $username);
+        }
 
         $accountRemote = new AccountRemote();
         $accountRemote->setAccount($account);
