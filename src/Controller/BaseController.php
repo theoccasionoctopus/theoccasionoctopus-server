@@ -76,7 +76,11 @@ abstract class BaseController extends AbstractController
     {
         $id_and_url = $this->getParameter('app.instance_url').$this->generateUrl('account_public', ['account_username'=>$account->getAccountLocal()->getUsername()]);
         $out = [
-            '@context'=>'https://www.w3.org/ns/activitystreams',
+            '@context'=>[
+                'https://www.w3.org/ns/activitystreams',
+                # For publicKey
+                'https://w3id.org/security/v1'
+            ],
             // TODO an type of Group or Organization may be just as good - have a setting per account? https://www.w3.org/TR/activitystreams-vocabulary/#actor-types
             'type'=>'Person',
             'id'=>$id_and_url,
