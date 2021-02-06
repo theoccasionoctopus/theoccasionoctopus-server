@@ -336,7 +336,7 @@ class AccountRemoteService
                 $remoteServerSendData->getData()['actor'].'#main-key' => $remoteServerSendData->getFromAccount()->getAccountLocal()->getKeyPrivate()
             ],
             'algorithm' => 'rsa-sha256',
-            'headers' => ['(request-target)', 'date'],
+            'headers' => ['(request-target)', 'host', 'date'],
         ]);
         $psrRequest = $context->signer()->signWithDigest($psrRequest);
 
