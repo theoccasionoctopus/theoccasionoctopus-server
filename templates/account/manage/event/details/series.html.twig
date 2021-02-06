@@ -32,12 +32,14 @@
             <tr>
                 <th>Start</th>
                 <th>End</th>
+                <th>Timezone</th>
                 <th></th>
             </tr>
             {%  for eventOccurrence in eventOccurrences %}
                 <tr>
-                    <td>{{ eventOccurrence.start(userTimeZone)|date("D F jS Y g:ia" ) }}</td>
-                    <td>{{ eventOccurrence.end(userTimeZone)|date("D F jS Y g:ia")  }}</td>
+                    <td>{{ eventOccurrence.start(userTimeZone)|date("D F jS Y g:ia" , userTimeZone) }}</td>
+                    <td>{{ eventOccurrence.end(userTimeZone)|date("D F jS Y g:ia", userTimeZone)  }}</td>
+                    <td>{{  userTimeZone }}</td>
                     <td>
                         <a class="button"
                            href="{{ path('account_manage_event_show_event',{'account_username':account.username,'event_id': eventOccurrence.event.id }) }}?startutc={{ eventOccurrence.start('UTC')|date("Y-m-d-H-i-s") }}">
