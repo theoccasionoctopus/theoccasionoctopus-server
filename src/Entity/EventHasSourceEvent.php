@@ -29,6 +29,13 @@ class EventHasSourceEvent
      */
     private $sourceEvent;
 
+
+    /**
+     * @ORM\Column(name="update_all", type="boolean", nullable=false, options={"default" : True})
+     */
+    private $updateAll = true;
+
+
     /**
      * @return Event
      */
@@ -59,5 +66,21 @@ class EventHasSourceEvent
     public function setSourceEvent(Event $sourceEvent)
     {
         $this->sourceEvent = $sourceEvent;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getUpdateAll()
+    {
+        return $this->updateAll;
+    }
+
+    /**
+     * @param mixed $updateAll
+     */
+    public function setUpdateAll($updateAll)
+    {
+        $this->updateAll = $updateAll;
     }
 }

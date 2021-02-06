@@ -134,6 +134,10 @@ account_manage_event_edit_event_delete:
     path: /a/{account_username}/manage/event/details/{event_id}/edit/delete
     controller: App\Controller\AccountManageEventDetailsController::indexEditDelete
 
+account_manage_event_edit_event_source:
+    path: /a/{account_username}/manage/event/details/{event_id}/edit/source
+    controller: App\Controller\AccountManageEventDetailsController::indexEditSource
+
 
 # Manage Account - discover
 account_manage_discover_event:

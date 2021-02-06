@@ -40,7 +40,8 @@ class HistoryWorker
         return count($this->events) ||
             count($this->tags) ||
             count($this->eventHasTags) ||
-            count($this->eventHasImports);
+            count($this->eventHasImports) ||
+            count($this->eventHasSourceEvents);
     }
 
     public function getHistory()

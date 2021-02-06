@@ -12,6 +12,7 @@ use App\Entity\TimeZone;
 use App\Form\EditTagsType;
 use App\Form\EventEditDetailsType;
 use App\Service\HistoryWorker\HistoryWorkerService;
+use App\Service\UpdateSourcedEvent\UpdateSourcedEventService;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
@@ -61,6 +62,7 @@ class AccountManageEventDetailsController extends AccountManageController
             'eventHasImports' => $eventHasImports,
             'eventHasSourceEvents' => $eventHasSourceEvents,
             'eventOccurrence' => $eventOccurrence,
+            'canCancelOrDelete' => in_array('cancelled', $this->event->getEditableFieldsList()),
         ]));
     }
 
@@ -222,6 +224,12 @@ class AccountManageEventDetailsController extends AccountManageController
     {
         $this->buildEvent($account_username, $event_id, $request);
 
+        if (!in_array('cancelled', $this->event->getEditableFieldsList())) {
+            return $this->render('account/manage/event/details/editCancel.notAllowed.html.twig', $this->getTemplateVariables([
+                'account'=> $this->account,
+                'event' => $this->event,
+            ]));
+        }
 
         # TODO check below is POST too, and CSFR
         if ($request->get('action') == 'cancel') {
@@ -250,6 +258,12 @@ class AccountManageEventDetailsController extends AccountManageController
     {
         $this->buildEvent($account_username, $event_id, $request);
 
+        if (!in_array('deleted', $this->event->getEditableFieldsList())) {
+            return $this->render('account/manage/event/details/editDelete.notAllowed.html.twig', $this->getTemplateVariables([
+                'account'=> $this->account,
+                'event' => $this->event,
+            ]));
+        }
 
         # @TODO check below is POST too,
         if ($request->get('action') == 'delete') {
@@ -271,6 +285,60 @@ class AccountManageEventDetailsController extends AccountManageController
         return $this->render('account/manage/event/details/editDelete.html.twig', $this->getTemplateVariables([
             'account'=> $this->account,
             'event' => $this->event,
+        ]));
+    }
+
+    public function indexEditSource($account_username, $event_id, Request $request, HistoryWorkerService $historyWorkerService, UpdateSourcedEventService $updateSourcedEventService)
+    {
+        $this->buildEvent($account_username, $event_id, $request);
+
+        $doctrine = $this->getDoctrine();
+        $eventHasSourceEvents = $doctrine->getRepository(EventHasSourceEvent::class)->findAll();
+        if (!$eventHasSourceEvents) {
+            throw new  NotFoundHttpException('Not found');
+        }
+        $eventHasSourceEvent = $eventHasSourceEvents[0];
+
+        # @TODO check below is POST too,
+        if ($request->get('action') == 'stopUpdates') {
+            $eventHasSourceEvent->setUpdateAll(false);
+
+            // Save
+            $historyWorker = $historyWorkerService->getHistoryWorker($this->account, $this->get('security.token_storage')->getToken()->getUser());
+            $historyWorker->addEventHasSourceEvent($eventHasSourceEvent);
+            $historyWorkerService->persistHistoryWorker($historyWorker);
+
+            // redirect
+            $this->addFlash(
+                'success',
+                'This event will no longer be updated for you'
+            );
+            return $this->redirectToRoute('account_manage_event_show_event', ['account_username' => $this->account->getUsername(),'event_id' => $this->event->getId() ]);
+        }
+        # @TODO check below is POST too,
+        if ($request->get('action') == 'startUpdates') {
+            $eventHasSourceEvent->setUpdateAll(true);
+
+            // Save
+            $historyWorker = $historyWorkerService->getHistoryWorker($this->account, $this->get('security.token_storage')->getToken()->getUser());
+            $historyWorker->addEventHasSourceEvent($eventHasSourceEvent);
+            $historyWorkerService->persistHistoryWorker($historyWorker);
+
+            // Update now (not via message), so that when user goes to index page it's already up to date.
+            $updateSourcedEventService->update($eventHasSourceEvent);
+
+            // redirect
+            $this->addFlash(
+                'success',
+                'This event will now be updated for you'
+            );
+            return $this->redirectToRoute('account_manage_event_show_event', ['account_username' => $this->account->getUsername(),'event_id' => $this->event->getId() ]);
+        }
+
+        return $this->render('account/manage/event/details/editSource.html.twig', $this->getTemplateVariables([
+            'account'=> $this->account,
+            'event' => $this->event,
+            'eventHasSourceEvent' => $eventHasSourceEvent,
         ]));
     }
 }

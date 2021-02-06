@@ -34,9 +34,7 @@ class UpdateSourcedEventService
 
     public function update(EventHasSourceEvent $eventHasSourceEvent)
     {
-
-        # TODO This should be some check of whether updates from the source are still wanted
-        if (true) {
+        if ($eventHasSourceEvent->getUpdateAll()) {
 
             # TODO if event has passed, don't bother?
             if ($eventHasSourceEvent->getEvent()->copyFromEvent($eventHasSourceEvent->getSourceEvent())) {

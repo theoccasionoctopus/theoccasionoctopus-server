@@ -2,6 +2,7 @@
 
 namespace App\Service\HistoryWorker;
 
+use App\Entity\HistoryHasEventHasSourceEvent;
 use App\Entity\HistoryHasEventHasTag;
 use App\Entity\HistoryHasTag;
 use App\Entity\User;
@@ -89,9 +90,12 @@ class HistoryWorkerService
         foreach ($historyWorker->getEventHasSourceEvents() as $eventHasSourceEvent) {
             $this->entityManager->persist($eventHasSourceEvent);
 
-            // We don't currently save anything to link this change to this history, because we don't think we need that information.
-            // This may change in future.
-            // But in the mean time, we do get other code to pass objects in here so they can be written in the same database transaction as any new events.
+            $historyHasEventHasSourceEvent = new HistoryHasEventHasSourceEvent();
+            $historyHasEventHasSourceEvent->setEvent($eventHasSourceEvent->getEvent());
+            $historyHasEventHasSourceEvent->setSourceEvent($eventHasSourceEvent->getSourceEvent());
+            $historyHasEventHasSourceEvent->setHistory($history);
+
+            $this->entityManager->persist($historyHasEventHasSourceEvent);
         }
 
         foreach ($historyWorker->getEventHasImports() as $eventHasImport) {

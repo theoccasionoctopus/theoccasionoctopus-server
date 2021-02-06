@@ -51,6 +51,7 @@ class PurgeService
                 // History
                 ' DELETE FROM history_has_event WHERE history_id IN (SELECT id FROM history WHERE account_id=:account_id)',
                 ' DELETE FROM history_has_event_has_tag WHERE history_id IN (SELECT id FROM history WHERE account_id=:account_id)',
+                ' DELETE FROM history_has_event_has_source_event WHERE event_id IN (SELECT id FROM event WHERE account_id=:account_id) OR source_event_id IN (SELECT id FROM event WHERE account_id=:account_id)',
                 ' DELETE FROM history_has_tag WHERE history_id IN (SELECT id FROM history WHERE account_id=:account_id)',
                 ' DELETE FROM history WHERE account_id=:account_id',
                 // Import
@@ -96,10 +97,11 @@ class PurgeService
                 // History
                 ' DELETE FROM history_has_event WHERE event_id = :event_id',
                 ' DELETE FROM history_has_event_has_tag WHERE event_id = :event_id',
+                ' DELETE FROM history_has_event_has_source_event WHERE event_id = :event_id OR source_event_id = :event_id',
                 // Import
                 ' DELETE FROM event_has_import WHERE event_id = :event_id',
                 // Event
-                ' DELETE FROM event_has_source_event WHERE event_id = :event_id',
+                ' DELETE FROM event_has_source_event WHERE event_id = :event_id OR source_event_id = :event_id',
                 ' DELETE FROM event_has_tag WHERE event_id = :event_id',
                 ' DELETE FROM event_occurrence WHERE event_id = :event_id',
                 ' DELETE FROM event WHERE id = :event_id',

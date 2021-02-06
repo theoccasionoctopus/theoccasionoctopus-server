@@ -1,0 +1,19 @@
+{%  extends "account/manage/base.html.twig" %}
+
+{% block body %}
+    <div class="content">
+        {% if eventHasSourceEvent.updateAll %}
+            <form method="post">
+                {#  @TODO Add CSFR  #}
+                <input type="hidden" name="action" value="stopUpdates">
+                <input type="submit" value="Stop getting updates from this event">
+            </form>
+        {% else %}
+            <form method="post">
+                {#  @TODO Add CSFR  #}
+                <input type="hidden" name="action" value="startUpdates">
+                <input type="submit" value="Start getting updates from this event">
+            </form>
+        {% endif %}
+    </div>
+{% endblock %}

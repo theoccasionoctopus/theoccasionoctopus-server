@@ -662,10 +662,10 @@ class Event
         }
 
 
-        // Is this an event sourced?
+        // Is this an event sourced from elsewhere, with updates still turned on?
         if ($this->eventHasSources) {
             foreach ($this->eventHasSources as $eventHasSource) {
-                if (true) { # TODO This should be some check of whether updates from the source are still wanted
+                if ($eventHasSource->getUpdateAll()) {
                     return self::EDITABLE_FIELDS_MODE_SOURCED;
                 }
             }

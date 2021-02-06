@@ -97,7 +97,7 @@
                     This event was taken from account
                     {%  if eventHasSourceEvent.sourceEvent.account.getAccountLocal() %}
                         <i class="fas fa-user"></i> {{  eventHasSourceEvent.sourceEvent.account.title }} ({{  eventHasSourceEvent.sourceEvent.account.accountLocal.username }})
-                        {%  if eventHasSourceEvent.sourceEvent.privacy == 0 %}
+                        {%  if eventHasSourceEvent.sourceEvent.privacy == 0 %}{# TODO need to see if event is follower only, and if can see #}
                             <a href="{{ path('account_public_event_show_event',{'account_username':eventHasSourceEvent.sourceEvent.account.accountLocal.username,'event_id':eventHasSourceEvent.sourceEvent.id}) }}" class="button" role="button">View</a>
                         {%  else %}
                             <a href="{{ path('account_public',{'account_username':eventHasSourceEvent.sourceEvent.account.accountLocal.username}) }}" class="button" role="button">View</a>
@@ -105,6 +105,12 @@
                     {%  else %}
                         TODO A REMOTE ACCOUNT
                     {%  endif %}
+                    {%  if eventHasSourceEvent.updateAll %}
+                        And it will get updates from there automatically.
+                    {%  else %}
+                        However it now no longer gets updates from that event.
+                    {%  endif %}
+                    <a class="button" href="{{ path('account_manage_event_edit_event_source',{'account_username':account.username,'event_id': event.id }) }}">Edit link</a>
                 </p>
 
             {% endfor %}
@@ -114,11 +120,15 @@
         <a class="button" href="{{ path('account_manage_event_edit_event_details',{'account_username':account.username,'event_id': event.id }) }}">Edit Details</a>
         <a class="button" href="{{ path('account_manage_event_edit_event_tags',{'account_username':account.username,'event_id': event.id }) }}">Edit Tags</a>
 
-        {%  if event.deleted %}
-        {%  elseif event.cancelled %}
-            <a class="button" href="{{ path('account_manage_event_edit_event_delete',{'account_username':account.username,'event_id': event.id }) }}">Delete Event</a>
-        {%  else %}
-            <a class="button" href="{{ path('account_manage_event_edit_event_cancel',{'account_username':account.username,'event_id': event.id }) }}">Cancel/Delete Event</a>
+        {%  if canCancelOrDelete %}
+            {%  if event.deleted %}
+                {# TODO an undelete action #}
+            {%  elseif event.cancelled %}
+                <a class="button" href="{{ path('account_manage_event_edit_event_delete',{'account_username':account.username,'event_id': event.id }) }}">Delete Event</a>
+                {# TODO an uncancel action #}
+            {%  else %}
+                <a class="button" href="{{ path('account_manage_event_edit_event_cancel',{'account_username':account.username,'event_id': event.id }) }}">Cancel/Delete Event</a>
+            {%  endif %}
         {%  endif %}
 
     </div>
