@@ -45,5 +45,8 @@ class ProcessInboxSubmissionCreateUpdateEvent extends ProcessInboxSubmissionBase
             $apEvent = new APEvent($inboxSubmission->getData()['object']);
             $this->remoteAccountContentService->updateEventWithActivityPubServerData($accountRemote, $apEvent);
         }
+
+        $this->markInboxSubmissionProcessed($inboxSubmission);
+        $this->entityManager->flush();
     }
 }
