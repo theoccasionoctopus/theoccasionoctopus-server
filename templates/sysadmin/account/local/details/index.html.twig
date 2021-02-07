@@ -135,6 +135,8 @@
 
         <a href="{{ path('account_public',{'account_username':account.username}) }}" class="button" role="button">View Public</a>
 
+        <a href="{{ path('sysadmin_account_local_show_account_activitypub_sent',{'account_id':account.id}) }}" class="button" role="button">ActivityPub - messages sent</a>
+        <a href="{{ path('sysadmin_account_local_show_account_activitypub_received',{'account_id':account.id}) }}" class="button" role="button">ActivityPub - messages received</a>
     </div>
 
 {% endblock %}

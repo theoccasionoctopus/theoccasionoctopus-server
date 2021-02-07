@@ -324,6 +324,14 @@ sysadmin_account_local_show_account:
     path: /sysadmin/account/local/{account_id}
     controller: App\Controller\SysAdminAccountLocalShowController::index
 
+sysadmin_account_local_show_account_activitypub_sent:
+    path: /sysadmin/account/local/{account_id}/ap/sent
+    controller: App\Controller\SysAdminAccountLocalShowController::apSent
+
+sysadmin_account_local_show_account_activitypub_received:
+    path: /sysadmin/account/local/{account_id}/ap/received
+    controller: App\Controller\SysAdminAccountLocalShowController::apReceived
+
 sysadmin_account_remote:
     path: /sysadmin/account/remote
     controller: App\Controller\SysAdminAccountListController::remote

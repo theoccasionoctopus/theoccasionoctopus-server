@@ -1,0 +1,44 @@
+{%  extends "sysadmin/base.html.twig" %}
+
+{% block body %}
+
+    
+    <div class="content">
+        <h3>Messages Sent</h3>
+    </div>
+
+    {%  if messages %}
+        <table class="table">
+            <tr>
+                <th>Id</th>
+                <th>To</th>
+                <th>Created</th>
+                <th>Succeed</th>
+                <th>Failed Count</th>
+            </tr>
+            {% for message in messages %}
+                <tr>
+                    <td>{{  message.id }}</td>
+                    <td>
+                        {{  message.toAccount.title }}
+                        <a href="{{ path('sysadmin_account_remote_show_account',{'account_id':message.toAccount.id}) }}" class="button" role="button">Sysadmin</a>
+                    </td>
+                    <td>{{  message.created|date("D F jS Y g:ia", userTimeZone)  }}</td>
+                    <td>{%  if message.succeeded %}{{  message.succeeded|date("D F jS Y g:ia", userTimeZone)  }}{%  endif %}</td>
+                    <td>{{  message.failedCount }}</td>
+                </tr>
+                <tr>
+                    <td colspan="5">
+                        <pre>{{  message.dataAsString }}</pre>
+                    </td>
+                </tr>
+            {%  endfor %}
+        </table>
+    {% else %}
+        <div class="content">
+            There are no messages for this user.
+        </div>
+    {%  endif %}
+
+
+{% endblock %}

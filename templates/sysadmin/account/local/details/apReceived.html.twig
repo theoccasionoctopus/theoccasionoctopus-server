@@ -1,0 +1,41 @@
+{%  extends "sysadmin/base.html.twig" %}
+
+{% block body %}
+
+
+    <div class="content">
+        <h3>Messages Received</h3>
+    </div>
+
+    {%  if messages %}
+        <table class="table">
+            <tr>
+                <th>Id</th>
+                <th>IP</th>
+                <th>UserAgent</th>
+                <th>Created</th>
+                <th>Processed</th>
+            </tr>
+            {% for message in messages %}
+                <tr>
+                    <td>{{  message.id }}</td>
+                    <td>{{  message.ip }}</td>
+                    <td>{{  message.useragent }}</td>
+                    <td>{{  message.created|date("D F jS Y g:ia", userTimeZone) }}</td>
+                    <td>{%  if message.processed %}{{  message.processed|date("D F jS Y g:ia", userTimeZone)  }}{%  endif %}</td>
+                </tr>
+                <tr>
+                    <td colspan="5">
+                        <pre>{{  message.dataAsString }}</pre>
+                    </td>
+                </tr>
+            {%  endfor %}
+        </table>
+    {% else %}
+        <div class="content">
+            There are no messages for this user.
+        </div>
+    {%  endif %}
+
+
+{% endblock %}

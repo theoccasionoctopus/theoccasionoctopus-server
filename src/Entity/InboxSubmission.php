@@ -103,6 +103,14 @@ class InboxSubmission
     }
 
     /**
+     * @return mixed
+     */
+    public function getDataAsString()
+    {
+        return json_encode($this->data, JSON_PRETTY_PRINT);
+    }
+
+    /**
      * @param mixed $data
      */
     public function setData($data)
