@@ -98,12 +98,7 @@ class APIIndexController extends BaseController
                 [
                     'rel'=>'self',
                     'type'=>'application/activity+json',
-                    'href'=>$this->getParameter('app.instance_url').$this->generateUrl('account_activity_streams_index', ['account_id'=>$account->getId()]),
-                ],
-                [
-                    'rel'=>'self',
-                    'type'=>'application/activity+json',
-                    'href'=>$this->getParameter('app.instance_url').$this->generateUrl('account_public', ['account_username'=>$accountLocal->getUsername()]),
+                    'href'=>$this->getParameter('app.instance_url').$this->generateUrl('account_id_public', ['account_id'=>$account->getId()]),
                 ],
             ],
             'occasion-octopus-id'=> $account->getId(),

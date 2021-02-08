@@ -200,13 +200,7 @@ class AccountRemoteService
         $this->postToInbox(
             $account,
             $wantsToFollowAccount,
-            [
-                "id"=> $this->params->get('app.instance_url') . '/activitypubactivity/followrequest/'.$account->getAccount()->getId().'/'.urlencode($wantsToFollowAccount->getActorDataId()),
-                "type"=> "Follow",
-                "actor"=> $this->params->get('app.instance_url') . $this->router->generate('account_public', ['account_username'=>$account->getUsername()]),
-                "object"=> $wantsToFollowAccount->getActorDataId(),
-                "@context"=> "https://www.w3.org/ns/activitystreams",
-            ]
+            $this->activityPubDataService->generateFollowRequest($account, $wantsToFollowAccount)
         );
     }
 
@@ -215,13 +209,7 @@ class AccountRemoteService
         $this->postToInbox(
             $wantsToFollowAccount,
             $account,
-            [
-                "id"=> $this->params->get('app.instance_url') . '/activitypubactivity/followrequestapproved/'.$wantsToFollowAccount->getAccount()->getId().'/'.urlencode($account->getActorDataId()),
-                "type"=> "Accept",
-                "actor"=> $this->params->get('app.instance_url') . $this->router->generate('account_public', ['account_username'=>$wantsToFollowAccount->getUsername()]),
-                "object"=> $objectData,
-                "@context"=> "https://www.w3.org/ns/activitystreams",
-            ]
+            $this->activityPubDataService->generateFollowAccept($account, $wantsToFollowAccount, $objectData)
         );
     }
 
@@ -230,13 +218,7 @@ class AccountRemoteService
         $this->postToInbox(
             $wantsToFollowAccount,
             $account,
-            [
-                "id"=> $this->params->get('app.instance_url') . '/activitypubactivity/followrequestrejected/'.$wantsToFollowAccount->getAccount()->getId().'/'.urlencode($account->getActorDataId()),
-                "type"=> "Reject",
-                "actor"=> $this->params->get('app.instance_url') . $this->router->generate('account_public', ['account_username'=>$wantsToFollowAccount->getUsername()]),
-                "object"=> $objectData,
-                "@context"=> "https://www.w3.org/ns/activitystreams",
-            ]
+            $this->activityPubDataService->generateFollowReject($account, $wantsToFollowAccount, $objectData)
         );
     }
 
@@ -245,19 +227,7 @@ class AccountRemoteService
         $this->postToInbox(
             $account,
             $wantsToUnfollowAccount,
-            [
-                "id"=> $this->params->get('app.instance_url') . '/activitypubactivity/unfollow/'.$account->getAccount()->getId().'/'.urlencode($wantsToUnfollowAccount->getActorDataId()),
-                "type"=> "Undo",
-                "actor"=> $this->params->get('app.instance_url') . $this->router->generate('account_public', ['account_username'=>$account->getUsername()]),
-                "object"=>[
-                    "id"=> $this->params->get('app.instance_url') . '/activitypubactivity/followrequest/'.$account->getAccount()->getId().'/'.urlencode($wantsToUnfollowAccount->getActorDataId()),
-                    "type"=> "Follow",
-                    "actor"=> $this->params->get('app.instance_url') . $this->router->generate('account_public', ['account_username'=>$account->getUsername()]),
-                    "object"=> $wantsToUnfollowAccount->getActorDataId(),
-                    "@context"=> "https://www.w3.org/ns/activitystreams",
-                ],
-                "@context"=> "https://www.w3.org/ns/activitystreams",
-            ]
+            $this->activityPubDataService->generateUndoFollow($account, $wantsToUnfollowAccount)
         );
     }
 

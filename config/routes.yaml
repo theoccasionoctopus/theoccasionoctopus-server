@@ -14,7 +14,7 @@ directory:
     path: /directory
     controller: App\Controller\IndexController::directory
 
-# Users
+#-------------------------------------------- Users
 login:
     path: /login
     controller: App\Controller\UserController::login
@@ -41,13 +41,81 @@ user_settings_access_token_new:
     path: /user/settings/accessTokens/new
     controller: App\Controller\UserSettingsController::accessTokensNew
 
-# Public Account
+
+
+#-------------------------------------------- Public Account by ID
+
+account_id_public:
+    path: /a.id/{account_id}
+    controller: App\Controller\AccountIdPublicController::indexAccount
+
+# This route is now legacy, and is only left for backwards compatibility
+account_activity_streams_index:
+    path: /activitystreams/{account_id}
+    controller: App\Controller\AccountIdPublicController::indexAccount
+
+account_id_public_activitypub_inbox:
+    path: /a.id/{account_id}/activitypub-inbox
+    controller: App\Controller\AccountIdPublicController::inbox
+
+# This route is now legacy, and is only left for backwards compatibility
+account_activity_streams_inbox:
+    path: /activitystreams/{account_id}/inbox
+    controller: App\Controller\AccountIdPublicController::inbox
+
+account_id_public_activitypub_outbox:
+    path: /a.id/{account_id}/activitypub-outbox
+    controller: App\Controller\AccountIdPublicController::outbox
+
+# This route is now legacy, and is only left for backwards compatibility
+account_activity_streams_outbox:
+    path: /activitystreams/{account_id}/outbox
+    controller: App\Controller\AccountIdPublicController::outbox
+
+account_id_public_activitypub_follow:
+    path: /a.id/{account_id}/follow/{remote_account_id}
+    controller: App\Controller\AccountIdPublicController::follow
+
+account_id_public_activitypub_unfollow:
+    path: /a.id/{account_id}/unfollow/{remote_account_id}
+    controller: App\Controller\AccountIdPublicController::unfollow
+
+account_id_public_activitypub_accept_follow_request:
+    path: /a.id/{account_id}/accept-follow-request/{remote_account_id}
+    controller: App\Controller\AccountIdPublicController::acceptFollow
+
+account_id_public_activitypub_reject_follow_request:
+    path: /a.id/{account_id}/reject-follow-request/{remote_account_id}
+    controller: App\Controller\AccountIdPublicController::rejectFollow
+
+
+#-------------------------------------------- Public Account by ID - Events
+
+account_id_public_event_show_event:
+    path: /a.id/{account_id}/event/details/{event_id}
+    controller: App\Controller\AccountIdPublicEventDetailsController::showEvent
+
+account_id_public_event_create:
+    path: /a.id/{account_id}/create/event/{event_id}
+    controller: App\Controller\AccountIdPublicEventDetailsController::create
+
+#-------------------------------------------- Public Account by ID - Notes
+
+account_id_public_note_show_note:
+    path: /a.id/{account_id}/note/details/{note_id}
+    controller: App\Controller\AccountIdPublicNoteDetailsController::showNote
+
+
+account_id_public_note_create:
+    path: /a.id/{account_id}/create/note/{note_id}
+    controller: App\Controller\AccountIdPublicNoteDetailsController::create
+
+#-------------------------------------------- Public Account
 account_public:
     path: /a/{account_username}
     controller: App\Controller\AccountPublicController::indexAccount
 
-
-# Public Account - Events
+#-------------------------------------------- Public Account - Events
 account_public_event:
     path: /a/{account_username}/event
     controller: App\Controller\AccountPublicEventListController::index
@@ -68,7 +136,7 @@ account_public_event_show_event_series:
     path: /a/{account_username}/event/details/{event_id}/series
     controller: App\Controller\AccountPublicEventDetailsController::showEventSeries
 
-# Public Account - Tags
+#-------------------------------------------- Public Account - Tags
 account_public_tag:
     path: /a/{account_username}/tag
     controller: App\Controller\AccountPublicTagListController::index
@@ -78,7 +146,7 @@ account_public_tag_show_tag:
     controller: App\Controller\AccountPublicTagDetailsController::showTag
 
 
-# Public Account - Profile
+#-------------------------------------------- Public Account - Profile
 account_public_profile:
     path: /a/{account_username}/profile
     controller: App\Controller\AccountPublicProfileController::index
@@ -86,14 +154,14 @@ account_public_profile:
 
 
 
-# Manage Account
+#-------------------------------------------- Manage Account
 account_manage:
     path: /a/{account_username}/manage
     controller: App\Controller\AccountManageController::index
 
 
 
-# Manage Account - events
+#-------------------------------------------- Manage Account - events
 account_manage_event:
     path: /a/{account_username}/manage/event
     controller: App\Controller\AccountManageEventListController::indexManageEvent
@@ -139,7 +207,7 @@ account_manage_event_edit_event_source:
     controller: App\Controller\AccountManageEventDetailsController::indexEditSource
 
 
-# Manage Account - discover
+#-------------------------------------------- Manage Account - discover
 account_manage_discover_event:
     path: /a/{account_username}/manage/discover/event
     controller: App\Controller\AccountManageDiscoverEventListController::indexDiscover
@@ -153,7 +221,7 @@ account_manage_discover_event_add:
     controller: App\Controller\AccountManageDiscoverEventDetailsController::indexEventAdd
 
 
-# Manage Account - tags
+#-------------------------------------------- Manage Account - tags
 account_manage_tag:
     path: /a/{account_username}/manage/tag
     controller: App\Controller\AccountManageTagListController::indexManageTag
@@ -171,7 +239,7 @@ account_manage_tag_edit_tag_details:
     controller: App\Controller\AccountManageTagDetailsController::indexEditDetails
 
 
-# Manage Account - profile
+#-------------------------------------------- Manage Account - profile
 account_manage_profile:
     path: /a/{account_username}/manage/profile
     controller: App\Controller\AccountManageProfileController::indexManageProfile
@@ -187,7 +255,7 @@ account_manage_new_follow_remote:
 
 
 
-# Manage Account - settings
+#-------------------------------------------- Manage Account - settings
 account_manage_settings:
     path: /a/{account_username}/manage/settings
     controller: App\Controller\AccountManageSettingsController::index
@@ -196,13 +264,13 @@ account_manage_settings_edit:
     path: /a/{account_username}/manage/settings/edit
     controller: App\Controller\AccountManageSettingsController::edit
 
-# Manage Account - import
+#-------------------------------------------- Manage Account - import
 account_manage_import_new:
     path: /a/{account_username}/manage/settings/newImport
     controller: App\Controller\AccountManageSettingsController::newImport
 
 
-# Manage Account - history
+#-------------------------------------------- Manage Account - history
 account_manage_history:
     path: /a/{account_username}/manage/history
     controller: App\Controller\AccountManageHistoryListController::index
@@ -210,7 +278,7 @@ account_manage_history:
 
 
 
-# API - Misc
+#-------------------------------------------- API - Misc
 
 occasion_octopus_info_json:
     path: /.well-known/occasion-octopus-instance.json
@@ -220,18 +288,6 @@ webfinger:
     path: /.well-known/webfinger
     controller: App\Controller\APIIndexController::webfinger
 
-account_activity_streams_index:
-    path: /activitystreams/{account_id}
-    controller: App\Controller\APIActivityStreamsController::index
-
-account_activity_streams_inbox:
-    path: /activitystreams/{account_id}/inbox
-    controller: App\Controller\APIActivityStreamsController::inbox
-
-account_activity_streams_outbox:
-    path: /activitystreams/{account_id}/outbox
-    controller: App\Controller\APIActivityStreamsController::outbox
-
 nodeinfo:
     path: /.well-known/nodeinfo
     controller: App\Controller\APIIndexController::nodeinfo
@@ -240,14 +296,14 @@ nodeinfo_2_0:
     path: /nodeinfo/2.0.json
     controller: App\Controller\APIIndexController::nodeinfo20
 
-# API 1
+#-------------------------------------------- API 1
 
 api1_account_profile_json:
     path: /api/v1/account/{account_id}/profile.json
     controller: App\Controller\APIV1AccountProfileController::profileJSON
     methods:  [GET]
 
-# API 1 - Events
+#-------------------------------------------- API 1 - Events
 
 api1_account_events_ical:
     path: /api/v1/account/{account_id}/events.ical
@@ -277,7 +333,7 @@ api1_account_events_new_event_json:
     methods:  [POST]
 
 
-# API 1 - Tags
+#-------------------------------------------- API 1 - Tags
 
 api1_account_tags_json:
     path: /api/v1/account/{account_id}/tags.json
@@ -302,7 +358,7 @@ api1_account_tags_new_tag_json:
     methods:  [POST]
 
 
-# SYSADMIN
+#-------------------------------------------- SYSADMIN
 
 sysadmin_index:
     path: /sysadmin
@@ -341,6 +397,7 @@ sysadmin_account_remote_show_account:
     controller: App\Controller\SysAdminAccountRemoteShowController::index
 
 
+#-------------------------------------------- URL's we don't care about
 # A whole bunch of URL's that are routinely hit on ActivityPub servers that we don't handle - just 404 them to avoid error log entries
 
 not_handled_url_1:

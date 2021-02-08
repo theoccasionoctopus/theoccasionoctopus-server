@@ -6,6 +6,7 @@ use App\Entity\AccountLocal;
 use App\Entity\Tag;
 use App\Entity\User;
 use App\Library;
+use App\Service\ActivityPubData\ActivityPubDataService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -41,12 +42,16 @@ class AccountPublicController extends BaseController
     }
 
 
-    public function indexAccount($account_username, Request $request)
+    public function indexAccount($account_username, Request $request, ActivityPubDataService $activityPubDataService)
     {
         $this->setUpAccountPublic($account_username, $request);
 
-        if ($this->isRequestForAccountActivityStreamsProfileJSON($request)) {
-            return $this->getResponseAccountActivityStreamsProfileJSON($this->account, $request);
+        if ($this->isRequestForActivityPubJSON($request)) {
+            return new Response(
+                json_encode($activityPubDataService->generateActorForAccount($this->account)),
+                Response::HTTP_OK,
+                ['content-type' => 'application/activity+json']
+            );
         }
 
         return $this->render('account/public/index.html.twig', $this->getTemplateVariables([

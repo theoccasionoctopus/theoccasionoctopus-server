@@ -2,11 +2,11 @@
 
 namespace App\Controller;
 
-use App\APIV1\ICalBuilderForAccount;
-use App\Entity\AccountRemote;
+use App\Entity\AccountLocal;
 use App\Entity\InboxSubmission;
 use App\Entity\Note;
-use App\Entity\UserManageAccount;
+use App\Entity\Tag;
+use App\Entity\User;
 use App\FilterParams\EventListFilterParams;
 use App\Library;
 use App\Message\NewInboxSubmissionMessage;
@@ -16,44 +16,63 @@ use App\Service\ActivityPubData\ActivityPubDataService;
 use App\Service\RemoteServer\RemoteServerService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use App\Entity\Account;
 use App\Entity\Event;
-use Symfony\Component\HttpFoundation\Response;
 use Nyholm\Psr7\Factory\Psr17Factory;
 use Symfony\Bridge\PsrHttpMessage\Factory\PsrHttpFactory;
 use Psr\Log\LoggerInterface;
 use HttpSignatures\Context;
 
-class APIActivityStreamsController extends BaseController
+class AccountIdPublicController extends BaseController
 {
 
     /** @var  Account */
     protected $account;
 
-    protected function buildAccount($account_id, Request $request)
+    protected $account_permission_read_only_followers = false;
+
+
+    protected function setUpAccountByIdPublic($account_id, Request $request)
     {
+        $this->setUp($request);
         $doctrine = $this->getDoctrine();
-        $repository = $doctrine->getRepository(Account::class);
-        $this->account = $repository->findOneById($account_id);
+        // Load Account
+        $this->account = $doctrine->getRepository(Account::class)->findOneById($account_id);
         if (!$this->account) {
             throw new  NotFoundHttpException('Not found');
         }
         if (!$this->account->getAccountLocal()) {
-            // API should only be used on local accounts
+            // should only be used on local accounts
             throw new  NotFoundHttpException('Not found');
         }
         if ($this->account->getAccountLocal()->isLocked()) {
             throw new  NotFoundHttpException('Not found');
         }
+        // If user is logged in, do they have special read permissions here?
+        $user= $this->get('security.token_storage')->getToken()->getUser();
+        if ($user && $user instanceof User) {
+            if ($doctrine->getRepository(Account::class)->findAccountsManagedByUserThatFollowsThisAccount($user, $this->account)) {
+                $this->account_permission_read_only_followers = true;
+            }
+        }
     }
 
 
-    public function index($account_id, Request $request)
+    public function indexAccount($account_id, Request $request, ActivityPubDataService $activityPubDataService)
     {
-        $this->buildAccount($account_id, $request);
-        return $this->getResponseAccountActivityStreamsProfileJSON($this->account, $request);
+        $this->setUpAccountByIdPublic($account_id, $request);
+
+        if ($this->isRequestForActivityPubJSON($request)) {
+            return new Response(
+                json_encode($activityPubDataService->generateActorForAccount($this->account), JSON_PRETTY_PRINT),
+                Response::HTTP_OK,
+                ['content-type' => 'application/activity+json']
+            );
+        } else {
+            return $this->redirectToRoute('account_public', ['account_username' => $this->account->getUsername() ]);
+        }
     }
 
     public function inbox(
@@ -72,7 +91,8 @@ class APIActivityStreamsController extends BaseController
                 ['content-type' => 'application/json']
             );
         }
-        $this->buildAccount($account_id, $request);
+        // TODO if read only mode .....
+        $this->setUpAccountByIdPublic($account_id, $request);
 
         // Get data and make entity
         $data = json_decode($request->getContent(), true);
@@ -184,7 +204,7 @@ class APIActivityStreamsController extends BaseController
                 ['content-type' => 'application/json']
             );
         }
-        $this->buildAccount($account_id, $request);
+        $this->setUpAccountByIdPublic($account_id, $request);
 
         $out = [
             "@context"=> ["https://www.w3.org/ns/activitystreams"],
@@ -215,5 +235,29 @@ class APIActivityStreamsController extends BaseController
             Response::HTTP_OK,
             ['content-type' => 'application/activity+json']
         );
+    }
+
+
+    public function follow($account_id, $remote_account_id, Request $request, ActivityPubDataService $activityPubDataService)
+    {
+        throw new  NotFoundHttpException('Not found');
+    }
+
+
+    public function unfollow($account_id, $remote_account_id, Request $request, ActivityPubDataService $activityPubDataService)
+    {
+        throw new  NotFoundHttpException('Not found');
+    }
+
+
+    public function acceptFollow($account_id, $remote_account_id, Request $request, ActivityPubDataService $activityPubDataService)
+    {
+        throw new  NotFoundHttpException('Not found');
+    }
+
+
+    public function rejectFollow($account_id, $remote_account_id, Request $request, ActivityPubDataService $activityPubDataService)
+    {
+        throw new  NotFoundHttpException('Not found');
     }
 }
