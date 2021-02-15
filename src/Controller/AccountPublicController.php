@@ -9,6 +9,7 @@ use App\Library;
 use App\Service\ActivityPubData\ActivityPubDataService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use App\Entity\Account;
 use App\Entity\Event;
@@ -48,7 +49,7 @@ class AccountPublicController extends BaseController
 
         if ($this->isRequestForActivityPubJSON($request)) {
             return new Response(
-                json_encode($activityPubDataService->generateActorForAccount($this->account)),
+                json_encode($activityPubDataService->generateActorForAccount($this->account), JSON_PRETTY_PRINT),
                 Response::HTTP_OK,
                 ['content-type' => 'application/activity+json']
             );
