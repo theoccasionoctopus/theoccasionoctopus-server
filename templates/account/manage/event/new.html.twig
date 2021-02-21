@@ -22,8 +22,16 @@
         {{ form_row(form.timezone) }}
         {{ form_row(form.start_at) }}
         {{ form_row(form.end_at) }}
-        {{ form_row(form.rrule) }}
-        <h4>Share?</h4>
+        <div>
+            <a href="#" onclick="$('#sectionReoccurring').toggle(); $(this).find('.indicator').toggle(); return false;">
+                <span class="indicator"><i class="fas fa-chevron-right"></i></span><span class="indicator" style="display: none;"><i class="fas fa-chevron-down"></i></span>
+                Reoccurring
+            </a>
+        </div>
+        <div id="sectionReoccurring" style="display: none;">
+            {{ form_row(form.rrule) }}
+        </div>
+        <h4>Permissions?</h4>
         {{ form_row(form.privacy) }}
 
         <button type="submit" class="button">Create</button>

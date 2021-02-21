@@ -2,22 +2,45 @@
 
 {% block body %}
 
+
+    <div class="content">
+        <h2>{{  discoverEvent.title }}</h2>
+    </div>
+
+    {%  if discoverEvent.deleted %}
+        <div class="fullWidthNotice">
+            <div class="content">
+                <h3>Deleted!</h3>
+            </div>
+        </div>
+    {%  elseif discoverEvent.cancelled %}
+        <div class="fullWidthNotice">
+            <div class="content">
+                <h3>Cancelled!</h3>
+            </div>
+        </div>
+    {%  endif %}
+
     <div class="content">
 
-        {%  if discoverEvent.deleted %}
-            <h2>DELETED</h2>
-        {%  elseif discoverEvent.cancelled %}
-            <h2>CANCELLED</h2>
-        {%  endif %}
-        <h2>{{  discoverEvent.title }}</h2>
+        <h3>What</h3>
         <p>{{  discoverEvent.description | nl2br | linkify }}</p>
         {%  include '/common/showExtraFields.html.twig' with { 'entity':discoverEvent } %}
         {% if discoverEvent.url %}
-            <p>URL: <a href="{{ discoverEvent.url }}">{{ discoverEvent.url }}</a></p>
+            <p><i class="fas fa-info"></i> Website: <a href="{{ discoverEvent.url }}">{{ discoverEvent.url }}</a></p>
         {% endif %}
         {% if discoverEvent.urlTickets %}
-            <p>Tickets URL: <a href="{{ discoverEvent.urlTickets }}">{{ discoverEvent.urlTickets }}</a></p>
+            <p><i class="fas fa-ticket-alt"></i> Tickets: <a href="{{ discoverEvent.urlTickets }}">{{ discoverEvent.urlTickets }}</a></p>
         {% endif %}
+
+
+        <h3>Where</h3>
+
+        <div>
+            {{ discoverEvent.country.title }}
+        </div>
+
+        <h3>When</h3>
 
         {%  if discoverEvent.timezone.code == userTimeZone %}
             {%  include '/common/eventStartEndLine.html.twig' with { 'start':discoverEvent.start, 'end':discoverEvent.end, 'timezone': discoverEvent.timezone.code } %}
@@ -29,16 +52,24 @@
         <div>
             {{ discoverEvent.timezone.title }}
         </div>
+
+        <h3>Source</h3>
+
+        {%  if discoverEvent.account.AccountLocal %}
+            <i class="fas fa-user"></i> {{  discoverEvent.account.title }} ({{  discoverEvent.account.AccountLocal.username }})
+        {%  elseif discoverEvent.account.AccountRemote %}
+            <i class="fas fa-user"></i> {{  discoverEvent.account.title }} on <i class="fas fa-database"></i> {{ discoverEvent.account.accountRemote.remoteServer.title }}
+        {%  endif %}
+
+
         <div>
-            {{ discoverEvent.country.title }}
+            <a class="button"
+                        href="{{ path('account_manage_discover_event_add',{'account_username':account.username, 'discover_account_id':discoverEvent.account.id,'discover_event_id': discoverEvent.id }) }}"
+
+            >
+                <i class="fas fa-plus"></i> Add to my events
+            </a>
         </div>
-
-        <a class="button"
-                    href="{{ path('account_manage_discover_event_add',{'account_username':account.username, 'discover_account_id':discoverEvent.account.id,'discover_event_id': discoverEvent.id }) }}"
-
-        >
-            Add to my events
-        </a>
 
 
     </div>

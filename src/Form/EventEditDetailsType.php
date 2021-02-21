@@ -35,11 +35,11 @@ class EventEditDetailsType extends AbstractType
         }
 
         if (in_array('url', $options['editableFields'])) {
-            $builder->add('url', UrlType::class, array('required' => false, 'empty_data' => null));
+            $builder->add('url', UrlType::class, array('required' => false, 'empty_data' => null, 'label'=> 'Website'));
         }
 
         if (in_array('url_tickets', $options['editableFields'])) {
-            $builder->add('url_tickets', UrlType::class, array('required' => false, 'empty_data' => null));
+            $builder->add('url_tickets', UrlType::class, array('required' => false, 'empty_data' => null, 'label'=> 'Website for tickets'));
         }
 
         if (in_array('start_end', $options['editableFields'])) {

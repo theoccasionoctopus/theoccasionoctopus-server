@@ -1,8 +1,15 @@
 <div>
-    <time datetime="{{ start|date('c', timezone) }}" itemprop="startDate">{{  start|date("D F jS Y g:ia", timezone) }}</time>
-    to
-    <time datetime="{{ end|date('c', timezone) }}" itemprop="endDate">{{  end|date("D F jS Y g:ia", timezone) }}</time>
+    <i class="fas fa-clock"></i>
+    {% if sameday(start,end,timezone) %}
+        <time datetime="{{ start|date('c', timezone) }}" itemprop="startDate">{{ start|date("D F jS Y g:ia", timezone) }}</time>
+        to
+        <time datetime="{{ end|date('c', timezone) }}" itemprop="endDate">{{ end|date("g:ia", timezone) }}</time>
+    {% else %}
+        <time datetime="{{ start|date('c', timezone) }}" itemprop="startDate">{{ start|date("D F jS Y g:ia", timezone) }}</time>
+        to
+        <time datetime="{{ end|date('c', timezone) }}" itemprop="endDate">{{ end|date("D F jS Y g:ia", timezone) }}</time>
+    {% endif %}
     {% if showTimeZone is defined and showTimeZone %}
         ({{ timezone }})
-    {%  endif %}
+    {% endif %}
 </div>

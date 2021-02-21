@@ -24,17 +24,27 @@
     {%  endif %}
 
     <div class="content">
+        <h3>What</h3>
         <p>{{  event.description | nl2br | linkify }}</p>
         {%  include '/common/showExtraFields.html.twig' with { 'entity':event } %}
         {% if event.url %}
-            <p>URL: <a href="{{ event.url }}">{{ event.url }}</a></p>
+            <p><i class="fas fa-info"></i> Website: <a href="{{ event.url }}">{{ event.url }}</a></p>
         {% endif %}
         {% if event.urlTickets %}
-            <p>Tickets URL: <a href="{{ event.urlTickets }}">{{ event.urlTickets }}</a></p>
+            <p><i class="fas fa-ticket-alt"></i> Tickets: <a href="{{ event.urlTickets }}">{{ event.urlTickets }}</a></p>
         {% endif %}
         {% for tag in currentTags %}
-            <a class="button" href="{{ path('account_manage_tag_show_tag',{'account_username':account.username,'tag_id': tag.id }) }}">Tag: {{  tag.title }}</a>
+            <a class="button" href="{{ path('account_manage_tag_show_tag',{'account_username':account.username,'tag_id': tag.id }) }}"><i class="fas fa-tag"></i> Tag: {{  tag.title }}</a>
         {% endfor %}
+
+        <h3>Where</h3>
+
+        <div>
+            {{ event.country.title }}
+        </div>
+
+        <h3>When</h3>
+
         {%  if eventOccurrence %}
             {%  if event.timezone.code == userTimeZone %}
                 {%  include '/common/eventStartEndLine.html.twig' with { 'start':eventOccurrence.start, 'end':eventOccurrence.end, 'timezone': event.timezone.code } %}
@@ -54,9 +64,17 @@
         <div>
             {{ event.timezone.title }}
         </div>
-        <div>
-            {{ event.country.title }}
-        </div>
+
+        {%  if event.hasReoccurence %}
+
+            <div>
+                <a class="button" href="{{ path('account_manage_event_edit_show_event_series',{'account_username':account.username,'event_id': event.id }) }}">View all occurrences</a>
+            </div>
+
+        {%  endif  %}
+
+        <h3>Permissions</h3>
+
         <p>
             {% if event.privacy == PRIVACY_LEVEL_PRIVATE %}
                 <i class="fas fa-lock"></i> Only You
@@ -66,19 +84,6 @@
                 <i class="fas fa-globe-europe"></i> Public (<a href="{{ path('account_public_event_show_event',{'account_username':account.username,'event_id': event.id }) }}">See public view</a>)
             {%  endif %}
         </p>
-
-
-        {%  if event.hasReoccurence %}
-
-            <h3>Reoccurs</h3>
-
-            <p>This event is a part of a series</p>
-
-            <a class="button" href="{{ path('account_manage_event_edit_show_event_series',{'account_username':account.username,'event_id': event.id }) }}">View Series</a>
-
-
-        {%  endif  %}
-
 
         {%  if eventHasImports or eventHasSourceEvents %}
 
@@ -117,17 +122,17 @@
 
         {%  endif %}
 
-        <a class="button" href="{{ path('account_manage_event_edit_event_details',{'account_username':account.username,'event_id': event.id }) }}">Edit Details</a>
-        <a class="button" href="{{ path('account_manage_event_edit_event_tags',{'account_username':account.username,'event_id': event.id }) }}">Edit Tags</a>
+        <a class="button" href="{{ path('account_manage_event_edit_event_details',{'account_username':account.username,'event_id': event.id }) }}"><i class="fas fa-edit"></i> Edit Details</a>
+        <a class="button" href="{{ path('account_manage_event_edit_event_tags',{'account_username':account.username,'event_id': event.id }) }}"><i class="fas fa-tags"></i> Edit Tags</a>
 
         {%  if canCancelOrDelete %}
             {%  if event.deleted %}
                 {# TODO an undelete action #}
             {%  elseif event.cancelled %}
-                <a class="button" href="{{ path('account_manage_event_edit_event_delete',{'account_username':account.username,'event_id': event.id }) }}">Delete Event</a>
+                <a class="button" href="{{ path('account_manage_event_edit_event_delete',{'account_username':account.username,'event_id': event.id }) }}"><i class="fas fa-trash"></i> Delete Event</a>
                 {# TODO an uncancel action #}
             {%  else %}
-                <a class="button" href="{{ path('account_manage_event_edit_event_cancel',{'account_username':account.username,'event_id': event.id }) }}">Cancel/Delete Event</a>
+                <a class="button" href="{{ path('account_manage_event_edit_event_cancel',{'account_username':account.username,'event_id': event.id }) }}"><i class="fas fa-trash"></i> Cancel/Delete Event</a>
             {%  endif %}
         {%  endif %}
 

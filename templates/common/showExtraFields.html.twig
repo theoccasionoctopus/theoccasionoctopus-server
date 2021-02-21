@@ -1,14 +1,22 @@
 {%  if entity.extraFields %}
-    <table class="table">
-        <tr>
-            <th>Extra Key</th>
-            <th>Value</th>
-        </tr>
-        {% for k,v in entity.extraFields %}
+    <div>
+        <a href="#" onclick="$('#sectionExtraFields').toggle(); $(this).find('.indicator').toggle(); return false;">
+            <span class="indicator"><i class="fas fa-chevron-right"></i></span><span class="indicator" style="display: none;"><i class="fas fa-chevron-down"></i></span>
+            Extra Fields
+        </a>
+    </div>
+    <div id="sectionExtraFields" style="display: none;">
+        <table class="table">
             <tr>
-                <td>{{  k }}</td>
-                <td>{{   v | nl2br | linkify }}</td>
+                <th>Extra Key</th>
+                <th>Value</th>
             </tr>
-        {%  endfor %}
-    </table>
+            {% for k,v in entity.extraFields %}
+                <tr>
+                    <td>{{  k }}</td>
+                    <td>{{   v | nl2br | linkify }}</td>
+                </tr>
+            {%  endfor %}
+        </table>
+    </div>
 {%  endif %}

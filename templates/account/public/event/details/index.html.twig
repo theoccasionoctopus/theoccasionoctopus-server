@@ -31,17 +31,27 @@
         {%  endif %}
 
         <div class="content">
+            <h3>What</h3>
             <p itemprop="description">{{  event.description | nl2br | linkify }}</p>
             {%  include '/common/showExtraFields.html.twig' with { 'entity':event } %}
             {% if event.url %}
-                <p>URL: <a href="{{ event.url }}" itemprop="url">{{ event.url }}</a></p>
+                <p><i class="fas fa-info"></i> Website: <a href="{{ event.url }}" itemprop="url">{{ event.url }}</a></p>
             {% endif %}
             {% if event.urlTickets %}
-                <p>Tickets URL: <a href="{{ event.urlTickets }}">{{ event.urlTickets }}</a></p>
+                <p><i class="fas fa-ticket-alt"></i> Tickets: <a href="{{ event.urlTickets }}">{{ event.urlTickets }}</a></p>
             {% endif %}
             {% for tag in currentTags %}
-                <a class="button" href="{{ path('account_public_tag_show_tag',{'account_username':account.username,'tag_id': tag.id }) }}">Tag: {{  tag.title }}</a>
+                <a class="button" href="{{ path('account_public_tag_show_tag',{'account_username':account.username,'tag_id': tag.id }) }}"><i class="fas fa-tag"></i> Tag: {{  tag.title }}</a>
             {% endfor %}
+
+
+            <h3>Where</h3>
+
+            <div>
+                {{ event.country.title }}
+            </div>
+
+            <h3>When</h3>
 
             {%  if eventOccurrence %}
                 {%  if event.timezone.code == userTimeZone %}
@@ -62,19 +72,13 @@
             <div>
                 {{ event.timezone.title }}
             </div>
-            <div>
-                {{ event.country.title }}
-            </div>
 
 
             {%  if event.hasReoccurence %}
 
-                <h3>Reoccurs</h3>
-
-                <p>This event is a part of a series</p>
-
-                <a class="button" href="{{ path('account_public_event_show_event_series',{'account_username':account.username,'event_id': event.id }) }}">View Series</a>
-
+                <div>
+                    <a class="button" href="{{ path('account_public_event_show_event_series',{'account_username':account.username,'event_id': event.id }) }}">View all occurrences</a>
+                </div>
 
             {%  endif  %}
 
@@ -109,7 +113,7 @@
 
             {%  endif %}
 
-            <a class="button" href="{{ url('api1_account_events_show_event_json',{'account_id':account.id ,'event_id':event.id}) }}">Export JSON</a>
+            <a class="button" href="{{ url('api1_account_events_show_event_json',{'account_id':account.id ,'event_id':event.id}) }}"><i class="fas fa-download"></i> Export JSON</a>
 
 
             {%  for addToAccountData in addedToAccountsUserManages %}
@@ -123,7 +127,7 @@
                     <a class="button"
                        href="{{ path('account_manage_discover_event_add',{'account_username':addToAccountData.account.username, 'discover_account_id':account.id,'discover_event_id': event.id }) }}"
                     >
-                        Add to my events ({{ addToAccountData.account.username }})
+                        <i class="fas fa-plus"></i> Add to my events ({{ addToAccountData.account.username }})
                     </a>
 
                 {%  endif %}

@@ -33,20 +33,28 @@
             {{ form_row(form.description) }}
         {%  endif %}
 
-        {%  if 'extra_fields' in editableFields %}
-            {%  for edit_extra_field in edit_extra_fields %}
-                {{ form_row(form[edit_extra_field]) }}
-            {%  endfor %}
-            {{ form_row(form.new_extra_field_key) }}
-            {{ form_row(form.new_extra_field_value) }}
-        {%  endif %}
-
         {%  if 'url' in editableFields %}
             {{ form_row(form.url) }}
         {%  endif %}
 
         {%  if 'url_tickets' in editableFields %}
             {{ form_row(form.url_tickets) }}
+        {%  endif %}
+
+        {%  if 'extra_fields' in editableFields %}
+            <div>
+                <a href="#" onclick="$('#sectionExtraFields').toggle(); $(this).find('.indicator').toggle(); return false;">
+                    <span class="indicator"><i class="fas fa-chevron-right"></i></span><span class="indicator" style="display: none;"><i class="fas fa-chevron-down"></i></span>
+                    Extra Fields
+                </a>
+            </div>
+            <div id="sectionExtraFields" style="display: none;">
+                {%  for edit_extra_field in edit_extra_fields %}
+                    {{ form_row(form[edit_extra_field]) }}
+                {%  endfor %}
+                {{ form_row(form.new_extra_field_key) }}
+                {{ form_row(form.new_extra_field_value) }}
+            </div>
         {%  endif %}
 
         {%  if 'country' in editableFields %}
@@ -68,11 +76,19 @@
         {%  endif %}
 
         {%  if 'rrule' in editableFields %}
-            {{ form_row(form.rrule) }}
+            <div>
+                <a href="#" onclick="$('#sectionReoccurring').toggle(); $(this).find('.indicator').toggle(); return false;">
+                    <span class="indicator"><i class="fas fa-chevron-right"></i></span><span class="indicator" style="display: none;"><i class="fas fa-chevron-down"></i></span>
+                    Reoccurring
+                </a>
+            </div>
+            <div id="sectionReoccurring" style="display: none;">
+                {{ form_row(form.rrule) }}
+            </div>
         {%  endif %}
 
         {%  if 'privacy' in editableFields %}
-            <h4>Share?</h4>
+            <h4>Permissions?</h4>
             {{ form_row(form.privacy) }}
         {%  endif %}
 

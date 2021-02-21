@@ -49,8 +49,13 @@ services:
         class: App\Service\EventToEventOccurrence\EventToEventOccurrenceService
         public: true
 
-    app.linkifyextenson:
-        class: App\Twig\LinkifyExtension:
+    # If we want to manually register our Twig extensions:
+    #app.linkifyextenson:
+    #    class: App\Twig\LinkifyExtension
+    #    tags: ['twig.extension']
+    #app.samedayextenson:
+    #    class: App\Twig\SameDayExtension
+    #    tags: ['twig.extension']
 
     app.remoteServer:
         class: App\Service\RemoteServer\RemoteServerService

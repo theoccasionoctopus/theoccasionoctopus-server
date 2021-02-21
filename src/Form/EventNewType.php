@@ -28,8 +28,8 @@ class EventNewType extends AbstractType
     {
         $builder->add('title', TextType::class, array('required' => false, 'empty_data' => null));
         $builder->add('description', TextAreaType::class, array('required' => false, 'empty_data' => null));
-        $builder->add('url', UrlType::class, array('required' => false, 'empty_data' => null));
-        $builder->add('url_tickets', UrlType::class, array('required' => false, 'empty_data' => null));
+        $builder->add('url', UrlType::class, array('required' => false, 'empty_data' => null, 'label'=> 'Website'));
+        $builder->add('url_tickets', UrlType::class, array('required' => false, 'empty_data' => null, 'label'=> 'Website for tickets'));
 
         $builder->add('start_at', DateTimeType::class, [
             'label'=>'Start',
