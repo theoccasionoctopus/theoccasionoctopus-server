@@ -62,6 +62,7 @@ class AccountManageController extends BaseController
 
         $repositoryQuery = new EventRepositoryQuery($this->getDoctrine());
         $repositoryQuery->setAccountEvents($this->account);
+        $repositoryQuery->setFromNow();
         $repositoryQuery->setShowDeleted(false);
         $repositoryQuery->setShowCancelled(false);
         $repositoryQuery->setLimit(3);
@@ -69,6 +70,7 @@ class AccountManageController extends BaseController
 
         $discoverRepositoryQuery = new EventRepositoryQuery($this->getDoctrine());
         $discoverRepositoryQuery->setAccountDiscoverEvents($this->account);
+        $discoverRepositoryQuery->setFromNow();
         $discoverRepositoryQuery->setShowDeleted(false);
         $discoverRepositoryQuery->setShowCancelled(false);
         $discoverRepositoryQuery->setLimit(3);

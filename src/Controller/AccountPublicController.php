@@ -63,6 +63,7 @@ class AccountPublicController extends BaseController
         } else {
             $repositoryQuery->setPublicOnly();
         }
+        $repositoryQuery->setFromNow();
         $repositoryQuery->setShowDeleted(false);
         $repositoryQuery->setShowCancelled(false);
         $repositoryQuery->setLimit(3);
