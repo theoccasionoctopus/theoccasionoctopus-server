@@ -70,6 +70,7 @@ class AccountManageController extends BaseController
 
         $discoverRepositoryQuery = new EventRepositoryQuery($this->getDoctrine());
         $discoverRepositoryQuery->setAccountDiscoverEvents($this->account);
+        $discoverRepositoryQuery->setPrivacyLevelOnlyFollowers();
         $discoverRepositoryQuery->setFromNow();
         $discoverRepositoryQuery->setShowDeleted(false);
         $discoverRepositoryQuery->setShowCancelled(false);
