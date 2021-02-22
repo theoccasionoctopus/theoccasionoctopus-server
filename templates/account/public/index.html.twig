@@ -5,20 +5,49 @@
 {% block body %}
 
     <div class="content">
-        <p>Welcome to this account</p>
+        <h3>Welcome to {{  account.title }}</h3>
 
         {%  if account.accountLocal.description %}
-            <h3>About {{  account.title }}</h3>
+            <h3>About</h3>
             {{  account.accountLocal.description|nl2br|linkify }}
         {%  endif %}
 
         <h3>Events</h3>
 
-        <a  class="button" role="button"    href="{{ path('account_public_event',{'account_username':account.username}) }}"><i class="fas fa-calendar"></i> Events</a>
+        {%  if eventOccurrences %}
 
-        <h3>Tags</h3>
+            <div class="highlightList">
 
-        <a  class="button" role="button"    href="{{ path('account_public_tag',{'account_username':account.username}) }}"><i class="fas fa-tags"></i> Tags</a>
+                {% for eventOccurrence in eventOccurrences %}
+
+                    <div class="listItem" itemscope itemtype="http://schema.org/Event">
+
+                        <h4 itemprop="name">{{  eventOccurrence.event.title }}</h4>
+                        <p itemprop="description">{{  eventOccurrence.event.description | u.truncate(event_list_description_truncate_limit, event_list_description_truncate_more, event_list_description_truncate_whole_words) | nl2br }}</p>
+                        {%  include '/common/eventStartEndLine.html.twig' with { 'start':eventOccurrence.start, 'end':eventOccurrence.end, 'timezone': userTimeZone , 'showTimeZone': true } %}
+                        <a class="button" itemprop="url"
+                                {%  if  eventOccurrence.event.hasReoccurence %}
+                                    href="{{ path('account_public_event_show_event',{'account_username':account.username,'event_id': eventOccurrence.event.id }) }}?startutc={{ eventOccurrence.start('UTC')|date("Y-m-d-H-i-s") }}"
+                                {%  else  %}
+                                    href="{{ path('account_public_event_show_event',{'account_username':account.username,'event_id': eventOccurrence.event.id }) }}"
+                                {%  endif %}
+                        >
+                            Details
+                        </a>
+
+                    </div>
+
+                {%  endfor %}
+
+            </div>
+
+            <a class="button" role="button" href="{{ path('account_manage_event',{'account_username':account.username}) }}"><i class="fas fa-calendar"></i> Their Events</a>
+
+        {%  else %}
+
+            <p>There are no upcoming events you can see.</p>
+
+        {%  endif %}
 
     </div>
 

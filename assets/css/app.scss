@@ -263,3 +263,16 @@ form.styled {
     border-radius: 4px;
   }
 }
+
+
+.highlightList {
+  display: flex;
+  .listItem {
+    border: 1px solid black;
+    border-radius: 3px;
+    padding: 5px;
+    margin: 10px 5px;
+    flex-grow: 1;
+    flex-basis: 0;
+  }
+}

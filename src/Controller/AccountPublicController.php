@@ -6,6 +6,7 @@ use App\Entity\AccountLocal;
 use App\Entity\Tag;
 use App\Entity\User;
 use App\Library;
+use App\RepositoryQuery\EventRepositoryQuery;
 use App\Service\ActivityPubData\ActivityPubDataService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -55,8 +56,22 @@ class AccountPublicController extends BaseController
             );
         }
 
+        $repositoryQuery = new EventRepositoryQuery($this->getDoctrine());
+        $repositoryQuery->setAccountEvents($this->account);
+        if ($this->account_permission_read_only_followers) {
+            $repositoryQuery->setPrivacyLevelOnlyFollowers();
+        } else {
+            $repositoryQuery->setPublicOnly();
+        }
+        $repositoryQuery->setShowDeleted(false);
+        $repositoryQuery->setShowCancelled(false);
+        $repositoryQuery->setLimit(3);
+
+        $eventOccurrences = $repositoryQuery->getEventOccurrences();
+
         return $this->render('account/public/index.html.twig', $this->getTemplateVariables([
             'account'=> $this->account,
+            'eventOccurrences' => $eventOccurrences,
         ]));
     }
 }

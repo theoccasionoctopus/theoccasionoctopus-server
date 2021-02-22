@@ -5,6 +5,8 @@ namespace App\Controller;
 use App\Entity\AccountLocal;
 use App\Entity\User;
 use App\Entity\UserManageAccount;
+use App\FilterParams\AccountDiscoverEventListFilterParams;
+use App\RepositoryQuery\EventRepositoryQuery;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use App\Entity\Account;
@@ -58,8 +60,24 @@ class AccountManageController extends BaseController
     {
         $this->setUpAccountManage($account_username, $request);
 
+        $repositoryQuery = new EventRepositoryQuery($this->getDoctrine());
+        $repositoryQuery->setAccountEvents($this->account);
+        $repositoryQuery->setShowDeleted(false);
+        $repositoryQuery->setShowCancelled(false);
+        $repositoryQuery->setLimit(3);
+        $eventOccurrences = $repositoryQuery->getEventOccurrences();
+
+        $discoverRepositoryQuery = new EventRepositoryQuery($this->getDoctrine());
+        $discoverRepositoryQuery->setAccountDiscoverEvents($this->account);
+        $discoverRepositoryQuery->setShowDeleted(false);
+        $discoverRepositoryQuery->setShowCancelled(false);
+        $discoverRepositoryQuery->setLimit(3);
+        $discoverEventOccurrences = $discoverRepositoryQuery->getEventOccurrences();
+
         return $this->render('account/manage/index.html.twig', $this->getTemplateVariables([
             'account'=> $this->account,
+            'eventOccurrences' => $eventOccurrences,
+            'discoverEventOccurrences' => $discoverEventOccurrences,
         ]));
     }
 }
