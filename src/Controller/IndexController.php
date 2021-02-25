@@ -49,15 +49,25 @@ class IndexController extends BaseController
     {
         $this->setUp($request);
 
+        $fromURL = $request->query->get('from_url');
+        if ($fromURL) {
+            // Make sure we only send people to URL's on our host
+            $fromURLBits = parse_url($fromURL);
+            $appURLBits = parse_url($this->getParameter('app.instance_url'));
+            if ($fromURLBits['host'] != $appURLBits['host']) {
+                $fromURL = null;
+            }
+        }
+
+
         // Did user specifically request a time zone?
         if ($request->query->get('set_timezone')) {
             $doctrine = $this->getDoctrine();
             $repository = $doctrine->getRepository(TimeZone::class);
             $userTimeZone = $repository->findOneByCode($request->query->get('set_timezone'));
             if ($userTimeZone) {
-                $response = $this->redirectToRoute('index');
-                $cookie = Cookie::create('timezone', $userTimeZone->getCode());
-                // TODO make the cookie expire later
+                $response = $fromURL ? $this->redirect($fromURL) : $this->redirectToRoute('index');
+                $cookie = Cookie::create('timezone', $userTimeZone->getCode(), strtotime('now + 1 year'));
                 $response->headers->setCookie($cookie);
                 return $response;
             } else {
@@ -73,6 +83,7 @@ class IndexController extends BaseController
 
         return $this->render('index/set_timezone.html.twig', $this->getTemplateVariables([
             'timezones' => $timezones,
+            'fromURL' => $fromURL,
         ]));
     }
 

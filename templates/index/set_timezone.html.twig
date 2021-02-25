@@ -7,7 +7,7 @@
     <div class="content">
         <ul>
             {%  for timezone in timezones %}
-                <li><a href="{{  path('set_timezone') }}?set_timezone={{  timezone.code|url_encode }}">{{  timezone.code }}</a></li>
+                <li><a href="{{  path('set_timezone', {'set_timezone':timezone.code,'from_url':fromURL}) }}">{{  timezone.code }}</a></li>
             {%  endfor %}
         </ul>
 
