@@ -85,8 +85,17 @@ class ICalBuilderForAccount
             // TODO a HTML description?
         }
 
-        $txt .= Library::getIcalLine('DTSTART', $event->getStart('UTC')->format("Ymd")."T".$event->getStart('UTC')->format("His")."Z");
-        $txt .= Library::getIcalLine('DTEND', $event->getEnd('UTC')->format("Ymd")."T".$event->getEnd('UTC')->format("His")."Z");
+        if ($event->isAllDay()) {
+            $txt .= Library::getIcalLine('DTSTART;VALUE=DATE', $event->getStart()->format("Ymd"));
+            $txt .= Library::getIcalLine('DTEND;VALUE=DATE', $event->getEnd()->add(new \DateInterval("P1D"))->format("Ymd"));
+        } else {
+            $txt .= Library::getIcalLine('DTSTART', $event->getStart('UTC')->format("Ymd") . "T" . $event->getStart('UTC')->format("His") . "Z");
+            $txt .= Library::getIcalLine('DTEND', $event->getEnd('UTC')->format("Ymd") . "T" . $event->getEnd('UTC')->format("His") . "Z");
+        }
+
+        if ($event->getRrule()) {
+            $txt .= Library::getIcalLine('RRULE', $event->getRrule(), false);
+        }
 
         /** @var History $eventLastUpdatedHistory */
         $eventLastUpdatedHistory = $this->container->get('doctrine')->getRepository(History::class)->getLastHistoryForEvent($event);

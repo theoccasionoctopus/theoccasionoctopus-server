@@ -162,4 +162,51 @@ class NewEventTest extends BaseWebTestWithDataBase
 
 
 
+    public function testAllDay1() {
+
+        $this->setupCommon();
+
+
+        $this->client->catchExceptions(false);
+        $this->client->request(
+            'POST',
+            '/api/v1/account/'.$this->account->getId().'/event.json',
+            [
+                'title'=> 'TEST CAT',
+                'all_day'=>True,
+                'start_year' => 2024,
+                'start_month' => 6,
+                'start_day' => 1,
+                'end_year' => 2025,
+                'end_month' => 6,
+                'end_day' => 2,
+            ],
+            [],
+            [
+                'HTTP_AUTHORIZATION' => "Bearer CAT",
+            ]
+        );
+        $response = $this->client->getResponse();
+        $this->assertSame(200, $response->getStatusCode());
+        $responseData = json_decode($response->getContent(), true);
+
+        $events = $this->entityManager
+            ->getRepository(Event::class)
+            ->findAll()
+        ;
+
+        $this->assertSame(1, count($events));
+        /** @var Event $event */
+        $event = $events[0];
+
+        $this->assertSame($event->getId(), $responseData['event']['id']);
+        $this->assertSame('TEST CAT', $event->getTitle());
+        $this->assertSame(True, $event->isAllDay());
+        $this->assertSame('2024-06-01T00:00:00+01:00', $event->getStart()->format('c'));
+        $this->assertSame('2025-06-02T23:59:59+01:00', $event->getEnd()->format('c'));
+
+
+    }
+
+
 }

@@ -98,7 +98,7 @@ class APIV1AccountEventListController extends APIV1AccountController
 
         /** @var Event $event */
         foreach ($events as $event) {
-            $out['events'][] = array(
+            $eventJSON = array(
                 'id'=> $event->getId(),
                 'title'=>$event->getTitle(),
                 'description'=>$event->getDescription(),
@@ -111,15 +111,11 @@ class APIV1AccountEventListController extends APIV1AccountController
                     // TODO better name for this that says what the code actually is!
                     'code'=>$event->getCountry()->getIso3166TwoChar(),
                 ),
-                'start_epoch'=>$event->getStartAtTimeZone()->getTimestamp(),
-                'start_utc'=>Library::getAPIJSONResponseForDateTime($event->getStart('UTC')),
-                'start_timezone'=>Library::getAPIJSONResponseForDateTime($event->getStartAtTimeZone()),
-                'end_epoch'=>$event->getEndAtTimeZone()->getTimestamp(),
-                'end_utc'=>Library::getAPIJSONResponseForDateTime($event->getEnd('UTC')),
-                'end_timezone'=>Library::getAPIJSONResponseForDateTime($event->getEndAtTimeZone()),
                 'privacy'=>$this->privacyLevelToAPIString($event->getPrivacy()),
                 'extra_fields'=>($event->getExtraFields() ? $event->getExtraFields() : new stdClass()),
             );
+            $eventJSON = array_merge($eventJSON, Library::getAPIJSONResponseForObject($event));
+            $out['events'][] = $eventJSON;
         }
 
         return new Response(

@@ -22,20 +22,10 @@ class AccountManageEventNewController extends AccountManageController
         $event = new Event();
         $event->setId(Library::GUID());
         $event->setAccount($this->account);
-
-        // TODO : Setting default timezone here is a hack. Probably breaks this form/controller for working with multiple time zones!
         $event->setTimezone($this->account->getAccountLocal()->getDefaultTimezone());
 
-        $timeZone = $this->account->getAccountLocal()->getDefaultTimezone()->getCode();
-        if (isset($_POST['event_new']) && isset($_POST['event_new']['timezone'])) {
-            $timeZoneObject  = $this->getDoctrine()->getRepository(TimeZone::class)->findOneBy(['id'=>$_POST['event_new']['timezone']]);
-            if ($timeZoneObject) {
-                $timeZone = $timeZoneObject->getCode();
-            }
-        }
         $form = $this->createForm(EventNewType::class, $event, array(
             'account' => $this->account,
-            'timeZoneName' => $timeZone,
         ));
 
         // handle the submit (will only happen on POST)
@@ -43,8 +33,45 @@ class AccountManageEventNewController extends AccountManageController
         if ($form->isSubmitted() && $form->isValid()) {
 
             // Non Mapped Fields
-            $event->setStartWithObject($form->get('start_at')->getData());
-            $event->setEndWithObject($form->get('end_at')->getData());
+            $startDate = $form->get('start_date')->getData();
+            $endDate = $form->get('end_date')->getData();
+            if ($form->get('all_day')->getData()) {
+                $event->setStartWithInts(
+                    $startDate['year'],
+                    $startDate['month'],
+                    $startDate['day'],
+                    null,
+                    null,
+                    null
+                );
+                $event->setEndWithInts(
+                    $endDate['year'],
+                    $endDate['month'],
+                    $endDate['day'],
+                    null,
+                    null,
+                    null
+                );
+            } else {
+                $startTime = $form->get('start_time')->getData();
+                $endTime = $form->get('end_time')->getData();
+                $event->setStartWithInts(
+                    $startDate['year'],
+                    $startDate['month'],
+                    $startDate['day'],
+                    $startTime['hour'],
+                    $startTime['minute'],
+                    $startTime['second']
+                );
+                $event->setEndWithInts(
+                    $endDate['year'],
+                    $endDate['month'],
+                    $endDate['day'],
+                    $endTime['hour'],
+                    $endTime['minute'],
+                    $endTime['second']
+                );
+            }
 
             // Save
             $historyWorker = $historyWorkerService->getHistoryWorker($this->account, $this->get('security.token_storage')->getToken()->getUser());

@@ -6,6 +6,7 @@ use App\Entity\Account;
 use App\Entity\Event;
 use App\Entity\EventHasSourceEvent;
 use App\Entity\EventHasTag;
+use App\Entity\Helper\InterfaceStartEnd;
 use App\Entity\Source;
 use App\Entity\SourceEvent;
 use App\Entity\Tag;
@@ -37,7 +38,7 @@ class Library
      * @param type $value
      * @return type
      */
-    public static function getIcalLine(string $key, ?string $value)
+    public static function getIcalLine(string $key, ?string $value, bool $escapeSemiColons=true)
     {
         if (is_null($value)) {
             $value = '';
@@ -46,7 +47,9 @@ class Library
         // should be wrapping long lines and escaping new lines
         $value = str_replace("\\", "\\\\", $value);
         $value = str_replace("\r", "", str_replace("\n", '\\n', $value));
-        $value = str_replace(";", "\\;", $value);
+        if ($escapeSemiColons) {
+            $value = str_replace(";", "\\;", $value);
+        }
         $value = str_replace(",", "\\,", $value);
         $value = iconv("UTF-8", "ISO-8859-1//TRANSLIT", $value);
         // google calendar does not like a space after the ':'.
@@ -93,17 +96,77 @@ class Library
         return $bits[0] . '@' . strtolower($bits[1]);
     }
 
-    public static function getAPIJSONResponseForDateTime(\DateTimeInterface $dateTime)
+    public static function getAPIJSONResponseForObject(InterfaceStartEnd $data)
     {
-        return [
-            'year'=>intval($dateTime->format('Y')),
-            'month'=>intval($dateTime->format('n')),
-            'day'=>intval($dateTime->format('j')),
-            'hour'=>intval($dateTime->format('G')),
-            'minute'=>intval($dateTime->format('i')),
-            'second'=>intval($dateTime->format('s')),
-            'iso8601'=>$dateTime->format('c'),
-        ];
+        if ($data->isAllDay()) {
+            return [
+                'all_day'=>$data->isAllDay(),
+                'start_epoch'=>$data->getStart()->getTimeStamp(),
+                'end_epoch'=>$data->getEnd()->getTimeStamp(),
+                'start_utc' => [
+                    'year'=>intval($data->getStart('UTC')->format('Y')),
+                    'month'=>intval($data->getStart('UTC')->format('n')),
+                    'day'=>intval($data->getStart('UTC')->format('j')),
+                ],
+                'end_utc' => [
+                    'year'=>intval($data->getEnd('UTC')->format('Y')),
+                    'month'=>intval($data->getEnd('UTC')->format('n')),
+                    'day'=>intval($data->getEnd('UTC')->format('j')),
+                ],
+                'start_timezone' => [
+                    'year'=>intval($data->getStart()->format('Y')),
+                    'month'=>intval($data->getStart()->format('n')),
+                    'day'=>intval($data->getStart()->format('j')),
+                ],
+                'end_timezone' => [
+                    'year'=>intval($data->getEnd()->format('Y')),
+                    'month'=>intval($data->getEnd()->format('n')),
+                    'day'=>intval($data->getEnd()->format('j')),
+                ],
+            ];
+        } else {
+            return [
+                'all_day'=>$data->isAllDay(),
+                'start_epoch'=>$data->getStart()->getTimeStamp(),
+                'end_epoch'=>$data->getEnd()->getTimeStamp(),
+                'start_utc' => [
+                    'year'=>intval($data->getStart('UTC')->format('Y')),
+                    'month'=>intval($data->getStart('UTC')->format('n')),
+                    'day'=>intval($data->getStart('UTC')->format('j')),
+                    'hour'=>intval($data->getStart('UTC')->format('G')),
+                    'minute'=>intval($data->getStart('UTC')->format('i')),
+                    'second'=>intval($data->getStart('UTC')->format('s')),
+                    'iso8601'=>intval($data->getStart('UTC')->format('c')),
+                ],
+                'end_utc' => [
+                    'year'=>intval($data->getEnd('UTC')->format('Y')),
+                    'month'=>intval($data->getEnd('UTC')->format('n')),
+                    'day'=>intval($data->getEnd('UTC')->format('j')),
+                    'hour'=>intval($data->getEnd('UTC')->format('G')),
+                    'minute'=>intval($data->getEnd('UTC')->format('i')),
+                    'second'=>intval($data->getEnd('UTC')->format('s')),
+                    'iso8601'=>intval($data->getEnd('UTC')->format('c')),
+                ],
+                'start_timezone' => [
+                    'year'=>intval($data->getStart()->format('Y')),
+                    'month'=>intval($data->getStart()->format('n')),
+                    'day'=>intval($data->getStart()->format('j')),
+                    'hour'=>intval($data->getStart()->format('G')),
+                    'minute'=>intval($data->getStart()->format('i')),
+                    'second'=>intval($data->getStart()->format('s')),
+                    'iso8601'=>intval($data->getStart()->format('c')),
+                ],
+                'end_timezone' => [
+                    'year'=>intval($data->getEnd()->format('Y')),
+                    'month'=>intval($data->getEnd()->format('n')),
+                    'day'=>intval($data->getEnd()->format('j')),
+                    'hour'=>intval($data->getEnd()->format('G')),
+                    'minute'=>intval($data->getEnd()->format('i')),
+                    'second'=>intval($data->getEnd()->format('s')),
+                    'iso8601'=>intval($data->getEnd()->format('c')),
+                ]
+            ];
+        }
     }
 
     public static function parseWebFingerResourceToUsernameAndHost($in)
@@ -163,5 +226,34 @@ class Library
                 return $linkData['href'];
             }
         }
+    }
+    
+    
+    public static function isEndBeforeStartByArrays($startDate, $startTime, $endDate, $endTime)
+    {
+        if ($endDate['year'] < $startDate['year']) {
+            return true;
+        } elseif ($endDate['year'] == $startDate['year']) {
+            if ($endDate['month'] < $startDate['month']) {
+                return true;
+            } elseif ($endDate['month'] == $startDate['month']) {
+                if ($endDate['day'] < $startDate['day']) {
+                    return true;
+                } elseif ($endDate['day'] == $startDate['day'] && !is_null($startTime)) {
+                    if ($endTime['hour'] < $startTime['hour']) {
+                        return true;
+                    } elseif ($endTime['hour'] == $startTime['hour']) {
+                        if ($endTime['minute'] < $startTime['minute']) {
+                            return true;
+                        } elseif ($endTime['minute'] == $startTime['minute']) {
+                            if ($endTime['second'] < $startTime['second']) {
+                                return true;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return false;
     }
 }

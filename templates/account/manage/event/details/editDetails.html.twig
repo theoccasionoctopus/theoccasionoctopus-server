@@ -71,8 +71,11 @@
         {%  endif %}
 
         {%  if 'start_end' in editableFields %}
-            {{ form_row(form.start_at) }}
-            {{ form_row(form.end_at) }}
+            {{ form_row(form.all_day) }}
+            {{ form_row(form.start_date) }}
+            {{ form_row(form.start_time) }}
+            {{ form_row(form.end_date) }}
+            {{ form_row(form.end_time) }}
         {%  endif %}
 
         {%  if 'rrule' in editableFields %}
@@ -97,3 +100,23 @@
     </div>
 
 {%  endblock %}
+
+
+{% block javascripts %}
+    <script>
+        function onAllDayChange() {
+            var allDay = $('#event_edit_details_all_day').is(':checked');
+            $('#event_edit_details_start_time_hour').prop( "disabled", allDay );
+            $('#event_edit_details_start_time_minute').prop( "disabled", allDay );
+            $('#event_edit_details_start_time_second').prop( "disabled", allDay );
+            $('#event_edit_details_end_time_hour').prop( "disabled", allDay );
+            $('#event_edit_details_end_time_minute').prop( "disabled", allDay );
+            $('#event_edit_details_end_time_second').prop( "disabled", allDay );
+        }
+        $(function() {
+            onAllDayChange();
+            $('#event_edit_details_all_day').change(onAllDayChange);
+        });
+    </script>
+{% endblock %}
+

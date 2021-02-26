@@ -1,13 +1,23 @@
 <div>
     <i class="fas fa-clock"></i>
-    {% if sameday(start,end,timezone) %}
-        <time datetime="{{ start|date('c', timezone) }}" itemprop="startDate">{{ start|date("D F jS Y g:ia", timezone) }}</time>
-        to
-        <time datetime="{{ end|date('c', timezone) }}" itemprop="endDate">{{ end|date("g:ia", timezone) }}</time>
-    {% else %}
-        <time datetime="{{ start|date('c', timezone) }}" itemprop="startDate">{{ start|date("D F jS Y g:ia", timezone) }}</time>
-        to
-        <time datetime="{{ end|date('c', timezone) }}" itemprop="endDate">{{ end|date("D F jS Y g:ia", timezone) }}</time>
+    {%  if data.allDay %}
+        {% if sameday(data.start,data.end,timezone) %}
+            <time datetime="{{ data.start(timezone)|date('c', timezone) }}" itemprop="startDate">{{ data.start(timezone)|date("D F jS Y", timezone) }}</time>
+        {% else %}
+            <time datetime="{{ data.start(timezone)|date('c', timezone) }}" itemprop="startDate">{{ data.start(timezone)|date("D F jS Y", timezone) }}</time>
+            to
+            <time datetime="{{ data.end(timezone)|date('c', timezone) }}" itemprop="endDate">{{ data.end(timezone)|date("D F jS Y", timezone) }}</time>
+        {% endif %}
+    {%  else %}
+        {% if sameday(data.start,data.end,timezone) %}
+            <time datetime="{{ data.start(timezone)|date('c', timezone) }}" itemprop="startDate">{{ data.start(timezone)|date("D F jS Y g:ia", timezone) }}</time>
+            to
+            <time datetime="{{ data.end(timezone)|date('c', timezone) }}" itemprop="endDate">{{ data.end(timezone)|date("g:ia", timezone) }}</time>
+        {% else %}
+            <time datetime="{{ data.start(timezone)|date('c', timezone) }}" itemprop="startDate">{{ data.start(timezone)|date("D F jS Y g:ia", timezone) }}</time>
+            to
+            <time datetime="{{ data.end(timezone)|date('c', timezone) }}" itemprop="endDate">{{ data.end(timezone)|date("D F jS Y g:ia", timezone) }}</time>
+        {% endif %}
     {% endif %}
     {% if showTimeZone is defined and showTimeZone %}
         ({{ timezone }})

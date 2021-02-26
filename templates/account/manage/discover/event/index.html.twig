@@ -19,7 +19,7 @@
                     {%  endif %}
                     <h2>{{  eventOccurrence.event.title }}</h2>
                     <p>{{  eventOccurrence.event.description | u.truncate(event_list_description_truncate_limit, event_list_description_truncate_more, event_list_description_truncate_whole_words) | nl2br }}</p>
-                    {%  include '/common/eventStartEndLine.html.twig' with { 'start':eventOccurrence.start, 'end':eventOccurrence.end, 'timezone': eventOccurrence.event.timezone.code } %}
+                    {%  include '/common/eventStartEndLine.html.twig' with { 'data':eventOccurrence, 'timezone': eventOccurrence.event.timezone.code } %}
 
                     {%  if eventOccurrence.event.account.AccountLocal %}
                         <i class="fas fa-user"></i> {{  eventOccurrence.event.account.title }} ({{  eventOccurrence.event.account.AccountLocal.username }})

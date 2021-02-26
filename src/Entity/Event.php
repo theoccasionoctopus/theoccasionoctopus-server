@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Entity\Helper\InterfaceStartEnd;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -11,7 +12,7 @@ use App\Entity\Helper\TraitExtraFields;
  * @ORM\Entity(repositoryClass="App\Repository\EventRepository")
  * @ORM\Table(name="event")
  */
-class Event
+class Event implements InterfaceStartEnd
 {
     /**
      * @ORM\Id()
@@ -59,17 +60,17 @@ class Event
     private $startDay;
 
     /**
-     * @ORM\Column(name="start_hour", type="smallint", nullable=false)
+     * @ORM\Column(name="start_hour", type="smallint", nullable=true)
      */
     private $startHour;
 
     /**
-     * @ORM\Column(name="start_minute", type="smallint", nullable=false)
+     * @ORM\Column(name="start_minute", type="smallint", nullable=true)
      */
     private $startMinute;
 
     /**
-     * @ORM\Column(name="start_second", type="smallint", nullable=false)
+     * @ORM\Column(name="start_second", type="smallint", nullable=true)
      */
     private $startSecond;
 
@@ -89,17 +90,17 @@ class Event
     private $endDay;
 
     /**
-     * @ORM\Column(name="end_hour", type="smallint", nullable=false)
+     * @ORM\Column(name="end_hour", type="smallint", nullable=true)
      */
     private $endHour;
 
     /**
-     * @ORM\Column(name="end_minute", type="smallint", nullable=false)
+     * @ORM\Column(name="end_minute", type="smallint", nullable=true)
      */
     private $endMinute;
 
     /**
-     * @ORM\Column(name="end_second", type="smallint", nullable=false)
+     * @ORM\Column(name="end_second", type="smallint", nullable=true)
      */
     private $endSecond;
 
@@ -280,6 +281,74 @@ class Event
         return $this->setDescription(strip_tags($description));
     }
 
+
+    public function isAllDay(): bool
+    {
+        return is_null($this->startHour);
+    }
+
+    public function getStartYear(): int
+    {
+        return $this->startYear;
+    }
+
+    public function getStartMonth(): int
+    {
+        return $this->startMonth;
+    }
+
+    public function getStartDay(): int
+    {
+        return $this->startDay;
+    }
+
+    public function getStartHour(): ?int
+    {
+        return $this->startHour;
+    }
+
+    public function getStartMinute(): ?int
+    {
+        return $this->startMinute;
+    }
+
+    public function getStartSecond(): ?int
+    {
+        return $this->startSecond;
+    }
+
+    public function getEndYear(): int
+    {
+        return $this->endYear;
+    }
+
+    public function getEndMonth(): int
+    {
+        return $this->endMonth;
+    }
+
+    public function getEndDay(): int
+    {
+        return $this->endDay;
+    }
+
+    public function getEndHour(): ?int
+    {
+        return $this->endHour;
+    }
+
+    public function getEndMinute(): ?int
+    {
+        return $this->endMinute;
+    }
+
+    public function getEndSecond(): ?int
+    {
+        return $this->endSecond;
+    }
+
+
+
     /**
      * @return mixed
      */
@@ -324,9 +393,11 @@ class Event
     /**
      * @return bool Was there any changes?
      */
-    public function setStartWithInts(int $year, int $month, int $day, int $hour, int $minute, int $second): bool
+    public function setStartWithInts(int $year, int $month, int $day, ?int $hour, ?int $minute, ?int $second): bool
     {
-        if ($this->startYear != $year || $this->startMonth != $month || $this->startDay != $day || $this->startHour != $hour || $this->startMinute != $minute || $this->startSecond != $second) {
+        if ($this->startYear != $year || $this->startMonth != $month || $this->startDay != $day ||
+            (is_null($this->startHour) && !is_null($hour)) || (!is_null($this->startHour) && is_null($hour)) ||
+            $this->startHour != $hour || $this->startMinute != $minute || $this->startSecond != $second) {
             $this->startYear = $year;
             $this->startMonth = $month;
             $this->startDay = $day;
@@ -346,7 +417,11 @@ class Event
     {
         $out = new \DateTime('', new \DateTimeZone($this->timezone->getCode()));
         $out->setDate($this->endYear, $this->endMonth, $this->endDay);
-        $out->setTime($this->endHour, $this->endMinute, $this->endSecond);
+        if (is_null($this->endHour)) {
+            $out->setTime(23, 59, 59);
+        } else {
+            $out->setTime($this->endHour, $this->endMinute, $this->endSecond);
+        }
         if ($timezone && $timezone != $this->timezone->getCode()) {
             $out->setTimezone(new \DateTimeZone($timezone));
         }
@@ -383,7 +458,7 @@ class Event
     /**
      * @return bool Was there any changes?
      */
-    public function setEndWithInts(int $year, int $month, int $day, int $hour, int $minute, int $second): bool
+    public function setEndWithInts(int $year, int $month, int $day, ?int $hour, ?int $minute, ?int $second): bool
     {
         if ($this->endYear != $year || $this->endMonth != $month || $this->endDay != $day || $this->endHour != $hour || $this->endMinute != $minute || $this->endSecond != $second) {
             $this->endYear = $year;
@@ -405,12 +480,20 @@ class Event
         if ($this->timezone) {
             $start = new \DateTime('', new \DateTimeZone($this->timezone->getCode()));
             $start->setDate($this->startYear, $this->startMonth, $this->startDay);
-            $start->setTime($this->startHour, $this->startMinute, $this->startSecond);
+            if (is_null($this->startHour)) {
+                $start->setTime(0, 0, 0);
+            } else {
+                $start->setTime($this->startHour, $this->startMinute, $this->startSecond);
+            }
             $this->cachedStartEpoch = $start->getTimestamp();
 
             $end = new \DateTime('', new \DateTimeZone($this->timezone->getCode()));
             $end->setDate($this->endYear, $this->endMonth, $this->endDay);
-            $end->setTime($this->endHour, $this->endMinute, $this->endSecond);
+            if (is_null($this->endHour)) {
+                $end->setTime(23, 59, 59);
+            } else {
+                $end->setTime($this->endHour, $this->endMinute, $this->endSecond);
+            }
             $this->cachedEndEpoch = $end->getTimestamp();
         }
     }

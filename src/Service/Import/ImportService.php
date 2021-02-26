@@ -47,6 +47,7 @@ class ImportService
     {
         $this->logger->info('Importing', ['import_id' => $import->getId(), 'account_id'=>$import->getAccount()->getId()]);
 
+        // TODO use new service for requests
         $guzzle = new Client(array('defaults' => array('headers' => array(  'User-Agent'=> 'Prototype Software') )));
         $response = $guzzle->request("GET", $import->getURL(), array());
         if ($response->getStatusCode() != 200) {
@@ -56,6 +57,11 @@ class ImportService
         // TODO this passes a whole string to the reader - if we could pass a stream it would be more efficient
         $vcalendar = VObject\Reader::read($response->getBody()->getContents(), VObject\Reader::OPTION_FORGIVING);
 
+        $this->importVCalender($import, $vcalendar);
+    }
+
+    public function importVCalender(Import $import, VObject\Component\VCalendar $vcalendar)
+    {
         $historyWorker = $this->historyWorkerService->getHistoryWorker($import->getAccount());
 
         foreach ($vcalendar->VEVENT as $eventData) {
@@ -145,19 +151,35 @@ class ImportService
             }
         }
 
-        if ($event->setStartWithObject($eventData->DTSTART->getDateTime())) {
-            $changes = true;
-        }
-        if ($eventData->DTEND) {
-            if ($event->setEndWithObject($eventData->DTEND->getDateTime())) {
+        if ($eventData->DTSTART->hasTime()) {
+            if ($event->setStartWithObject($eventData->DTSTART->getDateTime())) {
                 $changes = true;
+            }
+            if ($eventData->DTEND) {
+                if ($event->setEndWithObject($eventData->DTEND->getDateTime())) {
+                    $changes = true;
+                }
+            } else {
+                // TODO should we be looking for duration field here?
+                if ($event->setEndWithObject($eventData->DTSTART->getDateTime())) {
+                    $changes = true;
+                }
             }
         } else {
-            // TODO should we be looking for duration field here?
-            if ($event->setEndWithObject($eventData->DTSTART->getDateTime())) {
+            $startValue= $eventData->DTSTART->getValue();
+            if ($event->setStartWithInts(substr($startValue, 0, 4), substr($startValue, 4, 2), substr($startValue, 6, 2), null, null, null)) {
                 $changes = true;
             }
+            if ($eventData->DTEND) {
+                $endValue = $eventData->DTEND->getDateTime()->sub(new \DateInterval('P1D'));
+                if ($event->setEndWithInts($endValue->format('Y'), $endValue->format('n'), $endValue->format('j'), null, null, null)) {
+                    $changes = true;
+                }
+            } else {
+                // TODO ??
+            }
         }
+
 
         if ($changes) {
             $historyWorker->addEvent($event);
