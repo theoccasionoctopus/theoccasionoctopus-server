@@ -16,7 +16,7 @@
                     <div class="listItem">
                         <h4>{{  eventOccurrence.event.title }}</h4>
                         <p>{{  eventOccurrence.event.description | u.truncate(event_list_description_truncate_limit, event_list_description_truncate_more, event_list_description_truncate_whole_words) | nl2br }}</p>
-                        {%  include '/common/eventStartEndLine.html.twig' with { 'start':eventOccurrence.start, 'end':eventOccurrence.end, 'timezone': userTimeZone , 'showTimeZone': true  } %}
+                        {%  include '/common/eventStartEndLine.html.twig' with { 'data':eventOccurrence, 'timezone': userTimeZone , 'showTimeZone': true  } %}
                         <a class="button"
                                 {%  if  eventOccurrence.event.hasReoccurence %}
                                     href="{{ path('account_manage_event_show_event',{'account_username':account.username,'event_id': eventOccurrence.event.id }) }}?startutc={{ eventOccurrence.start('UTC')|date("Y-m-d-H-i-s") }}"
@@ -56,7 +56,7 @@
 
                         <h4>{{  discoverEventOccurrence.event.title }}</h4>
                         <p>{{  discoverEventOccurrence.event.description | u.truncate(event_list_description_truncate_limit, event_list_description_truncate_more, event_list_description_truncate_whole_words) | nl2br }}</p>
-                        {%  include '/common/eventStartEndLine.html.twig' with { 'start':discoverEventOccurrence.start, 'end':discoverEventOccurrence.end, 'timezone': userTimeZone , 'showTimeZone': true  } %}
+                        {%  include '/common/eventStartEndLine.html.twig' with { 'data':discoverEventOccurrence, 'timezone': userTimeZone , 'showTimeZone': true  } %}
                         <a class="button"
                                 {%  if  discoverEventOccurrence.event.hasReoccurence %}
                                     href="{{ path('account_manage_discover_event_show_event',{'account_username':account.username, 'discover_account_id':discoverEventOccurrence.event.account.id,'discover_event_id': discoverEventOccurrence.event.id }) }}?startutc={{ discoverEventOccurrence.start('UTC')|date("Y-m-d-H-i-s") }}"

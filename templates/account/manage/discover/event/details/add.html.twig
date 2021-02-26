@@ -11,10 +11,10 @@
             <h2>{{  discoverEvent.title }}</h2>
             <p>{{  discoverEvent.description | u.truncate(event_list_description_truncate_limit, event_list_description_truncate_more, event_list_description_truncate_whole_words) | nl2br }}</p>
             {%  if discoverEvent.timezone.code == userTimeZone %}
-                {%  include '/common/eventStartEndLine.html.twig' with { 'start':discoverEvent.start, 'end':discoverEvent.end, 'timezone': discoverEvent.timezone.code } %}
+                {%  include '/common/eventStartEndLine.html.twig' with { 'data':discoverEvent, 'timezone': discoverEvent.timezone.code } %}
             {%  else %}
-                {%  include '/common/eventStartEndLine.html.twig' with { 'start':discoverEvent.start, 'end':discoverEvent.end, 'timezone': discoverEvent.timezone.code, 'showTimeZone': true } %}
-                {%  include '/common/eventStartEndLine.html.twig' with { 'start':discoverEvent.start(userTimeZone), 'end':discoverEvent.end(userTimeZone), 'timezone': userTimeZone, 'showTimeZone': true } %}
+                {%  include '/common/eventStartEndLine.html.twig' with { 'data':discoverEvent, 'timezone': discoverEvent.timezone.code, 'showTimeZone': true } %}
+                {%  include '/common/eventStartEndLine.html.twig' with { 'data':discoverEvent, 'timezone': userTimeZone, 'showTimeZone': true } %}
             {%  endif %}
             {# TODO add some recurring info #}
         </div>

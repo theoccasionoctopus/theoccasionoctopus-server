@@ -63,17 +63,12 @@ class APIV1AccountEventDetailsController extends APIV1AccountController
             'country'=>array(
                 'code'=>$this->event->getCountry()->getIso3166TwoChar(),
             ),
-            'start_epoch'=>$this->event->getStartAtTimeZone()->getTimestamp(),
-            'start_utc'=>Library::getAPIJSONResponseForDateTime($this->event->getStart('UTC')),
-            'start_timezone'=>Library::getAPIJSONResponseForDateTime($this->event->getStartAtTimeZone()),
-            'end_epoch'=>$this->event->getEndAtTimeZone()->getTimestamp(),
-            'end_utc'=>Library::getAPIJSONResponseForDateTime($this->event->getEnd('UTC')),
-            'end_timezone'=>Library::getAPIJSONResponseForDateTime($this->event->getEndAtTimeZone()),
             'privacy'=>$this->privacyLevelToAPIString($this->event->getPrivacy()),
             'extra_fields'=>($this->event->getExtraFields() ? $this->event->getExtraFields() : new stdClass()),
             'editable_mode'=>$this->event->getEditableFieldsMode(),
             'editable_fields'=>$this->event->getEditableFieldsList(),
         );
+        $out['event'] = array_merge($out['event'], Library::getAPIJSONResponseForObject($this->event));
 
         return new Response(
             json_encode($out),
@@ -139,81 +134,118 @@ class APIV1AccountEventDetailsController extends APIV1AccountController
             }
         }
 
-        if ($request->get('start_year_utc')) {
-            if (in_array('start_end', $editableFields)) {
-                $start = new \DateTime('', new \DateTimeZone('UTC'));
-                $start->setDate(
-                    $request->get('start_year_utc', $start->format('Y')),
-                    $request->get('start_month_utc', $start->format('n')),
-                    $request->get('start_day_utc', $start->format('j'))
-                );
-                $start->setTime(
-                    $request->get('start_hour_utc', $start->format('G')),
-                    $request->get('start_minute_utc', $start->format('i')),
-                    0
-                );
-                if ($this->event->setStartWithObject($start)) {
-                    $changedEvent = true;
-                }
-            } else {
-                $errorFieldsTriedToEditThatWereNotAllowed[] = 'start_at';
-            }
-        }
 
-        if ($request->get('end_year_utc')) {
-            if (in_array('start_end', $editableFields)) {
-                $end = new \DateTime('', new \DateTimeZone('UTC'));
-                $end->setDate(
-                    $request->get('end_year_utc', $end->format('Y')),
-                    $request->get('end_month_utc', $end->format('n')),
-                    $request->get('end_day_utc', $end->format('j'))
-                );
-                $end->setTime(
-                    $request->get('end_hour_utc', $end->format('G')),
-                    $request->get('end_minute_utc', $end->format('i')),
-                    0
-                );
-                if ($this->event->setEndWithObject($end)) {
-                    $changedEvent = true;
+        if ($request->get('all_day')) {
+            if ($request->get('start_year')) {
+                if (in_array('start_end', $editableFields)) {
+                    if ($this->event->setStartWithInts(
+                        $request->get('start_year'),
+                        $request->get('start_month'),
+                        $request->get('start_day'),
+                        null,
+                        null,
+                        null
+                    )) {
+                        $changedEvent = true;
+                    }
+                } else {
+                    $errorFieldsTriedToEditThatWereNotAllowed[] = 'start_at';
                 }
-            } else {
-                $errorFieldsTriedToEditThatWereNotAllowed[] = 'end_at';
             }
-        }
-
-        if ($request->get('start_year_timezone')) {
-            if (in_array('start_end', $editableFields)) {
-                $start = new \DateTime('', $this->event->getTimezone()->getDateTimeZoneObject());
-                if ($this->event->setStartWithInts(
-                    $request->get('start_year_timezone', $start->format('Y')),
-                    $request->get('start_month_timezone', $start->format('n')),
-                    $request->get('start_day_timezone', $start->format('j')),
-                    $request->get('start_hour_timezone', $start->format('G')),
-                    $request->get('start_minute_timezone', $start->format('i')),
-                    0
-                )) {
-                    $changedEvent = true;
-                };
-            } else {
-                $errorFieldsTriedToEditThatWereNotAllowed[] = 'start_at';
-            }
-        }
-
-        if ($request->get('end_year_timezone')) {
-            if (in_array('start_end', $editableFields)) {
-                $end = new \DateTime('', $this->event->getTimezone()->getDateTimeZoneObject());
-                if ($this->event->setEndWithInts(
-                    $request->get('end_year_timezone', $end->format('Y')),
-                    $request->get('end_month_timezone', $end->format('n')),
-                    $request->get('end_day_timezone', $end->format('j')),
-                    $request->get('end_hour_timezone', $end->format('G')),
-                    $request->get('end_minute_timezone', $end->format('i')),
-                    0
-                )) {
-                    $changedEvent = true;
+            
+            if ($request->get('end_year')) {
+                if (in_array('start_end', $editableFields)) {
+                    if ($this->event->setEndWithInts(
+                        $request->get('end_year'),
+                        $request->get('end_month'),
+                        $request->get('end_day'),
+                        null,
+                        null,
+                        null
+                    )) {
+                        $changedEvent = true;
+                    }
+                } else {
+                    $errorFieldsTriedToEditThatWereNotAllowed[] = 'end_at';
                 }
-            } else {
-                $errorFieldsTriedToEditThatWereNotAllowed[] = 'end_at';
+            }
+        } else {
+            if ($request->get('start_year_utc')) {
+                if (in_array('start_end', $editableFields)) {
+                    $start = new \DateTime('', new \DateTimeZone('UTC'));
+                    $start->setDate(
+                        $request->get('start_year_utc', $start->format('Y')),
+                        $request->get('start_month_utc', $start->format('n')),
+                        $request->get('start_day_utc', $start->format('j'))
+                    );
+                    $start->setTime(
+                        $request->get('start_hour_utc', $start->format('G')),
+                        $request->get('start_minute_utc', $start->format('i')),
+                        0
+                    );
+                    if ($this->event->setStartWithObject($start)) {
+                        $changedEvent = true;
+                    }
+                } else {
+                    $errorFieldsTriedToEditThatWereNotAllowed[] = 'start_at';
+                }
+            }
+
+            if ($request->get('end_year_utc')) {
+                if (in_array('start_end', $editableFields)) {
+                    $end = new \DateTime('', new \DateTimeZone('UTC'));
+                    $end->setDate(
+                        $request->get('end_year_utc', $end->format('Y')),
+                        $request->get('end_month_utc', $end->format('n')),
+                        $request->get('end_day_utc', $end->format('j'))
+                    );
+                    $end->setTime(
+                        $request->get('end_hour_utc', $end->format('G')),
+                        $request->get('end_minute_utc', $end->format('i')),
+                        0
+                    );
+                    if ($this->event->setEndWithObject($end)) {
+                        $changedEvent = true;
+                    }
+                } else {
+                    $errorFieldsTriedToEditThatWereNotAllowed[] = 'end_at';
+                }
+            }
+
+            if ($request->get('start_year_timezone')) {
+                if (in_array('start_end', $editableFields)) {
+                    $start = new \DateTime('', $this->event->getTimezone()->getDateTimeZoneObject());
+                    if ($this->event->setStartWithInts(
+                        $request->get('start_year_timezone', $start->format('Y')),
+                        $request->get('start_month_timezone', $start->format('n')),
+                        $request->get('start_day_timezone', $start->format('j')),
+                        $request->get('start_hour_timezone', $start->format('G')),
+                        $request->get('start_minute_timezone', $start->format('i')),
+                        0
+                    )) {
+                        $changedEvent = true;
+                    };
+                } else {
+                    $errorFieldsTriedToEditThatWereNotAllowed[] = 'start_at';
+                }
+            }
+
+            if ($request->get('end_year_timezone')) {
+                if (in_array('start_end', $editableFields)) {
+                    $end = new \DateTime('', $this->event->getTimezone()->getDateTimeZoneObject());
+                    if ($this->event->setEndWithInts(
+                        $request->get('end_year_timezone', $end->format('Y')),
+                        $request->get('end_month_timezone', $end->format('n')),
+                        $request->get('end_day_timezone', $end->format('j')),
+                        $request->get('end_hour_timezone', $end->format('G')),
+                        $request->get('end_minute_timezone', $end->format('i')),
+                        0
+                    )) {
+                        $changedEvent = true;
+                    }
+                } else {
+                    $errorFieldsTriedToEditThatWereNotAllowed[] = 'end_at';
+                }
             }
         }
 
@@ -284,6 +316,7 @@ class APIV1AccountEventDetailsController extends APIV1AccountController
 
 
         ########### Result and Error/Save!
+        // TODO check years are in range
         if ($errorFieldsTriedToEditThatWereNotAllowed) {
             asort($errorFieldsTriedToEditThatWereNotAllowed);
             asort($editableFields);

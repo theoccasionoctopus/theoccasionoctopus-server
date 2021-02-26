@@ -5,6 +5,7 @@ use App\Constants;
 use App\Entity\Country;
 use App\Entity\Event;
 use App\Entity\TimeZone;
+use App\Library;
 use App\Repository\CountryRepository;
 use App\Repository\TimeZoneRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
@@ -19,8 +20,9 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
-use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
-use Symfony\Component\Form\Extension\Core\Type\PasswordType;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
+use Symfony\Component\Form\Extension\Core\Type\TimeType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 
 class EventEditDetailsType extends AbstractType
 {
@@ -43,23 +45,44 @@ class EventEditDetailsType extends AbstractType
         }
 
         if (in_array('start_end', $options['editableFields'])) {
-            $builder->add('start_at', DateTimeType::class, [
+            $builder->add('all_day', CheckboxType::class, [
+                'label' => 'All Day Event',
+                'required' => false,
+                'mapped' => false
+            ]);
+
+            $builder->add('start_date', DateType::class, [
                 'label' => 'Start',
-                'date_widget' => 'single_text',
-                'model_timezone' => $options['timeZoneName'],
-                'view_timezone' => $options['timeZoneName'],
+                'widget' => 'single_text',
                 'attr' => array('class' => 'dateInput'),
+                'input'=>'array',
                 'required' => true,
                 'mapped' => false
             ]);
-            $builder->add('end_at', DateTimeType::class, [
+
+            $builder->add('start_time', TimeType::class, [
+                'label' => 'Start',
+                'input'=>'array',
+                'required' => true,
+                'mapped' => false,
+                'with_seconds' => true,
+            ]);
+
+            $builder->add('end_date', DateType::class, [
                 'label' => 'End',
-                'date_widget' => 'single_text',
-                'model_timezone' => $options['timeZoneName'],
-                'view_timezone' => $options['timeZoneName'],
+                'widget' => 'single_text',
                 'attr' => array('class' => 'dateInput'),
+                'input'=>'array',
                 'required' => true,
                 'mapped' => false
+            ]);
+
+            $builder->add('end_time', TimeType::class, [
+                'label' => 'End',
+                'input'=>'array',
+                'required' => true,
+                'mapped' => false,
+                'with_seconds' => true,
             ]);
         }
 
@@ -143,15 +166,13 @@ class EventEditDetailsType extends AbstractType
         if (in_array('start_end', $options['editableFields'])) {
             $myExtraFieldValidatorStartEnd = function (FormEvent $event) {
                 $form = $event->getForm();
-                $myExtraFieldStart = $form->get('start_at')->getData();
-                $myExtraFieldEnd = $form->get('end_at')->getData();
-                // Validate end is not the same as start
-                if ($myExtraFieldStart == $myExtraFieldEnd) {
-                    $form['end_at']->addError(new FormError("The end can not be the same as the start!"));
-                }
-                // Validate end is after start?
-                if ($myExtraFieldStart > $myExtraFieldEnd) {
-                    $form['start_at']->addError(new FormError("The start can not be after the end!"));
+                $startDate = $form->get('start_date')->getData();
+                $startTime = $form->get('all_day')->getData() ? null : $form->get('start_time')->getData();
+                $endDate = $form->get('end_date')->getData();
+                $endTime = $form->get('all_day')->getData() ? null : $form->get('end_time')->getData();
+                // validate end is not before start
+                if (Library::isEndBeforeStartByArrays($startDate, $startTime, $endDate, $endTime)) {
+                    $form['start_date']->addError(new FormError("The start can not be after the end!"));
                 }
                 // TODO validate years
             };
@@ -163,7 +184,6 @@ class EventEditDetailsType extends AbstractType
     {
         $resolver->setDefaults(array(
             'data_class' => Event::class,
-            'timeZoneName' => null,
             'edit_extra_fields' => array(),
             'editableFields' => array(),
             'editableMode' => null,

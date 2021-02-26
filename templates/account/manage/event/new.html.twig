@@ -20,8 +20,11 @@
         {{ form_row(form.country) }}
         <h4>When?</h4>
         {{ form_row(form.timezone) }}
-        {{ form_row(form.start_at) }}
-        {{ form_row(form.end_at) }}
+        {{ form_row(form.all_day) }}
+        {{ form_row(form.start_date) }}
+        {{ form_row(form.start_time) }}
+        {{ form_row(form.end_date) }}
+        {{ form_row(form.end_time) }}
         <div>
             <a href="#" onclick="$('#sectionReoccurring').toggle(); $(this).find('.indicator').toggle(); return false;">
                 <span class="indicator"><i class="fas fa-chevron-right"></i></span><span class="indicator" style="display: none;"><i class="fas fa-chevron-down"></i></span>
@@ -44,15 +47,15 @@
 {% block javascripts %}
     <script>
         function onStartChangeMaybeSetEndDate() {
-            var start_date = $('#event_new_start_at_date');
-            var end_date = $('#event_new_end_at_date');
+            var start_date = $('#event_new_start_date');
+            var end_date = $('#event_new_end_date');
             if (start_date.val() && !end_date.val()) {
                 end_date.val(start_date.val());
             }
         }
         function onStartChangeMaybeSetEndHour() {
-            var start_hour = $('#event_new_start_at_time_hour');
-            var end_hour = $('#event_new_end_at_time_hour');
+            var start_hour = $('#event_new_start_time_hour');
+            var end_hour = $('#event_new_end_time_hour');
             if (start_hour.val() && end_hour.val() == "0") {
                 if (start_hour.val() == '23') {
                     end_hour.val(start_hour.val());
@@ -62,9 +65,19 @@
                 }
             }
         }
+        function onAllDayChange() {
+            var allDay = $('#event_new_all_day').is(':checked');
+            $('#event_new_start_time_hour').prop( "disabled", allDay );
+            $('#event_new_start_time_minute').prop( "disabled", allDay );
+            $('#event_new_start_time_second').prop( "disabled", allDay );
+            $('#event_new_end_time_hour').prop( "disabled", allDay );
+            $('#event_new_end_time_minute').prop( "disabled", allDay );
+            $('#event_new_end_time_second').prop( "disabled", allDay );
+        }
         $( document ).ready(function() {
-            $('#event_new_start_at_date').change(onStartChangeMaybeSetEndDate);
-            $('#event_new_start_at_time_hour').change(onStartChangeMaybeSetEndHour);
+            $('#event_new_start_date').change(onStartChangeMaybeSetEndDate);
+            $('#event_new_start_time_hour').change(onStartChangeMaybeSetEndHour);
+            $('#event_new_all_day').change(onAllDayChange);
         });
     </script>
 {% endblock %}

@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Entity\Helper\InterfaceStartEnd;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -10,7 +11,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
  * @ORM\Entity(repositoryClass="App\Repository\EventOccurrenceRepository")
  * @ORM\Table(name="event_occurrence",uniqueConstraints={@ORM\UniqueConstraint(name="event_occurrence_event_start_idx", columns={"event_id", "start_epoch"})})
  */
-class EventOccurrence
+class EventOccurrence implements InterfaceStartEnd
 {
 
     /**
@@ -71,6 +72,12 @@ class EventOccurrence
     public function setEvent($event)
     {
         $this->event = $event;
+    }
+
+
+    public function isAllDay(): bool
+    {
+        return $this->event->isAllDay();
     }
 
     /**

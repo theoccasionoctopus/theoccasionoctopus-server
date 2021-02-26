@@ -51,64 +51,79 @@ class APIV1AccountEventNewController extends APIV1AccountController
             $event->setUrlTickets($request->get('url_tickets'));
         }
 
-        if ($request->get('start_year_utc')) {
-            $start = new \DateTime('', new \DateTimeZone('UTC'));
-            $start->setDate(
-                $request->get('start_year_utc'),
-                $request->get('start_month_utc'),
-                $request->get('start_day_utc')
+        if ($request->get('all_day')) {
+            $event->setStartWithInts(
+                $request->get('start_year'),
+                $request->get('start_month'),
+                $request->get('start_day'),
+                null,
+                null,
+                null
             );
-            $start->setTime(
-                $request->get('start_hour_utc'),
-                $request->get('start_minute_utc'),
-                0
+            $event->setEndWithInts(
+                $request->get('end_year'),
+                $request->get('end_month'),
+                $request->get('end_day'),
+                null,
+                null,
+                null
             );
-            $event->setStartWithObject($start);
-        }
+        } else {
+            if ($request->get('start_year_timezone')) {
+                $start = new \DateTime('', $event->getTimezone()->getDateTimeZoneObject());
+                $start->setDate(
+                    $request->get('start_year_timezone'),
+                    $request->get('start_month_timezone'),
+                    $request->get('start_day_timezone')
+                );
+                $start->setTime(
+                    $request->get('start_hour_timezone'),
+                    $request->get('start_minute_timezone'),
+                    0
+                );
+                $event->setStartWithObject($start);
+            } elseif ($request->get('start_year_utc')) {
+                $start = new \DateTime('', new \DateTimeZone('UTC'));
+                $start->setDate(
+                    $request->get('start_year_utc'),
+                    $request->get('start_month_utc'),
+                    $request->get('start_day_utc')
+                );
+                $start->setTime(
+                    $request->get('start_hour_utc'),
+                    $request->get('start_minute_utc'),
+                    0
+                );
+                $event->setStartWithObject($start);
+            }
 
-        if ($request->get('end_year_utc')) {
-            $end = new \DateTime('', new \DateTimeZone('UTC'));
-            $end->setDate(
-                $request->get('end_year_utc'),
-                $request->get('end_month_utc'),
-                $request->get('end_day_utc')
-            );
-            $end->setTime(
-                $request->get('end_hour_utc'),
-                $request->get('end_minute_utc'),
-                0
-            );
-            $event->setEndWithObject($end);
-        }
-        
-        if ($request->get('start_year_timezone')) {
-            $start = new \DateTime('', $event->getTimezone()->getDateTimeZoneObject());
-            $start->setDate(
-                $request->get('start_year_timezone'),
-                $request->get('start_month_timezone'),
-                $request->get('start_day_timezone')
-            );
-            $start->setTime(
-                $request->get('start_hour_timezone'),
-                $request->get('start_minute_timezone'),
-                0
-            );
-            $event->setStartWithObject($start);
-        }
-
-        if ($request->get('end_year_timezone')) {
-            $end = new \DateTime('', $event->getTimezone()->getDateTimeZoneObject());
-            $end->setDate(
-                $request->get('end_year_timezone'),
-                $request->get('end_month_timezone'),
-                $request->get('end_day_timezone')
-            );
-            $end->setTime(
-                $request->get('end_hour_timezone'),
-                $request->get('end_minute_timezone'),
-                0
-            );
-            $event->setEndWithObject($end);
+            if ($request->get('end_year_timezone')) {
+                $end = new \DateTime('', $event->getTimezone()->getDateTimeZoneObject());
+                $end->setDate(
+                    $request->get('end_year_timezone'),
+                    $request->get('end_month_timezone'),
+                    $request->get('end_day_timezone')
+                );
+                $end->setTime(
+                    $request->get('end_hour_timezone'),
+                    $request->get('end_minute_timezone'),
+                    0
+                );
+                $event->setEndWithObject($end);
+            } elseif ($request->get('end_year_utc')) {
+                $end = new \DateTime('', new \DateTimeZone('UTC'));
+                $end->setDate(
+                    $request->get('end_year_utc'),
+                    $request->get('end_month_utc'),
+                    $request->get('end_day_utc')
+                );
+                $end->setTime(
+                    $request->get('end_hour_utc'),
+                    $request->get('end_minute_utc'),
+                    0
+                );
+                $event->setEndWithObject($end);
+            }
         }
 
         if ($request->get('add_tag_0')) {
@@ -130,6 +145,7 @@ class APIV1AccountEventNewController extends APIV1AccountController
         }
 
         // TODO start & end are required fields - make sure they are set
+        // TODO check years are in range
 
         $count = 0;
         while ($request->request->get('extra_field_'.$count.'_name')) {

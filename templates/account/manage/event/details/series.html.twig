@@ -30,15 +30,13 @@
 
         <table class="table">
             <tr>
-                <th>Start</th>
-                <th>End</th>
+                <th>Start/End</th>
                 <th>Timezone</th>
                 <th></th>
             </tr>
             {%  for eventOccurrence in eventOccurrences %}
                 <tr>
-                    <td>{{ eventOccurrence.start(userTimeZone)|date("D F jS Y g:ia" , userTimeZone) }}</td>
-                    <td>{{ eventOccurrence.end(userTimeZone)|date("D F jS Y g:ia", userTimeZone)  }}</td>
+                    <td>{%  include '/common/eventStartEndLine.html.twig' with { 'data':eventOccurrence, 'timezone': userTimeZone } %}</td>
                     <td>{{  userTimeZone }}</td>
                     <td>
                         <a class="button"

@@ -92,28 +92,39 @@ class AccountManageEventDetailsController extends AccountManageController
         $this->buildEvent($account_username, $event_id, $request);
 
         // build the form
-        $timeZone = $this->event->getTimezone()->getCode();
-        if (isset($_POST['event_edit_details']) && isset($_POST['event_edit_details']['timezone'])) {
-            $timeZoneObject  = $this->getDoctrine()->getRepository(TimeZone::class)->findOneBy(['id'=>$_POST['event_edit_details']['timezone']]);
-            if ($timeZoneObject) {
-                $timeZone = $timeZoneObject->getCode();
-            }
-        }
         $editableFields = $this->event->getEditableFieldsList();
         $editableMode = $this->event->getEditableFieldsMode();
         $form = $this->createForm(
             EventEditDetailsType::class,
             $this->event,
             array(
-                'timeZoneName' => $timeZone,
                 'edit_extra_fields' => $this->event->getExtraFieldsKeys(),
                 'editableFields' => $editableFields,
                 'editableMode' => $editableMode,
             )
         );
         if (in_array('start_end', $editableFields)) {
-            $form->get('start_at')->setData($this->event->getStart());
-            $form->get('end_at')->setData($this->event->getEnd());
+            $form->get('all_day')->setData($this->event->isAllDay());
+            $form->get('start_date')->setData([
+                'year'=>$this->event->getStartYear(),
+                'month'=>$this->event->getStartMonth(),
+                'day'=>$this->event->getStartDay(),
+            ]);
+            $form->get('start_time')->setData([
+                'hour'=>$this->event->getStartHour(),
+                'minute'=>$this->event->getStartMinute(),
+                'second'=>$this->event->getStartSecond(),
+            ]);
+            $form->get('end_date')->setData([
+                'year'=>$this->event->getEndYear(),
+                'month'=>$this->event->getEndMonth(),
+                'day'=>$this->event->getEndDay(),
+            ]);
+            $form->get('end_time')->setData([
+                'hour'=>$this->event->getEndHour(),
+                'minute'=>$this->event->getEndMinute(),
+                'second'=>$this->event->getEndSecond(),
+            ]);
         }
 
         // handle the submit (will only happen on POST)
@@ -122,8 +133,45 @@ class AccountManageEventDetailsController extends AccountManageController
 
             // Non Mapped Fields
             if (in_array('start_end', $editableFields)) {
-                $this->event->setStartWithObject($form->get('start_at')->getData());
-                $this->event->setEndWithObject($form->get('end_at')->getData());
+                $startDate = $form->get('start_date')->getData();
+                $endDate = $form->get('end_date')->getData();
+                if ($form->get('all_day')->getData()) {
+                    $this->event->setStartWithInts(
+                        $startDate['year'],
+                        $startDate['month'],
+                        $startDate['day'],
+                        null,
+                        null,
+                        null
+                    );
+                    $this->event->setEndWithInts(
+                        $endDate['year'],
+                        $endDate['month'],
+                        $endDate['day'],
+                        null,
+                        null,
+                        null
+                    );
+                } else {
+                    $startTime = $form->get('start_time')->getData();
+                    $endTime = $form->get('end_time')->getData();
+                    $this->event->setStartWithInts(
+                        $startDate['year'],
+                        $startDate['month'],
+                        $startDate['day'],
+                        $startTime['hour'],
+                        $startTime['minute'],
+                        $startTime['second']
+                    );
+                    $this->event->setEndWithInts(
+                        $endDate['year'],
+                        $endDate['month'],
+                        $endDate['day'],
+                        $endTime['hour'],
+                        $endTime['minute'],
+                        $endTime['second']
+                    );
+                }
             }
 
             // Save

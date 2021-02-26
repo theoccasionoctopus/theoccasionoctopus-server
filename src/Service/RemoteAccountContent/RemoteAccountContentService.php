@@ -131,23 +131,44 @@ class RemoteAccountContentService
         }
         $event->setTimezone($timezone);
 
-        $event->setStartWithInts(
-            $eventData['start_timezone']['year'],
-            $eventData['start_timezone']['month'],
-            $eventData['start_timezone']['day'],
-            $eventData['start_timezone']['hour'],
-            $eventData['start_timezone']['minute'],
-            $eventData['start_timezone']['second']
-        );
 
-        $event->setEndWithInts(
-            $eventData['end_timezone']['year'],
-            $eventData['end_timezone']['month'],
-            $eventData['end_timezone']['day'],
-            $eventData['end_timezone']['hour'],
-            $eventData['end_timezone']['minute'],
-            $eventData['end_timezone']['second']
-        );
+        if ($eventData['all_day']) {
+            $event->setStartWithInts(
+                $eventData['start_timezone']['year'],
+                $eventData['start_timezone']['month'],
+                $eventData['start_timezone']['day'],
+                null,
+                null,
+                null
+            );
+
+            $event->setEndWithInts(
+                $eventData['end_timezone']['year'],
+                $eventData['end_timezone']['month'],
+                $eventData['end_timezone']['day'],
+                null,
+                null,
+                null
+            );
+        } else {
+            $event->setStartWithInts(
+                $eventData['start_timezone']['year'],
+                $eventData['start_timezone']['month'],
+                $eventData['start_timezone']['day'],
+                $eventData['start_timezone']['hour'],
+                $eventData['start_timezone']['minute'],
+                $eventData['start_timezone']['second']
+            );
+
+            $event->setEndWithInts(
+                $eventData['end_timezone']['year'],
+                $eventData['end_timezone']['month'],
+                $eventData['end_timezone']['day'],
+                $eventData['end_timezone']['hour'],
+                $eventData['end_timezone']['minute'],
+                $eventData['end_timezone']['second']
+            );
+        }
 
         // TODO extra fields
         // TODO Cancelled

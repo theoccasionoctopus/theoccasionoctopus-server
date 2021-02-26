@@ -55,18 +55,18 @@
 
             {%  if eventOccurrence %}
                 {%  if event.timezone.code == userTimeZone %}
-                    {%  include '/common/eventStartEndLine.html.twig' with { 'start':eventOccurrence.start, 'end':eventOccurrence.end, 'timezone': event.timezone.code } %}
+                    {%  include '/common/eventStartEndLine.html.twig' with { 'data':eventOccurrence, 'timezone': event.timezone.code } %}
                 {%  else %}
-                    {%  include '/common/eventStartEndLine.html.twig' with { 'start':eventOccurrence.start, 'end':eventOccurrence.end, 'timezone': event.timezone.code, 'showTimeZone': true } %}
-                    {%  include '/common/eventStartEndLine.html.twig' with { 'start':eventOccurrence.start(userTimeZone), 'end':eventOccurrence.end(userTimeZone), 'timezone': userTimeZone, 'showTimeZone': true } %}
+                    {%  include '/common/eventStartEndLine.html.twig' with { 'data':eventOccurrence, 'timezone': event.timezone.code, 'showTimeZone': true } %}
+                    {%  include '/common/eventStartEndLine.html.twig' with { 'data':eventOccurrence, 'timezone': userTimeZone, 'showTimeZone': true } %}
                 {%  endif %}
             {%  else %}
                 {%  if event.timezone.code == userTimeZone %}
-                    {%  include '/common/eventStartEndLine.html.twig' with { 'start':event.start, 'end':event.end, 'timezone': event.timezone.code } %}
+                    {%  include '/common/eventStartEndLine.html.twig' with { 'data':event, 'timezone': event.timezone.code } %}
                 {%  else %}
-                    {%  include '/common/eventStartEndLine.html.twig' with { 'start':event.start, 'end':event.end, 'timezone': event.timezone.code, 'showTimeZone': true } %}
-                    {%  include '/common/eventStartEndLine.html.twig' with { 'start':event.start(userTimeZone), 'end':event.end(userTimeZone), 'timezone': userTimeZone, 'showTimeZone': true } %}
-                {%  endif %}
+                    {%  include '/common/eventStartEndLine.html.twig' with { 'data':event, 'timezone': event.timezone.code, 'showTimeZone': true } %}
+                    {%  include '/common/eventStartEndLine.html.twig' with { 'data':event, 'timezone': userTimeZone, 'showTimeZone': true } %}
+                {%  endif data
             {%  endif %}
 
             <div>

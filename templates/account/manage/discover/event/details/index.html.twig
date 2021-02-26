@@ -43,10 +43,10 @@
         <h3>When</h3>
 
         {%  if discoverEvent.timezone.code == userTimeZone %}
-            {%  include '/common/eventStartEndLine.html.twig' with { 'start':discoverEvent.start, 'end':discoverEvent.end, 'timezone': discoverEvent.timezone.code } %}
+            {%  include '/common/eventStartEndLine.html.twig' with { 'data':discoverEvent, 'timezone': discoverEvent.timezone.code } %}
         {%  else %}
-            {%  include '/common/eventStartEndLine.html.twig' with { 'start':discoverEvent.start, 'end':discoverEvent.end, 'timezone': discoverEvent.timezone.code, 'showTimeZone': true } %}
-            {%  include '/common/eventStartEndLine.html.twig' with { 'start':discoverEvent.start(userTimeZone), 'end':discoverEvent.end(userTimeZone), 'timezone': userTimeZone, 'showTimeZone': true } %}
+            {%  include '/common/eventStartEndLine.html.twig' with { 'data':discoverEvent, 'timezone': discoverEvent.timezone.code, 'showTimeZone': true } %}
+            {%  include '/common/eventStartEndLine.html.twig' with { 'data':discoverEvent, 'end':discoverEvent, 'timezone': userTimeZone, 'showTimeZone': true } %}
         {%  endif %}
 
         <div>
