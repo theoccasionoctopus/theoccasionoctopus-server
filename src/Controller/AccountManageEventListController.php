@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\EventOccurrence;
+use App\Exception\AccessDeniedRedirectToPublicURLIfPossibleException;
 use App\FilterParams\EventListFilterParams;
 use App\RepositoryQuery\EventRepositoryQuery;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -17,8 +18,11 @@ class AccountManageEventListController extends AccountManageController
 {
     public function indexManageEvent($account_username, Request $request)
     {
-        $this->setUpAccountManage($account_username, $request);
-
+        try {
+            $this->setUpAccountManage($account_username, $request);
+        } catch (AccessDeniedRedirectToPublicURLIfPossibleException $e) {
+            return $this->redirectToRoute('account_public_event', ['account_username' => $this->account->getUsername() ]);
+        }
 
         $params = new EventListFilterParams($this->getDoctrine(), $this->account);
         $params->build($request->query);
@@ -35,7 +39,11 @@ class AccountManageEventListController extends AccountManageController
 
     public function calendar($account_username, Request $request)
     {
-        $this->setUpAccountManage($account_username, $request);
+        try {
+            $this->setUpAccountManage($account_username, $request);
+        } catch (AccessDeniedRedirectToPublicURLIfPossibleException $e) {
+            return $this->redirectToRoute('account_public_event_calendar', ['account_username' => $this->account->getUsername() ]);
+        }
 
         // TODO use EventListFilterParams
 
