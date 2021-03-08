@@ -50,6 +50,27 @@ class EmailUserUpcomingEventsForAccount
         return $this->enabled && !$this->user->isLocked() && !$this->account->getAccountLocal()->isLocked();
     }
 
+    public function shouldSendAndHasDataToSend($doctrine): bool
+    {
+        if (!$this->shouldSendIfData()) {
+            return false;
+        }
+
+        // Search for events BUT only ones that start in range
+        // If someone has a long event (eg all year) we don't want to trigger an email every single day
+        $eventRepositoryBuilder = new EventRepositoryQuery($doctrine);
+        $eventRepositoryBuilder->setAccountEvents($this->getAccount());
+        $start = new \DateTime('now', $this->getAccount()->getAccountLocal()->getDefaultTimezone()->getDateTimeZoneObject());
+        $start->setTime(0, 0, 0);
+        $eventRepositoryBuilder->setFrom($start);
+        $end = new \DateTime('now', $this->getAccount()->getAccountLocal()->getDefaultTimezone()->getDateTimeZoneObject());
+        $end->setTime(23, 59, 59);
+        $eventRepositoryBuilder->setTo($end);
+        $eventRepositoryBuilder->setShowCancelled(false);
+        $eventRepositoryBuilder->setShowDeleted(false);
+        $eventRepositoryBuilder->setStartEndMode(EventRepositoryQuery::START_END_MODE_STARTING_EVENTS_ONLY);
+        return (bool)$eventRepositoryBuilder->getEventOccurrences();
+    }
 
     public function getUpcomingEventOccurrences($doctrine)
     {
@@ -63,6 +84,9 @@ class EmailUserUpcomingEventsForAccount
         $eventRepositoryBuilder->setTo($end);
         $eventRepositoryBuilder->setShowCancelled(false);
         $eventRepositoryBuilder->setShowDeleted(false);
+        // When getting events to include, don't call
+        //         $eventRepositoryBuilder->setStartEndMode(EventRepositoryQuery::START_END_MODE_STARTING_EVENTS_ONLY);
+        // like above. This is so events in the email include all events - ongoing and starting now.
         return $eventRepositoryBuilder->getEventOccurrences();
     }
 

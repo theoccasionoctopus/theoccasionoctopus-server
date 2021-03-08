@@ -90,7 +90,7 @@ class SendUpcomingEventsNotificationsCommand extends Command
                     'upcomingEventOccurrences'=>$emailUpcomingEvents->getUpcomingEventOccurrences($doctrine),
                 ];
 
-                if ($parameters['upcomingEventOccurrences']) {
+                if ($emailUpcomingEvents->shouldSendAndHasDataToSend($doctrine)) {
                     $output->writeln(".... Sending");
 
                     $message = new \Swift_Message(

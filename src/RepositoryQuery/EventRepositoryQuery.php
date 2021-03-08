@@ -41,6 +41,10 @@ class EventRepositoryQuery
 
     protected $max_privacy_allowed = Constants::PRIVACY_LEVEL_PRIVATE;
 
+    const START_END_MODE_ALL_EVENTS = 0;
+    const START_END_MODE_STARTING_EVENTS_ONLY = 1;
+    protected $start_end_mode = self::START_END_MODE_ALL_EVENTS;
+
     /** @var null Int */
     protected $limit = null;
 
@@ -133,6 +137,14 @@ class EventRepositoryQuery
         $this->limit = $limit;
     }
 
+    /**
+     * @param int $start_end_mode
+     */
+    public function setStartEndMode(int $start_end_mode)
+    {
+        $this->start_end_mode = $start_end_mode;
+    }
+
     public function getEvents()
     {
         $qb = $this->doctrine->getRepository(Event::class)->createQueryBuilder('e');
@@ -157,7 +169,11 @@ class EventRepositoryQuery
         }
 
         if ($this->from) {
-            $qb->andWhere('e.cachedEndEpoch >= :from')->setParameter('from', $this->from->getTimestamp());
+            if ($this->start_end_mode == self::START_END_MODE_ALL_EVENTS) {
+                $qb->andWhere('e.cachedEndEpoch >= :from')->setParameter('from', $this->from->getTimestamp());
+            } else {
+                $qb->andWhere('e.cachedStartEpoch >= :from')->setParameter('from', $this->from->getTimestamp());
+            }
         }
 
         if ($this->to) {
@@ -215,7 +231,11 @@ class EventRepositoryQuery
         }
 
         if ($this->from) {
-            $qb->andWhere('eo.endEpoch >= :from')->setParameter('from', $this->from->getTimestamp());
+            if ($this->start_end_mode == self::START_END_MODE_ALL_EVENTS) {
+                $qb->andWhere('eo.endEpoch >= :from')->setParameter('from', $this->from->getTimestamp());
+            } else {
+                $qb->andWhere('eo.startEpoch >= :from')->setParameter('from', $this->from->getTimestamp());
+            }
         }
 
         if ($this->to) {
