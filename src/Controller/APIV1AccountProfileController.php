@@ -26,6 +26,7 @@ class APIV1AccountProfileController extends APIV1AccountController
             'id'=> $this->account->getId(),
             'username'=>$this->account->getAccountLocal()->getUsername(),
             'title'=>$this->account->getTitle(),
+            'description'=>$this->account->getAccountLocal()->getDescription(),
         );
 
         return new Response(
