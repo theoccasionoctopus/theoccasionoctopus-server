@@ -14,8 +14,8 @@ use App\Entity\TimeZone;
 use App\Entity\User;
 use App\Library;
 use App\Service\EventToEventOccurrence\EventToEventOccurrenceService;
+use App\Service\RequestHTTP\RequestHTTPService;
 use Doctrine\ORM\EntityManagerInterface;
-use GuzzleHttp\Client;
 use Psr\Log\LoggerInterface;
 
 class RemoteAccountContentService
@@ -29,14 +29,18 @@ class RemoteAccountContentService
 
     protected $eventToEventOccurrenceService;
 
+    /** @var  RequestHTTPService */
+    protected $requestHTTPService;
+
     /**
      * @param EntityManagerInterface $entityManager
      */
-    public function __construct(EntityManagerInterface $entityManager, LoggerInterface $logger, EventToEventOccurrenceService $eventToEventOccurrenceService)
+    public function __construct(EntityManagerInterface $entityManager, LoggerInterface $logger, EventToEventOccurrenceService $eventToEventOccurrenceService, RequestHTTPService $requestHTTPService)
     {
         $this->entityManager = $entityManager;
         $this->logger = $logger;
         $this->eventToEventOccurrenceService = $eventToEventOccurrenceService;
+        $this->requestHTTPService = $requestHTTPService;
     }
 
     public function downloadAccountRemote(AccountRemote $accountRemote)
@@ -58,8 +62,7 @@ class RemoteAccountContentService
 
         // Check if remote server is still running our software
         // TODO now we work with servers of both types, can this check be cleverer? Or not done here?
-        $guzzle = new Client(array('defaults' => array('headers' => array(  'User-Agent'=> 'Prototype Software') )));
-        $response = $guzzle->request("GET", $accountRemote->getRemoteServer()->getURL()."/.well-known/occasion-octopus-instance.json", array());
+        $response = $this->requestHTTPService->request("GET", $accountRemote->getRemoteServer()->getURL()."/.well-known/occasion-octopus-instance.json", array());
         if ($response->getStatusCode() != 200) {
             throw new Exception("Is remote software not our server? Got Status " . $response->getStatusCode());
         }
@@ -68,8 +71,7 @@ class RemoteAccountContentService
         // TODO get a profile.json method on our own API, update remote title
 
         // Get Events
-        $guzzle = new Client(array('defaults' => array('headers' => array(  'User-Agent'=> 'Prototype Software') )));
-        $response = $guzzle->request("GET", $accountRemote->getRemoteServer()->getURL()."/api/v1/account/".$account->getId()."/events.json", array());
+        $response = $this->requestHTTPService->request("GET", $accountRemote->getRemoteServer()->getURL()."/api/v1/account/".$account->getId()."/events.json", array());
         if ($response->getStatusCode() != 200) {
             throw new Exception("When Getting Events, Got Status " . $response->getStatusCode());
         }
@@ -92,8 +94,7 @@ class RemoteAccountContentService
         // TODO Do we need to?
 
         // Get Event
-        $guzzle = new Client(array('defaults' => array('headers' => array(  'User-Agent'=> 'Prototype Software') )));
-        $response = $guzzle->request("GET", $accountRemote->getRemoteServer()->getURL()."/api/v1/account/".$account->getId()."/event/".$eventId.".json", array());
+        $response = $this->requestHTTPService->request("GET", $accountRemote->getRemoteServer()->getURL()."/api/v1/account/".$account->getId()."/event/".$eventId.".json", array());
         if ($response->getStatusCode() != 200) {
             throw new Exception("When Getting Event, Got Status " . $response->getStatusCode());
         }
