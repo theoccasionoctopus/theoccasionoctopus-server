@@ -315,6 +315,10 @@ api1_account_events_json:
     controller: App\Controller\APIV1AccountEventListController::listJSON
     methods:  [GET]
 
+api1_account_event_occurrences_json:
+    path: /api/v1/account/{account_id}/eventOccurrences.json
+    controller: App\Controller\APIV1AccountEventListController::listOccurrencesJSON
+    methods:  [GET]
 
 api1_account_events_show_event_json:
     path: /api/v1/account/{account_id}/event/{event_id}.json

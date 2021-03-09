@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\APIV1\ICalBuilderForAccount;
+use App\Entity\EventOccurrence;
 use App\Entity\Tag;
 use App\Service\HistoryWorker\HistoryWorkerService;
 use App\Library;
@@ -18,59 +19,8 @@ use Symfony\Component\HttpFoundation\Response;
 
 class APIV1AccountEventListController extends APIV1AccountController
 {
-    public function listICAL($account_id, Request $request)
+    protected function getRepositoryQuery(Request $request): EventRepositoryQuery
     {
-        $this->buildAccount($account_id, $request);
-
-        $builder = new ICalBuilderForAccount($this->account, $this->container);
-        $out = $builder->getStart();
-
-        # Set up search with security filters
-        $repositoryQuery = new EventRepositoryQuery($this->getDoctrine());
-        $repositoryQuery->setAccountEvents($this->account);
-        if ($this->account_permission_read_private) {
-            // Great
-        } elseif ($this->account_permission_read_only_followers) {
-            $repositoryQuery->setPrivacyLevelOnlyFollowers();
-        } else {
-            $repositoryQuery->setPublicOnly();
-        }
-
-        # set up custom filters
-        if ($request->query->get('tag')) {
-            $tagRepository = $this->getDoctrine()->getRepository(Tag::class);
-            $tag = $tagRepository->findOneBy(['id'=>$request->query->get('tag'), 'account'=>$this->account]);
-            if ($tag) {
-                $repositoryQuery->setTag($tag);
-            }
-        }
-
-        # Get events, output
-        $events = $repositoryQuery->getEvents();
-
-        foreach ($events as $event) {
-            $out .= $builder->getEvent($event);
-        }
-
-        $out .= $builder->getEnd();
-
-        return new Response(
-            $out,
-            Response::HTTP_OK,
-            ['content-type' => 'text/calendar']
-        );
-    }
-
-
-    public function listJSON($account_id, Request $request)
-    {
-        $this->buildAccount($account_id, $request);
-
-        $out = array(
-            'events'=>array(),
-        );
-
-        # Set up search with security filters
         $repositoryQuery = new EventRepositoryQuery($this->getDoctrine());
         $repositoryQuery->setAccountEvents($this->account);
         if ($this->account_permission_read_private) {
@@ -93,8 +43,43 @@ class APIV1AccountEventListController extends APIV1AccountController
             }
         }
 
-        # Get events, output
+        return $repositoryQuery;
+    }
+
+    public function listICAL($account_id, Request $request)
+    {
+        $this->buildAccount($account_id, $request);
+
+        $builder = new ICalBuilderForAccount($this->account, $this->container);
+        $out = $builder->getStart();
+
+        $repositoryQuery = $this->getRepositoryQuery($request);
         $events = $repositoryQuery->getEvents();
+
+        foreach ($events as $event) {
+            $out .= $builder->getEvent($event);
+        }
+
+        $out .= $builder->getEnd();
+
+        return new Response(
+            $out,
+            Response::HTTP_OK,
+            ['content-type' => 'text/calendar']
+        );
+    }
+
+
+    public function listJSON($account_id, Request $request)
+    {
+        $this->buildAccount($account_id, $request);
+
+        $repositoryQuery = $this->getRepositoryQuery($request);
+        $events = $repositoryQuery->getEvents();
+
+        $out = array(
+            'events'=>array(),
+        );
 
         /** @var Event $event */
         foreach ($events as $event) {
@@ -104,6 +89,9 @@ class APIV1AccountEventListController extends APIV1AccountController
                 'description'=>$event->getDescription(),
                 'url'=>$event->getUrl(),
                 'url_tickets'=>$event->getUrlTickets(),
+                'deleted'=>$event->getDeleted(),
+                'cancelled'=>$event->getCancelled(),
+                'rrule'=>$event->getRrule(),
                 'timezone'=>array(
                     'code'=>$event->getTimezone()->getCode(),
                 ),
@@ -115,6 +103,51 @@ class APIV1AccountEventListController extends APIV1AccountController
                 'extra_fields'=>($event->getExtraFields() ? $event->getExtraFields() : new stdClass()),
             );
             $eventJSON = array_merge($eventJSON, Library::getAPIJSONResponseForObject($event));
+            $out['events'][] = $eventJSON;
+        }
+
+        return new Response(
+            json_encode($out),
+            Response::HTTP_OK,
+            ['content-type' => 'application/json']
+        );
+    }
+
+    public function listOccurrencesJSON($account_id, Request $request)
+    {
+        $this->buildAccount($account_id, $request);
+
+        $repositoryQuery = $this->getRepositoryQuery($request);
+        $eventOccurrences = $repositoryQuery->getEventOccurrences();
+
+        $out = array(
+            'events'=>array(),
+        );
+
+        /** @var EventOccurrence $eventOccurrence */
+        foreach ($eventOccurrences as $eventOccurrence) {
+            /** @var Event $event */
+            $event = $eventOccurrence->getEvent();
+            $eventJSON = array(
+                'event_id'=> $eventOccurrence->getEvent()->getId(),
+                'occurrence_id'=> $eventOccurrence->getId(),
+                'title'=>$event->getTitle(),
+                'description'=>$event->getDescription(),
+                'url'=>$event->getUrl(),
+                'url_tickets'=>$event->getUrlTickets(),
+                'deleted'=>$event->getDeleted(),
+                'cancelled'=>$event->getCancelled(),
+                'timezone'=>array(
+                    'code'=>$event->getTimezone()->getCode(),
+                ),
+                'country'=>array(
+                    // TODO better name for this that says what the code actually is!
+                    'code'=>$event->getCountry()->getIso3166TwoChar(),
+                ),
+                'privacy'=>$this->privacyLevelToAPIString($event->getPrivacy()),
+                'extra_fields'=>($event->getExtraFields() ? $event->getExtraFields() : new stdClass()),
+            );
+            $eventJSON = array_merge($eventJSON, Library::getAPIJSONResponseForObject($eventOccurrence));
             $out['events'][] = $eventJSON;
         }
 

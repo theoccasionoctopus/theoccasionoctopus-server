@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\APIV1\ICalBuilderForAccount;
 use App\Constants;
 use App\Entity\EventHasTag;
+use App\Entity\EventOccurrence;
 use App\Entity\Tag;
 use App\Service\HistoryWorker\HistoryWorkerService;
 use App\Library;
@@ -51,6 +52,7 @@ class APIV1AccountEventDetailsController extends APIV1AccountController
     {
         $this->buildEvent($account_id, $event_id, $request);
 
+        $out = [];
         $out['event'] = array(
             'id'=> $this->event->getId(),
             'title'=>$this->event->getTitle(),
@@ -67,8 +69,21 @@ class APIV1AccountEventDetailsController extends APIV1AccountController
             'extra_fields'=>($this->event->getExtraFields() ? $this->event->getExtraFields() : new stdClass()),
             'editable_mode'=>$this->event->getEditableFieldsMode(),
             'editable_fields'=>$this->event->getEditableFieldsList(),
+            'deleted'=>$this->event->getDeleted(),
+            'cancelled'=>$this->event->getCancelled(),
+            'rrule'=>$this->event->getRrule(),
+            'occurrences'=>[],
         );
         $out['event'] = array_merge($out['event'], Library::getAPIJSONResponseForObject($this->event));
+
+        $eventOccurrences = $this->getDoctrine()->getRepository(EventOccurrence::class)->findBy(['event'=>$this->event], ['startEpoch'=>'ASC']);
+        foreach ($eventOccurrences as $eventOccurrence) {
+            $eventOccurrenceJSON = array(
+                'id'=> $eventOccurrence->getId(),
+            );
+            $eventOccurrenceJSON = array_merge($eventOccurrenceJSON, Library::getAPIJSONResponseForObject($eventOccurrence));
+            $out['event']['occurrences'][] = $eventOccurrenceJSON;
+        }
 
         return new Response(
             json_encode($out),
