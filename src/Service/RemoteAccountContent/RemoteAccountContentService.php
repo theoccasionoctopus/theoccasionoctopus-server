@@ -180,9 +180,10 @@ class RemoteAccountContentService
             );
         }
 
+        $event->setDeleted($eventData['deleted']);
+        $event->setCancelled($eventData['cancelled']);
+
         // TODO extra fields
-        // TODO Cancelled
-        // TODO Deleted
 
         $this->entityManager->persist($event);
         $this->entityManager->flush();
