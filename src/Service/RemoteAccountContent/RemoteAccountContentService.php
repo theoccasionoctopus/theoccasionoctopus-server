@@ -67,8 +67,17 @@ class RemoteAccountContentService
             throw new Exception("Is remote software not our server? Got Status " . $response->getStatusCode());
         }
 
-        // Get account info
-        // TODO get a profile.json method on our own API, update remote title
+        // Get account profile
+        $response = $this->requestHTTPService->request("GET", $accountRemote->getRemoteServer()->getURL()."/api/v1/account/".$account->getId()."/profile.json", array());
+        if ($response->getStatusCode() != 200) {
+            throw new Exception("When Getting Profile, Got Status " . $response->getStatusCode());
+        }
+        $profileData = json_decode($response->getBody(), true);
+        if ($profileData['title'] != $accountRemote->getAccount()->getTitle()) {
+            $accountRemote->getAccount()->setTitle($profileData['title']);
+            $this->entityManager->persist($accountRemote->getAccount());
+            $this->entityManager->flush();
+        }
 
         // Get Events
         $response = $this->requestHTTPService->request("GET", $accountRemote->getRemoteServer()->getURL()."/api/v1/account/".$account->getId()."/events.json", array());
