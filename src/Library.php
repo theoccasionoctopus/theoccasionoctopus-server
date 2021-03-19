@@ -51,7 +51,7 @@ class Library
             $value = str_replace(";", "\\;", $value);
         }
         $value = str_replace(",", "\\,", $value);
-        $value = iconv("UTF-8", "ISO-8859-1//TRANSLIT", $value);
+        $value = iconv("UTF-8", "ISO-8859-1//TRANSLIT//IGNORE", $value);
         // google calendar does not like a space after the ':'.
         $out = $key . ":" . $value;
         if (strlen($out) > 75) {
