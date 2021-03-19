@@ -16,6 +16,7 @@ class ICalBuilderForAccount
 
     protected $container;
 
+    protected $uidSuffix;
 
     /**
      * ICalBuilderForAccount constructor.
@@ -25,6 +26,8 @@ class ICalBuilderForAccount
     {
         $this->account = $account;
         $this->container = $container;
+        $urlBits = parse_url($this->container->get('parameter_bag')->get('app.instance_url'));
+        $this->uidSuffix = $urlBits['host'];
     }
 
 
@@ -33,8 +36,7 @@ class ICalBuilderForAccount
         $txt = Library::getIcalLine('BEGIN', 'VCALENDAR');
         $txt .= Library::getIcalLine('VERSION', '2.0');
         $txt .= Library::getIcalLine('PRODID', '-//TheOccasionOctopus//NONSGML TheOccasionOctopus//EN');
-        // TODO use site instance in title
-        $txt .= Library::getIcalLine('X-WR-CALNAME', $this->account->getTitle(). " - SITE INSTANCE NAME HERE");
+        $txt .= Library::getIcalLine('X-WR-CALNAME', $this->account->getTitle(). " - ".$this->container->get('parameter_bag')->get('app.instance_name'));
         return $txt;
     }
 
@@ -47,7 +49,7 @@ class ICalBuilderForAccount
     public function getEvent(Event $event)
     {
         $txt = Library::getIcalLine('BEGIN', 'VEVENT');
-        $txt .= Library::getIcalLine('UID', $event->getId()); // TODO add "@ site name"
+        $txt .= Library::getIcalLine('UID', $event->getId().'@'.$this->uidSuffix);
 
         if ($event->getDeleted()) {
             $txt .= Library::getIcalLine('SUMMARY', $event->getTitle(). " [DELETED]");
@@ -71,7 +73,6 @@ class ICalBuilderForAccount
                 UrlGeneratorInterface::ABSOLUTE_URL
             );
 
-            // TODO Change to site instance name
             $description = $event->getDescription()."\n\n\nEvent Page:".$url."\n\n";
             if ($event->getUrl()) {
                 $description .= 'Find out more: '. $event->getUrl()."\n\n";
@@ -79,7 +80,6 @@ class ICalBuilderForAccount
             if ($event->getUrlTickets()) {
                 $description .= 'Get Tickets: '. $event->getUrl()."\n\n";
             }
-            $description .= "\n----\nPowered by The Occasion Octopus";
             $txt .= Library::getIcalLine('DESCRIPTION', $description);
 
             // TODO a HTML description?
