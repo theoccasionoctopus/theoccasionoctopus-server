@@ -51,7 +51,7 @@ class ImportService
         $guzzle = new Client(array('defaults' => array('headers' => array(  'User-Agent'=> 'Prototype Software') )));
         $response = $guzzle->request("GET", $import->getURL(), array());
         if ($response->getStatusCode() != 200) {
-            throw new Exception("Got Status " . $response->getStatusCode());
+            throw new \Exception("Got Status " . $response->getStatusCode());
         }
 
         // TODO this passes a whole string to the reader - if we could pass a stream it would be more efficient

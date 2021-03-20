@@ -203,10 +203,10 @@ class Library
     {
         $url_bits = parse_url(trim($url));
         if (!$url_bits) {
-            throw new Exception("Are you sure this is a URL? " . $url);
+            throw new \Exception("Are you sure this is a URL? " . $url);
         }
         if (!in_array($url_bits['scheme'], ['http','https'])) {
-            throw new Exception("Must be http or https: " . $url);
+            throw new \Exception("Must be http or https: " . $url);
         }
 
         // TODO use port, user and pass too!

@@ -12,7 +12,7 @@ class APOutbox
 
         $response = $guzzle->request("GET", $url, array('http_errors' => false));
         if ($response->getStatusCode() != 200) {
-            throw new Exception("Could not get Outbox " . $url. " Response: ". $response->getStatusCode());
+            throw new \Exception("Could not get Outbox " . $url. " Response: ". $response->getStatusCode());
         }
 
         $outboxData = json_decode($response->getBody(), true);

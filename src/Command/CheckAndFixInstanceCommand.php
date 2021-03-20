@@ -86,7 +86,7 @@ class CheckAndFixInstanceCommand extends Command
         $guzzle = new Client(array('defaults' => array('headers' => array(  'User-Agent'=> 'Prototype Software') )));
         $response = $guzzle->request("GET", "https://raw.githubusercontent.com/eggert/tz/master/iso3166.tab", array());
         if ($response->getStatusCode() != 200) {
-            throw new Exception("Got Status " . $response->getStatusCode());
+            throw new \Exception("Got Status " . $response->getStatusCode());
         }
 
         $doctrine = $this->container->get('doctrine');

@@ -57,7 +57,7 @@ class RemoteServerService
                 return $this->addActivityPubRemoteServer($remoteServer);
             }
         } else {
-            throw new Exception("Got Status " . $response->getStatusCode());
+            throw new \Exception("Got Status " . $response->getStatusCode());
         }
     }
 

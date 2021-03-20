@@ -81,7 +81,7 @@ class AccountRemoteService
             array()
         );
         if ($responseWebFinger->getStatusCode() != 200) {
-            throw new Exception("Got Status " . $responseWebFinger->getStatusCode());
+            throw new \Exception("Got Status " . $responseWebFinger->getStatusCode());
         }
 
         $dataWebFinger = json_decode($responseWebFinger->getBody(), true);
@@ -108,7 +108,7 @@ class AccountRemoteService
             )
         );
         if ($responseActorData->getStatusCode() != 200) {
-            throw new Exception("Got Status " . $responseActorData->getStatusCode());
+            throw new \Exception("Got Status " . $responseActorData->getStatusCode());
         }
 
         $dataActor = json_decode($responseActorData->getBody(), true);
@@ -167,7 +167,7 @@ class AccountRemoteService
             )
         );
         if ($responseActorData->getStatusCode() != 200) {
-            throw new Exception("Got Status " . $responseActorData->getStatusCode());
+            throw new \Exception("Got Status " . $responseActorData->getStatusCode());
         }
 
         $dataActor = json_decode($responseActorData->getBody(), true);

@@ -64,13 +64,13 @@ class RemoteAccountContentService
         // TODO now we work with servers of both types, can this check be cleverer? Or not done here?
         $response = $this->requestHTTPService->request("GET", $accountRemote->getRemoteServer()->getURL()."/.well-known/occasion-octopus-instance.json", array());
         if ($response->getStatusCode() != 200) {
-            throw new Exception("Is remote software not our server? Got Status " . $response->getStatusCode());
+            throw new \Exception("Is remote software not our server? Got Status " . $response->getStatusCode());
         }
 
         // Get account profile
         $response = $this->requestHTTPService->request("GET", $accountRemote->getRemoteServer()->getURL()."/api/v1/account/".$account->getId()."/profile.json", array());
         if ($response->getStatusCode() != 200) {
-            throw new Exception("When Getting Profile, Got Status " . $response->getStatusCode());
+            throw new \Exception("When Getting Profile, Got Status " . $response->getStatusCode());
         }
         $profileData = json_decode($response->getBody(), true);
         if ($profileData['title'] != $accountRemote->getAccount()->getTitle()) {
@@ -82,7 +82,7 @@ class RemoteAccountContentService
         // Get Events
         $response = $this->requestHTTPService->request("GET", $accountRemote->getRemoteServer()->getURL()."/api/v1/account/".$account->getId()."/events.json", array());
         if ($response->getStatusCode() != 200) {
-            throw new Exception("When Getting Events, Got Status " . $response->getStatusCode());
+            throw new \Exception("When Getting Events, Got Status " . $response->getStatusCode());
         }
 
         $APIEventListData = json_decode($response->getBody(), true);
@@ -105,7 +105,7 @@ class RemoteAccountContentService
         // Get Event
         $response = $this->requestHTTPService->request("GET", $accountRemote->getRemoteServer()->getURL()."/api/v1/account/".$account->getId()."/event/".$eventId.".json", array());
         if ($response->getStatusCode() != 200) {
-            throw new Exception("When Getting Event, Got Status " . $response->getStatusCode());
+            throw new \Exception("When Getting Event, Got Status " . $response->getStatusCode());
         }
 
         $APIEventData = json_decode($response->getBody(), true);
@@ -131,13 +131,13 @@ class RemoteAccountContentService
 
         $country = $this->entityManager->getRepository(Country::class)->findOneBy(array('iso3166_two_char'=>$eventData['country']['code']));
         if (!$country) {
-            throw new Exception("Country not known! " . $eventData['country']['code']);
+            throw new \Exception("Country not known! " . $eventData['country']['code']);
         }
         $event->setCountry($country);
 
         $timezone = $this->entityManager->getRepository(TimeZone::class)->findOneBy(array('code'=>$eventData['timezone']['code']));
         if (!$timezone) {
-            throw new Exception("Timezone not known! " . $eventData['timezone']['code']);
+            throw new \Exception("Timezone not known! " . $eventData['timezone']['code']);
         }
         $event->setTimezone($timezone);
 
