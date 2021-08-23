@@ -20,22 +20,22 @@ class AccountManageTagDetailsController extends AccountManageController
     /** @var  Tag */
     protected $tag;
 
-    protected function buildTag($account_username, $tag_id, Request $request)
+    protected function buildTag($account_username, $tag_slug, Request $request)
     {
         $this->setUpAccountManage($account_username, $request);
 
         $doctrine = $this->getDoctrine();
         $repository = $doctrine->getRepository(Tag::class);
 
-        $this->tag = $repository->findOneBy(array('account' => $this->account, 'id' => $tag_id));
+        $this->tag = $repository->findOneBy(array('account' => $this->account, 'slug' => $tag_slug));
         if (!$this->tag) {
             throw new  NotFoundHttpException('Not found');
         }
     }
 
-    public function indexShow($account_username, $tag_id, Request $request)
+    public function indexShow($account_username, $tag_slug, Request $request)
     {
-        $this->buildTag($account_username, $tag_id, $request);
+        $this->buildTag($account_username, $tag_slug, $request);
 
         // TODO should show occurrences, not just events!
         $repositoryQuery = new EventRepositoryQuery($this->getDoctrine());
@@ -52,9 +52,9 @@ class AccountManageTagDetailsController extends AccountManageController
         ]));
     }
 
-    public function indexEditDetails($account_username, $tag_id, Request $request, HistoryWorkerService $historyWorkerService)
+    public function indexEditDetails($account_username, $tag_slug, Request $request, HistoryWorkerService $historyWorkerService)
     {
-        $this->buildTag($account_username, $tag_id, $request);
+        $this->buildTag($account_username, $tag_slug, $request);
 
         // build the form
         $form = $this->createForm(TagEditType::class, $this->tag);
@@ -74,7 +74,7 @@ class AccountManageTagDetailsController extends AccountManageController
                 'success',
                 'Tag edited!'
             );
-            return $this->redirectToRoute('account_manage_tag_show_tag', ['account_username' => $this->account->getUsername(),'tag_id' => $this->tag->getId() ]);
+            return $this->redirectToRoute('account_manage_tag_show_tag', ['account_username' => $this->account->getUsername(),'tag_slug' => $this->tag->getSlug() ]);
         }
 
         return $this->render('account/manage/tag/details/editDetails.html.twig', $this->getTemplateVariables([

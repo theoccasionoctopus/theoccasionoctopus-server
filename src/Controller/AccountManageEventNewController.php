@@ -83,7 +83,7 @@ class AccountManageEventNewController extends AccountManageController
                 'success',
                 'Event created!'
             );
-            return $this->redirectToRoute('account_manage_event_show_event', ['account_username' => $this->account->getUsername(),'event_id' => $event->getId() ]);
+            return $this->redirectToRoute('account_manage_event_show_event', ['account_username' => $this->account->getUsername(),'event_slug' => $event->getSlug() ]);
         }
 
         return $this->render('account/manage/event/new.html.twig', $this->getTemplateVariables([

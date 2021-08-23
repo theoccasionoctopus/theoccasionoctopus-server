@@ -68,7 +68,7 @@ class ICalBuilderForAccount
                 'account_public_event_show_event',
                 [
                     'account_username' => $event->getAccount()->getUserName(),
-                    'event_id' => $event->getId(),
+                    'event_slug' => $event->getSlug(),
                 ],
                 UrlGeneratorInterface::ABSOLUTE_URL
             );

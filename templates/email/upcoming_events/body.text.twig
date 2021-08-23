@@ -4,7 +4,7 @@ Here are today's events for {{ account.title }}:
 {%  for eventOccurrence in upcomingEventOccurrences %}
 ---
 {{  eventOccurrence.event.title }}</p>
-{{ url('account_public_event_show_event',{'account_username':accountLocal.username,'event_id': eventOccurrence.event.id },0) }}?startutc={{ eventOccurrence.start('UTC')|date("Y-m-d-H-i-s") }}
+{{ url('account_public_event_show_event',{'account_username':accountLocal.username,'event_slug': eventOccurrence.event.slug },0) }}?startutc={{ eventOccurrence.start('UTC')|date("Y-m-d-H-i-s") }}
 
 
 {%  endfor %}

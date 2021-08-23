@@ -20,7 +20,7 @@
                             <i class="fas fa-globe-europe"></i> Public
                         {%  endif %}
                     </p>
-                    <a class="button" href="{{ path('account_manage_tag_show_tag',{'account_username':account.username,'tag_id': tag.id }) }}">Details</a>
+                    <a class="button" href="{{ path('account_manage_tag_show_tag',{'account_username':account.username,'tag_slug': tag.slug }) }}">Details</a>
                 </li>
 
             {%  endfor %}

@@ -2,7 +2,7 @@
 
 {% block robots %}{%  if account.accountLocal.SEOIndexFollow and not event.deleted %}INDEX, FOLLOW{%  else %}NOINDEX, NOFOLLOW{%  endif  %}{% endblock %}
 
-{% block account_public_to_manage_url %}{{ path('account_manage_event_show_event',{'account_username':account.username,'event_id':event.id}) }}{% endblock %}
+{% block account_public_to_manage_url %}{{ path('account_manage_event_show_event',{'account_username':account.username,'event_slug':event.slug}) }}{% endblock %}
 
 {% block body %}
 
@@ -41,7 +41,7 @@
                 <p><i class="fas fa-ticket-alt"></i> Tickets: <a href="{{ event.urlTickets }}">{{ event.urlTickets }}</a></p>
             {% endif %}
             {% for tag in currentTags %}
-                <a class="button" href="{{ path('account_public_tag_show_tag',{'account_username':account.username,'tag_id': tag.id }) }}"><i class="fas fa-tag"></i> Tag: {{  tag.title }}</a>
+                <a class="button" href="{{ path('account_public_tag_show_tag',{'account_username':account.username,'tag_slug': tag.slug }) }}"><i class="fas fa-tag"></i> Tag: {{  tag.title }}</a>
             {% endfor %}
 
 
@@ -77,7 +77,7 @@
             {%  if event.hasReoccurence %}
 
                 <div>
-                    <a class="button" href="{{ path('account_public_event_show_event_series',{'account_username':account.username,'event_id': event.id }) }}">View all occurrences</a>
+                    <a class="button" href="{{ path('account_public_event_show_event_series',{'account_username':account.username,'event_slug': event.slug }) }}">View all occurrences</a>
                 </div>
 
             {%  endif  %}
@@ -100,7 +100,7 @@
                         {%  if eventHasSourceEvent.sourceEvent.account.getAccountLocal() %}
                             <i class="fas fa-user"></i> {{  eventHasSourceEvent.sourceEvent.account.title }} ({{  eventHasSourceEvent.sourceEvent.account.accountLocal.username }})
                             {%  if eventHasSourceEvent.sourceEvent.privacy == 0 %}
-                                <a href="{{ path('account_public_event_show_event',{'account_username':eventHasSourceEvent.sourceEvent.account.accountLocal.username,'event_id':eventHasSourceEvent.sourceEvent.id}) }}" class="button" role="button">View</a>
+                                <a href="{{ path('account_public_event_show_event',{'account_username':eventHasSourceEvent.sourceEvent.account.accountLocal.username,'event_slug':eventHasSourceEvent.sourceEvent.slug}) }}" class="button" role="button">View</a>
                             {%  else %}
                                 <a href="{{ path('account_public',{'account_username':eventHasSourceEvent.sourceEvent.account.accountLocal.username}) }}" class="button" role="button">View</a>
                             {%  endif %}
@@ -113,19 +113,19 @@
 
             {%  endif %}
 
-            <a class="button" href="{{ url('api1_account_events_show_event_json',{'account_id':account.id ,'event_id':event.id}) }}"><i class="fas fa-download"></i> Export JSON</a>
+            <a class="button" href="{{ url('api1_account_events_show_event_json',{'account_id':account.id ,'event_slug':event.slug}) }}"><i class="fas fa-download"></i> Export JSON</a>
 
 
             {%  for addToAccountData in addedToAccountsUserManages %}
                 {%  if addToAccountData.event %}
                     <a class="button"
-                       href="{{ path('account_manage_event_show_event',{'account_username':addToAccountData.account.username,'event_id': addToAccountData.event.id }) }}"
+                       href="{{ path('account_manage_event_show_event',{'account_username':addToAccountData.account.username,'event_slug': addToAccountData.event.slug }) }}"
                     >
                         Already added to your account ({{ addToAccountData.account.username }})
                     </a>
                 {%  else %}
                     <a class="button"
-                       href="{{ path('account_manage_discover_event_add',{'account_username':addToAccountData.account.username, 'discover_account_id':account.id,'discover_event_id': event.id }) }}"
+                       href="{{ path('account_manage_discover_event_add',{'account_username':addToAccountData.account.username, 'discover_account_id':account.id,'discover_event_slug': event.slug }) }}"
                     >
                         <i class="fas fa-plus"></i> Add to my events ({{ addToAccountData.account.username }})
                     </a>

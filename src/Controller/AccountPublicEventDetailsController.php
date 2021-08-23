@@ -19,14 +19,14 @@ class AccountPublicEventDetailsController extends AccountPublicController
 {
     protected $event;
 
-    protected function setUpAccountPublicEvent($account_username, $event_id, Request $request)
+    protected function setUpAccountPublicEvent($account_username, $event_slug, Request $request)
     {
         $this->setUpAccountPublic($account_username, $request);
 
         $doctrine = $this->getDoctrine();
         $repository = $doctrine->getRepository(Event::class);
         /** @var Event $event */
-        $this->event = $repository->findOneBy(array('account'=>$this->account, 'id'=>$event_id));
+        $this->event = $repository->findOneBy(array('account'=>$this->account, 'slug'=>$event_slug));
         if (!$this->event) {
             throw new  NotFoundHttpException('Not found');
         }
@@ -40,9 +40,9 @@ class AccountPublicEventDetailsController extends AccountPublicController
         }
     }
 
-    public function showEvent($account_username, $event_id, Request $request)
+    public function showEvent($account_username, $event_slug, Request $request)
     {
-        $this->setUpAccountPublicEvent($account_username, $event_id, $request);
+        $this->setUpAccountPublicEvent($account_username, $event_slug, $request);
 
         $doctrine = $this->getDoctrine();
 
@@ -91,12 +91,12 @@ class AccountPublicEventDetailsController extends AccountPublicController
         ]));
     }
 
-    public function showEventSeries($account_username, $event_id, Request $request)
+    public function showEventSeries($account_username, $event_slug, Request $request)
     {
-        $this->setUpAccountPublicEvent($account_username, $event_id, $request);
+        $this->setUpAccountPublicEvent($account_username, $event_slug, $request);
 
         if (!$this->event->hasReoccurence()) {
-            return $this->redirectToRoute('account_public_event_show_event', ['account_username' => $this->account->getUsername(), 'event_id' => $this->event->getId()]);
+            return $this->redirectToRoute('account_public_event_show_event', ['account_username' => $this->account->getUsername(), 'event_slug' => $this->event->getSlug()]);
         }
 
         $doctrine = $this->getDoctrine();

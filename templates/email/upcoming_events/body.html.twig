@@ -6,7 +6,7 @@
         {%  for eventOccurrence in upcomingEventOccurrences %}
             <div>
                 <p>{{  eventOccurrence.event.title }}</p>
-                <p><a href="{{ url('account_public_event_show_event',{'account_username':accountLocal.username,'event_id': eventOccurrence.event.id }) }}?startutc={{ eventOccurrence.start('UTC')|date("Y-m-d-H-i-s") }}">More Details</a></p>
+                <p><a href="{{ url('account_public_event_show_event',{'account_username':accountLocal.username,'event_slug': eventOccurrence.event.slug }) }}?startutc={{ eventOccurrence.start('UTC')|date("Y-m-d-H-i-s") }}">More Details</a></p>
                 <hr>
             </div>
         {%  endfor %}

@@ -22,22 +22,22 @@ class AccountManageEventDetailsController extends AccountManageController
     /** @var  Event */
     protected $event;
 
-    protected function buildEvent($account_username, $event_id, Request $request)
+    protected function buildEvent($account_username, $event_slug, Request $request)
     {
         $this->setUpAccountManage($account_username, $request);
 
         $doctrine = $this->getDoctrine();
         $repository = $doctrine->getRepository(Event::class);
 
-        $this->event = $repository->findOneBy(array('account'=>$this->account, 'id'=>$event_id));
+        $this->event = $repository->findOneBy(array('account'=>$this->account, 'slug'=>$event_slug));
         if (!$this->event) {
             throw new  NotFoundHttpException('Not found');
         }
     }
 
-    public function indexShow($account_username, $event_id, Request $request)
+    public function indexShow($account_username, $event_slug, Request $request)
     {
-        $this->buildEvent($account_username, $event_id, $request);
+        $this->buildEvent($account_username, $event_slug, $request);
 
         $doctrine = $this->getDoctrine();
         $currentTags = $doctrine->getRepository(Tag::class)->findByEvent($this->event);
@@ -66,14 +66,14 @@ class AccountManageEventDetailsController extends AccountManageController
         ]));
     }
 
-    public function indexShowSeries($account_username, $event_id, Request $request)
+    public function indexShowSeries($account_username, $event_slug, Request $request)
     {
-        $this->buildEvent($account_username, $event_id, $request);
+        $this->buildEvent($account_username, $event_slug, $request);
 
         $doctrine = $this->getDoctrine();
 
         if (!$this->event->hasReoccurence()) {
-            return $this->redirectToRoute('account_manage_event_show_event', ['account_username' => $this->account->getUsername(), 'event_id' => $this->event->getId()]);
+            return $this->redirectToRoute('account_manage_event_show_event', ['account_username' => $this->account->getUsername(), 'event_slug' => $this->event->getSlug()]);
         }
 
         $eventOccurrences = $doctrine->getRepository(EventOccurrence::class)->findBy(['event'=>$this->event], ['startEpoch'=>'ASC']);
@@ -87,9 +87,9 @@ class AccountManageEventDetailsController extends AccountManageController
     }
 
 
-    public function indexEditDetails($account_username, $event_id, Request $request, HistoryWorkerService $historyWorkerService)
+    public function indexEditDetails($account_username, $event_slug, Request $request, HistoryWorkerService $historyWorkerService)
     {
-        $this->buildEvent($account_username, $event_id, $request);
+        $this->buildEvent($account_username, $event_slug, $request);
 
         // build the form
         $editableFields = $this->event->getEditableFieldsList();
@@ -192,7 +192,7 @@ class AccountManageEventDetailsController extends AccountManageController
                 'success',
                 'Event edited!'
             );
-            return $this->redirectToRoute('account_manage_event_show_event', ['account_username' => $this->account->getUsername(),'event_id' => $this->event->getId() ]);
+            return $this->redirectToRoute('account_manage_event_show_event', ['account_username' => $this->account->getUsername(),'event_slug' => $this->event->getSlug() ]);
         }
 
         $editExtraFieldKeys = [];
@@ -211,9 +211,9 @@ class AccountManageEventDetailsController extends AccountManageController
     }
 
 
-    public function indexEditTags($account_username, $event_id, Request $request, HistoryWorkerService $historyWorkerService)
+    public function indexEditTags($account_username, $event_slug, Request $request, HistoryWorkerService $historyWorkerService)
     {
-        $this->buildEvent($account_username, $event_id, $request);
+        $this->buildEvent($account_username, $event_slug, $request);
 
         // build the form
         $doctrine = $this->getDoctrine();
@@ -257,7 +257,7 @@ class AccountManageEventDetailsController extends AccountManageController
                 'success',
                 'Tags edited!'
             );
-            return $this->redirectToRoute('account_manage_event_show_event', ['account_username' => $this->account->getUsername(),'event_id' => $this->event->getId() ]);
+            return $this->redirectToRoute('account_manage_event_show_event', ['account_username' => $this->account->getUsername(),'event_slug' => $this->event->getSlug() ]);
         }
 
         return $this->render('account/manage/event/details/editTags.html.twig', $this->getTemplateVariables([
@@ -268,9 +268,9 @@ class AccountManageEventDetailsController extends AccountManageController
     }
     
 
-    public function indexEditCancel($account_username, $event_id, Request $request, HistoryWorkerService $historyWorkerService)
+    public function indexEditCancel($account_username, $event_slug, Request $request, HistoryWorkerService $historyWorkerService)
     {
-        $this->buildEvent($account_username, $event_id, $request);
+        $this->buildEvent($account_username, $event_slug, $request);
 
         if (!in_array('cancelled', $this->event->getEditableFieldsList())) {
             return $this->render('account/manage/event/details/editCancel.notAllowed.html.twig', $this->getTemplateVariables([
@@ -293,7 +293,7 @@ class AccountManageEventDetailsController extends AccountManageController
                 'success',
                 'Event cancelled!'
             );
-            return $this->redirectToRoute('account_manage_event_show_event', ['account_username' => $this->account->getUsername(),'event_id' => $this->event->getId() ]);
+            return $this->redirectToRoute('account_manage_event_show_event', ['account_username' => $this->account->getUsername(),'event_slug' => $this->event->getSlug() ]);
         }
 
         return $this->render('account/manage/event/details/editCancel.html.twig', $this->getTemplateVariables([
@@ -302,9 +302,9 @@ class AccountManageEventDetailsController extends AccountManageController
         ]));
     }
 
-    public function indexEditDelete($account_username, $event_id, Request $request, HistoryWorkerService $historyWorkerService)
+    public function indexEditDelete($account_username, $event_slug, Request $request, HistoryWorkerService $historyWorkerService)
     {
-        $this->buildEvent($account_username, $event_id, $request);
+        $this->buildEvent($account_username, $event_slug, $request);
 
         if (!in_array('deleted', $this->event->getEditableFieldsList())) {
             return $this->render('account/manage/event/details/editDelete.notAllowed.html.twig', $this->getTemplateVariables([
@@ -327,7 +327,7 @@ class AccountManageEventDetailsController extends AccountManageController
                 'success',
                 'Event deleted!'
             );
-            return $this->redirectToRoute('account_manage_event_show_event', ['account_username' => $this->account->getUsername(),'event_id' => $this->event->getId() ]);
+            return $this->redirectToRoute('account_manage_event_show_event', ['account_username' => $this->account->getUsername(),'event_slug' => $this->event->getSlug() ]);
         }
 
         return $this->render('account/manage/event/details/editDelete.html.twig', $this->getTemplateVariables([
@@ -336,9 +336,9 @@ class AccountManageEventDetailsController extends AccountManageController
         ]));
     }
 
-    public function indexEditSource($account_username, $event_id, Request $request, HistoryWorkerService $historyWorkerService, UpdateSourcedEventService $updateSourcedEventService)
+    public function indexEditSource($account_username, $event_slug, Request $request, HistoryWorkerService $historyWorkerService, UpdateSourcedEventService $updateSourcedEventService)
     {
-        $this->buildEvent($account_username, $event_id, $request);
+        $this->buildEvent($account_username, $event_slug, $request);
 
         $doctrine = $this->getDoctrine();
         $eventHasSourceEvents = $doctrine->getRepository(EventHasSourceEvent::class)->findAll();
@@ -361,7 +361,7 @@ class AccountManageEventDetailsController extends AccountManageController
                 'success',
                 'This event will no longer be updated for you'
             );
-            return $this->redirectToRoute('account_manage_event_show_event', ['account_username' => $this->account->getUsername(),'event_id' => $this->event->getId() ]);
+            return $this->redirectToRoute('account_manage_event_show_event', ['account_username' => $this->account->getUsername(),'event_slug' => $this->event->getSlug() ]);
         }
         # @TODO check below is POST too,
         if ($request->get('action') == 'startUpdates') {
@@ -380,7 +380,7 @@ class AccountManageEventDetailsController extends AccountManageController
                 'success',
                 'This event will now be updated for you'
             );
-            return $this->redirectToRoute('account_manage_event_show_event', ['account_username' => $this->account->getUsername(),'event_id' => $this->event->getId() ]);
+            return $this->redirectToRoute('account_manage_event_show_event', ['account_username' => $this->account->getUsername(),'event_slug' => $this->event->getSlug() ]);
         }
 
         return $this->render('account/manage/event/details/editSource.html.twig', $this->getTemplateVariables([

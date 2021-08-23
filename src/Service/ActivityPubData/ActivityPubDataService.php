@@ -66,7 +66,7 @@ class ActivityPubDataService
     {
         $out = [
             'type'=> 'Create',
-            "id"=> $this->params->get('app.instance_url').$this->router->generate('account_id_public_event_create', ['account_id'=>$event->getAccount()->getId(),'event_id'=>$event->getId()]),
+            "id"=> $this->params->get('app.instance_url').$this->router->generate('account_id_public_event_create', ['account_id'=>$event->getAccount()->getId(),'event_slug'=>$event->getSlug()]),
             'actor'=> $this->params->get('app.instance_url') . $this->router->generate('account_id_public', ['account_id'=>$event->getAccount()->getId()]),
             "to"=> 	"https://www.w3.org/ns/activitystreams#Public",
             'object'=>$this->generateEventObject($event),
@@ -79,12 +79,12 @@ class ActivityPubDataService
         $out = [
             // These fields are ActivityPub standard
             'type'=>'Event',
-            'id'=>$this->params->get('app.instance_url').$this->router->generate('account_id_public_event_show_event', ['account_id'=>$event->getAccount()->getId(),'event_id'=>$event->getId()]),
+            'id'=>$this->params->get('app.instance_url').$this->router->generate('account_id_public_event_show_event', ['account_id'=>$event->getAccount()->getId(),'event_slug'=>$event->getSlug()]),
             'name'=>$event->getTitle(),
             'summary'=>str_replace("\n", '<p>', htmlspecialchars($event->getDescription())),
             'startTime'=>$event->getStart('UTC')->format('Y-m-d\TH:i:s'),
             'endTime'=>$event->getEnd('UTC')->format('Y-m-d\TH:i:s'),
-            'url'=>$this->params->get('app.instance_url').$this->router->generate('account_public_event_show_event', ['account_username'=>$event->getAccount()->getUsername(),'event_id'=>$event->getId()]),
+            'url'=>$this->params->get('app.instance_url').$this->router->generate('account_public_event_show_event', ['account_username'=>$event->getAccount()->getUsername(),'event_slug'=>$event->getSlug()]),
             // These fields are us
             'occasion_octopus' =>
             [

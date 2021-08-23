@@ -36,7 +36,7 @@ class APIV1AccountTagListController extends APIV1AccountController
         /** @var Tag $tag */
         foreach ($tags as $tag) {
             $out['tags'][] = array(
-                'id'=> $tag->getId(),
+                'id'=> $tag->getSlug(),
                 'title'=>$tag->getTitle(),
                 'description'=>$tag->getDescription(),
                 'privacy'=>$this->privacyLevelToAPIString($tag->getPrivacy()),

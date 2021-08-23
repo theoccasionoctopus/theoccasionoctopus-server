@@ -27,9 +27,9 @@
                         {%  include '/common/eventStartEndLine.html.twig' with { 'data':eventOccurrence, 'timezone': userTimeZone , 'showTimeZone': true } %}
                         <a class="button" itemprop="url"
                                 {%  if  eventOccurrence.event.hasReoccurence %}
-                                    href="{{ path('account_public_event_show_event',{'account_username':account.username,'event_id': eventOccurrence.event.id }) }}?startutc={{ eventOccurrence.start('UTC')|date("Y-m-d-H-i-s") }}"
+                                    href="{{ path('account_public_event_show_event',{'account_username':account.username,'event_slug': eventOccurrence.event.slug }) }}?startutc={{ eventOccurrence.start('UTC')|date("Y-m-d-H-i-s") }}"
                                 {%  else  %}
-                                    href="{{ path('account_public_event_show_event',{'account_username':account.username,'event_id': eventOccurrence.event.id }) }}"
+                                    href="{{ path('account_public_event_show_event',{'account_username':account.username,'event_slug': eventOccurrence.event.slug }) }}"
                                 {%  endif %}
                         >
                             Details

@@ -84,7 +84,7 @@ class APIV1AccountEventListController extends APIV1AccountController
         /** @var Event $event */
         foreach ($events as $event) {
             $eventJSON = array(
-                'id'=> $event->getId(),
+                'id'=> $event->getSlug(),
                 'title'=>$event->getTitle(),
                 'description'=>$event->getDescription(),
                 'url'=>$event->getUrl(),
@@ -129,8 +129,8 @@ class APIV1AccountEventListController extends APIV1AccountController
             /** @var Event $event */
             $event = $eventOccurrence->getEvent();
             $eventJSON = array(
-                'event_id'=> $eventOccurrence->getEvent()->getId(),
-                'occurrence_id'=> $eventOccurrence->getId(),
+                'event_id'=> $eventOccurrence->getEvent()->getSlug(),
+                'occurrence_id'=> $eventOccurrence->getSlug(),
                 'title'=>$event->getTitle(),
                 'description'=>$event->getDescription(),
                 'url'=>$event->getUrl(),

@@ -92,11 +92,11 @@ account_id_public_activitypub_reject_follow_request:
 #-------------------------------------------- Public Account by ID - Events
 
 account_id_public_event_show_event:
-    path: /a.id/{account_id}/event/details/{event_id}
+    path: /a.id/{account_id}/event/details/{event_slug}
     controller: App\Controller\AccountIdPublicEventDetailsController::showEvent
 
 account_id_public_event_create:
-    path: /a.id/{account_id}/create/event/{event_id}
+    path: /a.id/{account_id}/create/event/{event_slug}
     controller: App\Controller\AccountIdPublicEventDetailsController::create
 
 #-------------------------------------------- Public Account by ID - Notes
@@ -129,11 +129,11 @@ account_public_event_calendar_data:
     controller: App\Controller\AccountPublicEventListController::calendarData
 
 account_public_event_show_event:
-    path: /a/{account_username}/event/details/{event_id}
+    path: /a/{account_username}/event/details/{event_slug}
     controller: App\Controller\AccountPublicEventDetailsController::showEvent
 
 account_public_event_show_event_series:
-    path: /a/{account_username}/event/details/{event_id}/series
+    path: /a/{account_username}/event/details/{event_slug}/series
     controller: App\Controller\AccountPublicEventDetailsController::showEventSeries
 
 #-------------------------------------------- Public Account - Tags
@@ -142,7 +142,7 @@ account_public_tag:
     controller: App\Controller\AccountPublicTagListController::index
 
 account_public_tag_show_tag:
-    path: /a/{account_username}/tag/details/{tag_id}
+    path: /a/{account_username}/tag/details/{tag_slug}
     controller: App\Controller\AccountPublicTagDetailsController::showTag
 
 
@@ -179,31 +179,31 @@ account_manage_event_new:
     controller: App\Controller\AccountManageEventNewController::newEvent
 
 account_manage_event_show_event:
-    path: /a/{account_username}/manage/event/details/{event_id}
+    path: /a/{account_username}/manage/event/details/{event_slug}
     controller: App\Controller\AccountManageEventDetailsController::indexShow
 
 account_manage_event_edit_show_event_series:
-    path: /a/{account_username}/manage/event/details/{event_id}/series
+    path: /a/{account_username}/manage/event/details/{event_slug}/series
     controller: App\Controller\AccountManageEventDetailsController::indexShowSeries
 
 account_manage_event_edit_event_details:
-    path: /a/{account_username}/manage/event/details/{event_id}/edit/details
+    path: /a/{account_username}/manage/event/details/{event_slug}/edit/details
     controller: App\Controller\AccountManageEventDetailsController::indexEditDetails
 
 account_manage_event_edit_event_tags:
-    path: /a/{account_username}/manage/event/details/{event_id}/edit/tags
+    path: /a/{account_username}/manage/event/details/{event_slug}/edit/tags
     controller: App\Controller\AccountManageEventDetailsController::indexEditTags
 
 account_manage_event_edit_event_cancel:
-    path: /a/{account_username}/manage/event/details/{event_id}/edit/cancel
+    path: /a/{account_username}/manage/event/details/{event_slug}/edit/cancel
     controller: App\Controller\AccountManageEventDetailsController::indexEditCancel
 
 account_manage_event_edit_event_delete:
-    path: /a/{account_username}/manage/event/details/{event_id}/edit/delete
+    path: /a/{account_username}/manage/event/details/{event_slug}/edit/delete
     controller: App\Controller\AccountManageEventDetailsController::indexEditDelete
 
 account_manage_event_edit_event_source:
-    path: /a/{account_username}/manage/event/details/{event_id}/edit/source
+    path: /a/{account_username}/manage/event/details/{event_slug}/edit/source
     controller: App\Controller\AccountManageEventDetailsController::indexEditSource
 
 
@@ -213,11 +213,11 @@ account_manage_discover_event:
     controller: App\Controller\AccountManageDiscoverEventListController::indexDiscover
 
 account_manage_discover_event_show_event:
-    path: /a/{account_username}/manage/discover/event/details/{discover_account_id}/{discover_event_id}
+    path: /a/{account_username}/manage/discover/event/details/{discover_account_id}/{discover_event_slug}
     controller: App\Controller\AccountManageDiscoverEventDetailsController::indexEventDetails
 
 account_manage_discover_event_add:
-    path: /a/{account_username}/manage/discover/event/details/{discover_account_id}/{discover_event_id}/add
+    path: /a/{account_username}/manage/discover/event/details/{discover_account_id}/{discover_event_slug}/add
     controller: App\Controller\AccountManageDiscoverEventDetailsController::indexEventAdd
 
 
@@ -231,11 +231,11 @@ account_manage_tag_new:
     controller: App\Controller\AccountManageTagNewController::newTag
 
 account_manage_tag_show_tag:
-    path: /a/{account_username}/manage/tag/details/{tag_id}
+    path: /a/{account_username}/manage/tag/details/{tag_slug}
     controller: App\Controller\AccountManageTagDetailsController::indexShow
 
 account_manage_tag_edit_tag_details:
-    path: /a/{account_username}/manage/tag/details/{tag_id}/edit/details
+    path: /a/{account_username}/manage/tag/details/{tag_slug}/edit/details
     controller: App\Controller\AccountManageTagDetailsController::indexEditDetails
 
 
@@ -321,13 +321,13 @@ api1_account_event_occurrences_json:
     methods:  [GET]
 
 api1_account_events_show_event_json:
-    path: /api/v1/account/{account_id}/event/{event_id}.json
+    path: /api/v1/account/{account_id}/event/{event_slug}.json
     controller: App\Controller\APIV1AccountEventDetailsController::showJSON
     methods:  [GET]
 
 
 api1_account_events_edit_event_json:
-    path: /api/v1/account/{account_id}/event/{event_id}.json
+    path: /api/v1/account/{account_id}/event/{event_slug}.json
     controller: App\Controller\APIV1AccountEventDetailsController::editJSON
     methods:  [POST]
 
@@ -346,13 +346,13 @@ api1_account_tags_json:
 
 
 api1_account_tags_show_tag_json:
-    path: /api/v1/account/{account_id}/tag/{tag_id}.json
+    path: /api/v1/account/{account_id}/tag/{tag_slug}.json
     controller: App\Controller\APIV1AccountTagDetailsController::showJSON
     methods:  [GET]
 
 
 api1_account_tags_edit_tag_json:
-    path: /api/v1/account/{account_id}/tag/{tag_id}.json
+    path: /api/v1/account/{account_id}/tag/{tag_slug}.json
     controller: App\Controller\APIV1AccountTagDetailsController::editJSON
     methods:  [POST]
 

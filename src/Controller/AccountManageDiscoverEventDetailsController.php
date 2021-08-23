@@ -25,7 +25,7 @@ class AccountManageDiscoverEventDetailsController extends AccountManageControlle
     /** @var  Event */
     protected $discoverEvent;
 
-    protected function buildEvent($account_username, $discover_account_id, $discover_event_id, Request $request)
+    protected function buildEvent($account_username, $discover_account_id, $discover_event_slug, Request $request)
     {
         $this->setUpAccountManage($account_username, $request);
 
@@ -36,7 +36,7 @@ class AccountManageDiscoverEventDetailsController extends AccountManageControlle
             throw new  NotFoundHttpException('Not found');
         }
 
-        $this->discoverEvent = $doctrine->getRepository(Event::class)->findOneBy(array('account'=>$this->discoverAccount, 'id'=>$discover_event_id));
+        $this->discoverEvent = $doctrine->getRepository(Event::class)->findOneBy(array('account'=>$this->discoverAccount, 'slug'=>$discover_event_slug));
         if (!$this->discoverEvent) {
             throw new  NotFoundHttpException('Not found');
         }
@@ -46,9 +46,9 @@ class AccountManageDiscoverEventDetailsController extends AccountManageControlle
     }
 
 
-    public function indexEventDetails($account_username, $discover_account_id, $discover_event_id, Request $request)
+    public function indexEventDetails($account_username, $discover_account_id, $discover_event_slug, Request $request)
     {
-        $this->buildEvent($account_username, $discover_account_id, $discover_event_id, $request);
+        $this->buildEvent($account_username, $discover_account_id, $discover_event_slug, $request);
 
         // TODO look up details of existing links, show to user
 
@@ -59,9 +59,9 @@ class AccountManageDiscoverEventDetailsController extends AccountManageControlle
         ]));
     }
 
-    public function indexEventAdd($account_username, $discover_account_id, $discover_event_id, HistoryWorkerService $historyWorkerService, Request $request)
+    public function indexEventAdd($account_username, $discover_account_id, $discover_event_slug, HistoryWorkerService $historyWorkerService, Request $request)
     {
-        $this->buildEvent($account_username, $discover_account_id, $discover_event_id, $request);
+        $this->buildEvent($account_username, $discover_account_id, $discover_event_slug, $request);
 
         $doctrine = $this->getDoctrine();
 
@@ -72,7 +72,7 @@ class AccountManageDiscoverEventDetailsController extends AccountManageControlle
                 'success',
                 'This was already added to your account'
             );
-            return $this->redirectToRoute('account_manage_event_show_event', ['account_username' => $this->account->getUsername(),'event_id' => $eventHasSourceEvent->getEvent()->getId() ]);
+            return $this->redirectToRoute('account_manage_event_show_event', ['account_username' => $this->account->getUsername(),'event_slug' => $eventHasSourceEvent->getEvent()->getSlug() ]);
         }
 
         // build the form
@@ -102,7 +102,7 @@ class AccountManageDiscoverEventDetailsController extends AccountManageControlle
                 'success',
                 'Event added to your account'
             );
-            return $this->redirectToRoute('account_manage_event_show_event', ['account_username' => $this->account->getUsername(),'event_id' => $event->getId() ]);
+            return $this->redirectToRoute('account_manage_event_show_event', ['account_username' => $this->account->getUsername(),'event_slug' => $event->getSlug() ]);
         };
 
         return $this->render('account/manage/discover/event/details/add.html.twig', $this->getTemplateVariables([

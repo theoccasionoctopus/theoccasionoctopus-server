@@ -21,14 +21,14 @@ class APIV1AccountTagDetailsController extends APIV1AccountController
     /** @var  Tag */
     protected $tag;
 
-    protected function buildTag($account_id, $tag_id, Request $request)
+    protected function buildTag($account_id, $tag_slug, Request $request)
     {
         $this->buildAccount($account_id, $request);
 
         $doctrine = $this->getDoctrine();
         $repository = $doctrine->getRepository(Tag::class);
 
-        $this->tag = $repository->findOneBy(array('account'=>$this->account, 'id'=>$tag_id));
+        $this->tag = $repository->findOneBy(array('account'=>$this->account, 'slug'=>$tag_slug));
         if (!$this->tag) {
             throw new  NotFoundHttpException('Not found');
         }
@@ -44,12 +44,12 @@ class APIV1AccountTagDetailsController extends APIV1AccountController
     }
 
 
-    public function showJSON($account_id, $tag_id, Request $request)
+    public function showJSON($account_id, $tag_slug, Request $request)
     {
-        $this->buildTag($account_id, $tag_id, $request);
+        $this->buildTag($account_id, $tag_slug, $request);
 
         $out['tag'] = array(
-            'id'=> $this->tag->getId(),
+            'id'=> $this->tag->getSlug(),
             'title'=>$this->tag->getTitle(),
             'description'=>$this->tag->getDescription(),
             'privacy'=>$this->privacyLevelToAPIString($this->tag->getPrivacy()),
@@ -63,9 +63,9 @@ class APIV1AccountTagDetailsController extends APIV1AccountController
         );
     }
 
-    public function editJSON($account_id, $tag_id, Request $request, HistoryWorkerService $historyWorkerService)
+    public function editJSON($account_id, $tag_slug, Request $request, HistoryWorkerService $historyWorkerService)
     {
-        $this->buildTag($account_id, $tag_id, $request);
+        $this->buildTag($account_id, $tag_slug, $request);
 
         if (!$this->account_permission_write) {
             throw new AccessDeniedHttpException('This Token Can Not Write');

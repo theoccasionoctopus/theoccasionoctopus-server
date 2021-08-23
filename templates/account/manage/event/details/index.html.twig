@@ -34,7 +34,7 @@
             <p><i class="fas fa-ticket-alt"></i> Tickets: <a href="{{ event.urlTickets }}">{{ event.urlTickets }}</a></p>
         {% endif %}
         {% for tag in currentTags %}
-            <a class="button" href="{{ path('account_manage_tag_show_tag',{'account_username':account.username,'tag_id': tag.id }) }}"><i class="fas fa-tag"></i> Tag: {{  tag.title }}</a>
+            <a class="button" href="{{ path('account_manage_tag_show_tag',{'account_username':account.username,'tag_slug': tag.slug }) }}"><i class="fas fa-tag"></i> Tag: {{  tag.title }}</a>
         {% endfor %}
 
         <h3>Where</h3>
@@ -68,7 +68,7 @@
         {%  if event.hasReoccurence %}
 
             <div>
-                <a class="button" href="{{ path('account_manage_event_edit_show_event_series',{'account_username':account.username,'event_id': event.id }) }}">View all occurrences</a>
+                <a class="button" href="{{ path('account_manage_event_edit_show_event_series',{'account_username':account.username,'event_slug': event.slug }) }}">View all occurrences</a>
             </div>
 
         {%  endif  %}
@@ -81,7 +81,7 @@
             {%  elseif event.privacy == PRIVACY_LEVEL_ONLY_FOLLOWERS %}
                 <i class="fas fa-user-lock"></i> Only Followers
             {%  else %}
-                <i class="fas fa-globe-europe"></i> Public (<a href="{{ path('account_public_event_show_event',{'account_username':account.username,'event_id': event.id }) }}">See public view</a>)
+                <i class="fas fa-globe-europe"></i> Public (<a href="{{ path('account_public_event_show_event',{'account_username':account.username,'event_slug': event.slug }) }}">See public view</a>)
             {%  endif %}
         </p>
 
@@ -103,7 +103,7 @@
                     {%  if eventHasSourceEvent.sourceEvent.account.getAccountLocal() %}
                         <i class="fas fa-user"></i> {{  eventHasSourceEvent.sourceEvent.account.title }} ({{  eventHasSourceEvent.sourceEvent.account.accountLocal.username }})
                         {%  if eventHasSourceEvent.sourceEvent.privacy == 0 %}{# TODO need to see if event is follower only, and if can see #}
-                            <a href="{{ path('account_public_event_show_event',{'account_username':eventHasSourceEvent.sourceEvent.account.accountLocal.username,'event_id':eventHasSourceEvent.sourceEvent.id}) }}" class="button" role="button">View</a>
+                            <a href="{{ path('account_public_event_show_event',{'account_username':eventHasSourceEvent.sourceEvent.account.accountLocal.username,'event_slug':eventHasSourceEvent.sourceEvent.slug}) }}" class="button" role="button">View</a>
                         {%  else %}
                             <a href="{{ path('account_public',{'account_username':eventHasSourceEvent.sourceEvent.account.accountLocal.username}) }}" class="button" role="button">View</a>
                         {%  endif %}
@@ -115,24 +115,24 @@
                     {%  else %}
                         However it now no longer gets updates from that event.
                     {%  endif %}
-                    <a class="button" href="{{ path('account_manage_event_edit_event_source',{'account_username':account.username,'event_id': event.id }) }}">Edit link</a>
+                    <a class="button" href="{{ path('account_manage_event_edit_event_source',{'account_username':account.username,'event_slug': event.slug }) }}">Edit link</a>
                 </p>
 
             {% endfor %}
 
         {%  endif %}
 
-        <a class="button" href="{{ path('account_manage_event_edit_event_details',{'account_username':account.username,'event_id': event.id }) }}"><i class="fas fa-edit"></i> Edit Details</a>
-        <a class="button" href="{{ path('account_manage_event_edit_event_tags',{'account_username':account.username,'event_id': event.id }) }}"><i class="fas fa-tags"></i> Edit Tags</a>
+        <a class="button" href="{{ path('account_manage_event_edit_event_details',{'account_username':account.username,'event_slug': event.slug }) }}"><i class="fas fa-edit"></i> Edit Details</a>
+        <a class="button" href="{{ path('account_manage_event_edit_event_tags',{'account_username':account.username,'event_slug': event.slug }) }}"><i class="fas fa-tags"></i> Edit Tags</a>
 
         {%  if canCancelOrDelete %}
             {%  if event.deleted %}
                 {# TODO an undelete action #}
             {%  elseif event.cancelled %}
-                <a class="button" href="{{ path('account_manage_event_edit_event_delete',{'account_username':account.username,'event_id': event.id }) }}"><i class="fas fa-trash"></i> Delete Event</a>
+                <a class="button" href="{{ path('account_manage_event_edit_event_delete',{'account_username':account.username,'event_slug': event.slug }) }}"><i class="fas fa-trash"></i> Delete Event</a>
                 {# TODO an uncancel action #}
             {%  else %}
-                <a class="button" href="{{ path('account_manage_event_edit_event_cancel',{'account_username':account.username,'event_id': event.id }) }}"><i class="fas fa-trash"></i> Cancel/Delete Event</a>
+                <a class="button" href="{{ path('account_manage_event_edit_event_cancel',{'account_username':account.username,'event_slug': event.slug }) }}"><i class="fas fa-trash"></i> Cancel/Delete Event</a>
             {%  endif %}
         {%  endif %}
 

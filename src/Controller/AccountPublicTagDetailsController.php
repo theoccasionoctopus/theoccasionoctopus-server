@@ -17,14 +17,14 @@ class AccountPublicTagDetailsController extends AccountPublicController
 {
     protected $tag;
 
-    protected function setUpAccountPublicTag($account_username, $tag_id, Request $request)
+    protected function setUpAccountPublicTag($account_username, $tag_slug, Request $request)
     {
         $this->setUpAccountPublic($account_username, $request);
 
         $doctrine = $this->getDoctrine();
         $repository = $doctrine->getRepository(Tag::class);
         /** @var Tag $tag */
-        $this->tag = $repository->findOneBy(array('account'=>$this->account, 'id'=>$tag_id));
+        $this->tag = $repository->findOneBy(array('account'=>$this->account, 'slug'=>$tag_slug));
         if (!$this->tag) {
             throw new  NotFoundHttpException('Not found');
         }
@@ -39,9 +39,9 @@ class AccountPublicTagDetailsController extends AccountPublicController
     }
 
 
-    public function showTag($account_username, $tag_id, Request $request)
+    public function showTag($account_username, $tag_slug, Request $request)
     {
-        $this->setUpAccountPublicTag($account_username, $tag_id, $request);
+        $this->setUpAccountPublicTag($account_username, $tag_slug, $request);
 
         // TODO should show occurrences, not just events!
         $repositoryQuery = new EventRepositoryQuery($this->getDoctrine());

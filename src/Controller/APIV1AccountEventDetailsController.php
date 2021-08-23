@@ -25,14 +25,14 @@ class APIV1AccountEventDetailsController extends APIV1AccountController
     /** @var  Event */
     protected $event;
 
-    protected function buildEvent($account_id, $event_id, Request $request)
+    protected function buildEvent($account_id, $event_slug, Request $request)
     {
         $this->buildAccount($account_id, $request);
 
         $doctrine = $this->getDoctrine();
         $repository = $doctrine->getRepository(Event::class);
 
-        $this->event = $repository->findOneBy(array('account'=>$this->account, 'id'=>$event_id));
+        $this->event = $repository->findOneBy(array('account'=>$this->account, 'slug'=>$event_slug));
         if (!$this->event) {
             throw new  NotFoundHttpException('Not found');
         }
@@ -48,13 +48,13 @@ class APIV1AccountEventDetailsController extends APIV1AccountController
     }
 
 
-    public function showJSON($account_id, $event_id, Request $request)
+    public function showJSON($account_id, $event_slug, Request $request)
     {
-        $this->buildEvent($account_id, $event_id, $request);
+        $this->buildEvent($account_id, $event_slug, $request);
 
         $out = [];
         $out['event'] = array(
-            'id'=> $this->event->getId(),
+            'id'=> $this->event->getSlug(),
             'title'=>$this->event->getTitle(),
             'description'=>$this->event->getDescription(),
             'url'=>$this->event->getUrl(),
@@ -92,9 +92,9 @@ class APIV1AccountEventDetailsController extends APIV1AccountController
         );
     }
 
-    public function editJSON($account_id, $event_id, Request $request, HistoryWorkerService $historyWorkerService)
+    public function editJSON($account_id, $event_slug, Request $request, HistoryWorkerService $historyWorkerService)
     {
-        $this->buildEvent($account_id, $event_id, $request);
+        $this->buildEvent($account_id, $event_slug, $request);
 
         $doctrine = $this->getDoctrine();
         $tagRepository = $this->getDoctrine()->getRepository(Tag::class);

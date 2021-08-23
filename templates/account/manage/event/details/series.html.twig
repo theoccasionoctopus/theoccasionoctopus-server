@@ -40,7 +40,7 @@
                     <td>{{  userTimeZone }}</td>
                     <td>
                         <a class="button"
-                           href="{{ path('account_manage_event_show_event',{'account_username':account.username,'event_id': eventOccurrence.event.id }) }}?startutc={{ eventOccurrence.start('UTC')|date("Y-m-d-H-i-s") }}">
+                           href="{{ path('account_manage_event_show_event',{'account_username':account.username,'event_slug': eventOccurrence.event.slug }) }}?startutc={{ eventOccurrence.start('UTC')|date("Y-m-d-H-i-s") }}">
                             View
                         </a>
                     </td>

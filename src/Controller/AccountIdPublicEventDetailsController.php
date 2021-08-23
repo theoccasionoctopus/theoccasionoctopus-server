@@ -21,14 +21,14 @@ class AccountIdPublicEventDetailsController extends AccountIdPublicController
 {
     protected $event;
 
-    protected function setUpAccountByIdPublicEvent($account_id, $event_id, Request $request)
+    protected function setUpAccountByIdPublicEvent($account_id, $event_slug, Request $request)
     {
         $this->setUpAccountByIdPublic($account_id, $request);
 
         $doctrine = $this->getDoctrine();
         $repository = $doctrine->getRepository(Event::class);
         /** @var Event $event */
-        $this->event = $repository->findOneBy(array('account'=>$this->account, 'id'=>$event_id));
+        $this->event = $repository->findOneBy(array('account'=>$this->account, 'slug'=>$event_slug));
         if (!$this->event) {
             throw new  NotFoundHttpException('Not found');
         }
@@ -42,9 +42,9 @@ class AccountIdPublicEventDetailsController extends AccountIdPublicController
         }
     }
 
-    public function showEvent($account_id, $event_id, Request $request, ActivityPubDataService $activityPubDataService)
+    public function showEvent($account_id, $event_slug, Request $request, ActivityPubDataService $activityPubDataService)
     {
-        $this->setUpAccountByIdPublicEvent($account_id, $event_id, $request);
+        $this->setUpAccountByIdPublicEvent($account_id, $event_slug, $request);
 
         if ($this->isRequestForActivityPubJSON($request)) {
             return new Response(
@@ -53,11 +53,11 @@ class AccountIdPublicEventDetailsController extends AccountIdPublicController
                 ['content-type' => 'application/activity+json']
             );
         } else {
-            return $this->redirectToRoute('account_public_event_show_event', ['account_username' => $this->account->getUsername(),'event_id' => $this->event->getId() ]);
+            return $this->redirectToRoute('account_public_event_show_event', ['account_username' => $this->account->getUsername(),'event_slug' => $this->event->getSlug() ]);
         }
     }
 
-    public function create($account_id, $event_id, Request $request, ActivityPubDataService $activityPubDataService)
+    public function create($account_id, $event_slug, Request $request, ActivityPubDataService $activityPubDataService)
     {
         throw new  NotFoundHttpException('Not found');
     }

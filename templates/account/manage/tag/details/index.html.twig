@@ -15,11 +15,11 @@
             {%  elseif tag.privacy == PRIVACY_LEVEL_ONLY_FOLLOWERS %}
                 <i class="fas fa-user-lock"></i> Only Followers
             {%  else %}
-                <i class="fas fa-globe-europe"></i> Public (<a href="{{ path('account_public_tag_show_tag',{'account_username':account.username,'tag_id': tag.id }) }}">See public view</a>)
+                <i class="fas fa-globe-europe"></i> Public (<a href="{{ path('account_public_tag_show_tag',{'account_username':account.username,'tag_slug': tag.slug }) }}">See public view</a>)
             {%  endif %}
         </p>
 
-        <a href="{{ path('account_manage_tag_edit_tag_details',{'account_username':account.username, 'tag_id': tag.id}) }}" class="button" role="button"><i class="fas fa-edit"></i> Edit Details</a>
+        <a href="{{ path('account_manage_tag_edit_tag_details',{'account_username':account.username, 'tag_slug': tag.slug}) }}" class="button" role="button"><i class="fas fa-edit"></i> Edit Details</a>
 
 
         <h3>Upcoming Events</h3>
@@ -37,7 +37,7 @@
                     <h2>{{  event.title }}</h2>
                     <p>{{  event.description | u.truncate(event_list_description_truncate_limit, event_list_description_truncate_more, event_list_description_truncate_whole_words) | nl2br }}</p>
                     {%  include '/common/eventStartEndLine.html.twig' with { 'data':event, 'timezone': userTimeZone , 'showTimeZone': true  } %}
-                    <a class="button" href="{{ path('account_manage_event_show_event',{'account_username':account.username,'event_id': event.id }) }}">Details</a>
+                    <a class="button" href="{{ path('account_manage_event_show_event',{'account_username':account.username,'event_slug': event.slug }) }}">Details</a>
                     <p>
                         {% if event.privacy == PRIVACY_LEVEL_PRIVATE %}
                             <i class="fas fa-lock"></i> Only You
