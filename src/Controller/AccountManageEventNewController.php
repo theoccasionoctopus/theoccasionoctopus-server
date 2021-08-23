@@ -20,7 +20,7 @@ class AccountManageEventNewController extends AccountManageController
 
         // build the form
         $event = new Event();
-        $event->setId(Library::GUID());
+        $event->setNewIdAndSlug();
         $event->setAccount($this->account);
         $event->setTimezone($this->account->getAccountLocal()->getDefaultTimezone());
 

@@ -42,6 +42,7 @@ class ListEventTest extends BaseWebTestWithDataBase
         $event->setTitle('Title');
         $event->setUrl('https://www.theoccasionoctopus.net/');
         $event->setId('36573fb9-a021-4005-9fd2-3034cda50a72');
+        $event->setSlug('36573fb9-a021-4005-9fd2-3034cda50a72');
         $event->setPrivacy(Constants::PRIVACY_LEVEL_PUBLIC);
 
         $this->entityManager->persist($event);
@@ -70,6 +71,7 @@ class ListEventTest extends BaseWebTestWithDataBase
         $event->setEndWithObject(new \DateTime('2025-01-01 10:00:00', new \DateTimeZone('UTC')));
         $event->setTitle('Title');
         $event->setUrl('https://www.theoccasionoctopus.net/');
+        $event->setSlug('36573fb9-a021-4005-9fd2-3034cda50a72');
         $event->setId('36573fb9-a021-4005-9fd2-3034cda50a72');
         $event->setPrivacy(Constants::PRIVACY_LEVEL_ONLY_FOLLOWERS);
 
@@ -108,6 +110,7 @@ class ListEventTest extends BaseWebTestWithDataBase
         $event->setTitle('Title');
         $event->setUrl('https://www.theoccasionoctopus.net/');
         $event->setId('36573fb9-a021-4005-9fd2-3034cda50a72');
+        $event->setSlug('36573fb9-a021-4005-9fd2-3034cda50a72');
         $event->setPrivacy(Constants::PRIVACY_LEVEL_ONLY_FOLLOWERS);
 
         $this->entityManager->persist($event);
@@ -138,6 +141,7 @@ class ListEventTest extends BaseWebTestWithDataBase
         $event->setTitle('Title');
         $event->setUrl('https://www.theoccasionoctopus.net/');
         $event->setId('36573fb9-a021-4005-9fd2-3034cda50a72');
+        $event->setSlug('36573fb9-a021-4005-9fd2-3034cda50a72');
         $event->setPrivacy(Constants::PRIVACY_LEVEL_PRIVATE);
 
         $this->entityManager->persist($event);
@@ -174,6 +178,7 @@ class ListEventTest extends BaseWebTestWithDataBase
         $event->setTitle('Title');
         $event->setUrl('https://www.theoccasionoctopus.net/');
         $event->setId('36573fb9-a021-4005-9fd2-3034cda50a72');
+        $event->setSlug('36573fb9-a021-4005-9fd2-3034cda50a72');
         $event->setPrivacy(Constants::PRIVACY_LEVEL_PRIVATE);
 
         $this->entityManager->persist($event);
@@ -204,6 +209,7 @@ class ListEventTest extends BaseWebTestWithDataBase
         $event->setTitle('Title');
         $event->setUrl('https://www.theoccasionoctopus.net/');
         $event->setId('36573fb9-a021-4005-9fd2-3034cda50a72');
+        $event->setSlug('36573fb9-a021-4005-9fd2-3034cda50a72');
         $event->setPrivacy(0);
 
         $this->entityManager->persist($event);
@@ -234,6 +240,7 @@ class ListEventTest extends BaseWebTestWithDataBase
         $event->setTitle('Title');
         $event->setUrl('https://www.theoccasionoctopus.net/');
         $event->setId('36573fb9-a021-4005-9fd2-3034cda50a72');
+        $event->setSlug('36573fb9-a021-4005-9fd2-3034cda50a72');
         $event->setPrivacy(0);
 
         $this->entityManager->persist($event);

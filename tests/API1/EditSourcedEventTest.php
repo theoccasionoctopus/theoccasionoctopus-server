@@ -43,6 +43,7 @@ class EditSourcedEventTest extends BaseWebTestWithDataBase
         $this->sourceEvent->setEndWithObject(new \DateTime('2025-01-01 11:00:00', new \DateTimeZone('UTC')));
         $this->sourceEvent->setTitle('Title');
         $this->sourceEvent->setId('36573fb9-a021-4005-9fd2-3034cda50a32');
+        $this->sourceEvent->setSlug('36573fb9-a021-4005-9fd2-3034cda50a32');
         $this->sourceEvent->setPrivacy(0);
         $this->entityManager->persist($this->sourceEvent);
 
@@ -52,6 +53,7 @@ class EditSourcedEventTest extends BaseWebTestWithDataBase
         $this->event = new Event();
         $this->event->setAccount($this->account);
         $this->event->setId('36573fb9-a021-4005-9fd2-3034cda50a72');
+        $this->event->setSlug('36573fb9-a021-4005-9fd2-3034cda50a72');
         $this->event->setPrivacy(0);
         $this->event->copyFromEvent($this->sourceEvent);
         $this->entityManager->persist($this->event);

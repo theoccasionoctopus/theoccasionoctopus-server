@@ -116,10 +116,11 @@ class RemoteAccountContentService
     protected function updateEventWithOccasionOctopusData(AccountRemote $accountRemote, array $eventData)
     {
         // We don't bother checking event is in future here; we assume those checks are done upstream
-        $event = $this->entityManager->getRepository(Event::class)->findOneBy(array('id'=>$eventData['id'], 'account'=>$accountRemote->getAccount()));
+        $event = $this->entityManager->getRepository(Event::class)->findOneBy(array('slug'=>$eventData['id'], 'account'=>$accountRemote->getAccount()));
         if (!$event) {
             $event = new Event();
             $event->setId($eventData['id']);
+            $event->setSlug($eventData['id']);
             $event->setAccount($accountRemote->getAccount());
             $event->setPrivacy(0);
         }
@@ -223,7 +224,7 @@ class RemoteAccountContentService
             $event = $this->entityManager->getRepository(Event::class)->findOneBy(array('activitypubId' => $apEvent->getId(), 'account' => $accountRemote->getAccount()));
             if (!$event) {
                 $event = new Event();
-                $event->setId(Library::GUID());
+                $event->setNewIdAndSlug();
                 $event->setAccount($accountRemote->getAccount());
                 $event->setPrivacy(0);
                 $event->setActivitypubId($apEvent->getId());

@@ -36,6 +36,7 @@ class SimpleRRULETest extends BaseTestWithDataBase
         $this->event->setRrule("FREQ=WEEKLY;WKST=MO;COUNT=2;BYDAY=MO");
         $this->event->setTitle('Title');
         $this->event->setId('36573fb9-a021-4005-9fd2-3034cda50a72');
+        $this->event->setSlug('36573fb9-a021-4005-9fd2-3034cda50a72');
         $this->event->setPrivacy(0);
 
         $this->entityManager->persist($this->event);
@@ -92,6 +93,7 @@ class SimpleRRULETest extends BaseTestWithDataBase
         $this->event->setRrule("FREQ=WEEKLY;WKST=MO;COUNT=2;BYDAY=MO");
         $this->event->setTitle('Title');
         $this->event->setId('36573fb9-a021-4005-9fd2-3034cda50a72');
+        $this->event->setSlug('36573fb9-a021-4005-9fd2-3034cda50a72');
         $this->event->setPrivacy(0);
 
         $this->entityManager->persist($this->event);

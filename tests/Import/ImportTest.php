@@ -35,7 +35,7 @@ class ImportTest extends BaseWebTestWithDataBase
         $this->setupCommon();
 
         $import = new Import();
-        $import->setId(Library::GUID());
+        $import->setNewIdAndSlug();
         $import->setAccount($this->account);
         $import->setTitle('Test');
         $import->setUrl('http://example.com');

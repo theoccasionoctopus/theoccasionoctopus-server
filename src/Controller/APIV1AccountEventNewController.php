@@ -30,7 +30,7 @@ class APIV1AccountEventNewController extends APIV1AccountController
 
         $event = new Event();
         $event->setAccount($this->account);
-        $event->setId(Library::GUID());
+        $event->setNewIdAndSlug();
         $event->setPrivacy($this->account->getAccountLocal()->getDefaultPrivacy());
         $event->setCountry($this->account->getAccountLocal()->getDefaultCountry());
         $event->setTimezone($this->account->getAccountLocal()->getDefaultTimezone());

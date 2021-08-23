@@ -7,10 +7,16 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Security\Core\User\UserInterface;
 use App\Entity\Helper\TraitExtraFields;
+use App\Library;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\EventRepository")
- * @ORM\Table(name="event")
+ * @ORM\Table(
+ *     name="event",
+ *     uniqueConstraints={
+ *         @ORM\UniqueConstraint(name="event_account_slug_idx", columns={"account_id","slug"})
+ *     }
+ * )
  */
 class Event implements InterfaceStartEnd
 {
@@ -19,6 +25,12 @@ class Event implements InterfaceStartEnd
      * @ORM\Column(type="guid")
      */
     private $id;
+
+    /**
+     * @Assert\NotNull
+     * @ORM\Column(type="guid")
+     */
+    private $slug;
 
     /**
      * @Assert\NotNull
@@ -210,6 +222,24 @@ class Event implements InterfaceStartEnd
     {
         $this->id = $id;
     }
+
+    public function getSlug(): string
+    {
+        return $this->slug;
+    }
+
+    public function setSlug(string $slug)
+    {
+        $this->slug = $slug;
+    }
+
+    public function setNewIdAndSlug()
+    {
+        // TODO be passed doctrine manager; check Id & slug do not already exist
+        $this->id = Library::GUID();
+        $this->slug = $this->id;
+    }
+
 
     /**
      * @return Account

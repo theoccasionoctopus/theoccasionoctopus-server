@@ -6,10 +6,17 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Security\Core\User\UserInterface;
 use App\Entity\Helper\TraitExtraFields;
+use App\Library;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\TagRepository")
- * @ORM\Table(name="tag",uniqueConstraints={@ORM\UniqueConstraint(name="tag_account_title_idx", columns={"account_id", "title"})})
+ * @ORM\Table(
+ *     name="tag",
+ *     uniqueConstraints={
+ *         @ORM\UniqueConstraint(name="tag_account_title_idx", columns={"account_id", "title"}),
+ *         @ORM\UniqueConstraint(name="tag_account_slug_idx", columns={"account_id","slug"})
+ *     }
+ * )
  */
 class Tag
 {
@@ -18,6 +25,13 @@ class Tag
      * @ORM\Column(type="guid")
      */
     private $id;
+
+    /**
+     * @Assert\NotNull
+     * @ORM\Column(type="guid")
+     */
+    private $slug;
+
 
 
     /**
@@ -79,6 +93,24 @@ class Tag
     {
         $this->id = $id;
     }
+
+    public function getSlug(): string
+    {
+        return $this->slug;
+    }
+
+    public function setSlug(string $slug)
+    {
+        $this->slug = $slug;
+    }
+
+    public function setNewIdAndSlug()
+    {
+        // TODO be passed doctrine manager; check Id & slug do not already exist
+        $this->id = Library::GUID();
+        $this->slug = $this->id;
+    }
+
 
     /**
      * @return mixed

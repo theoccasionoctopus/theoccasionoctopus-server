@@ -42,7 +42,7 @@ class APIV1AccountTagNewController extends APIV1AccountController
 
         $tag = new Tag();
         $tag->setAccount($this->account);
-        $tag->setId(Library::GUID());
+        $tag->setNewIdAndSlug();
         $tag->setPrivacy($this->account->getAccountLocal()->getDefaultPrivacy());
         $tag->setEnabled(true);
 

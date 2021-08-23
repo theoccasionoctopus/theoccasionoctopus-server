@@ -103,7 +103,7 @@ class ImportService
             return;
         } else {
             $event = new Event();
-            $event->setId(Library::GUID());
+            $event->setNewIdAndSlug();
             $event->setAccount($import->getAccount());
             $event->setPrivacy($import->getPrivacy());
             $changes = true;

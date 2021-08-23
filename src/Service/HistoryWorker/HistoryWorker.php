@@ -30,7 +30,7 @@ class HistoryWorker
     public function __construct(Account $account, User $user = null)
     {
         $this->history = new History();
-        $this->history->setId(Library::GUID());
+        $this->history->setNewIdAndSlug();
         $this->history->setAccount($account);
         $this->history->setCreator($user);
     }

@@ -33,6 +33,7 @@ class EventRepositoryQueryLongEventTest extends BaseTestWithDataBase
         $this->event->setEndWithObject(new \DateTime('2025-12-01 11:00:00', new \DateTimeZone('UTC')));
         $this->event->setTitle('Title Other Event');
         $this->event->setId('12573fb9-a021-4005-9fd2-3034cda50a12');
+        $this->event->setSlug('12573fb9-a021-4005-9fd2-3034cda50a12');
         $this->event->setPrivacy(0);
 
         $this->entityManager->persist($this->event);

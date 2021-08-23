@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Library;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -9,7 +10,13 @@ use App\Entity\Helper\TraitExtraFields;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\ImportRepository")
- * @ORM\Table(name="import",uniqueConstraints={@ORM\UniqueConstraint(name="ical_import_account_url_idx", columns={"account_id", "url"})})
+ * @ORM\Table(
+ *     name="import",
+ *     uniqueConstraints={
+ *        @ORM\UniqueConstraint(name="ical_import_account_url_idx", columns={"account_id", "url"}),
+ *        @ORM\UniqueConstraint(name="import_account_slug_idx", columns={"account_id","slug"})
+ *     }
+ *  )
  */
 class Import
 {
@@ -18,6 +25,13 @@ class Import
      * @ORM\Column(name="id", type="guid")
      */
     private $id;
+
+    /**
+     * @Assert\NotNull
+     * @ORM\Column(type="guid")
+     */
+    private $slug;
+
 
     /**
      * @Assert\NotNull
@@ -83,6 +97,23 @@ class Import
     public function setId($id)
     {
         $this->id = $id;
+    }
+
+    public function getSlug(): string
+    {
+        return $this->slug;
+    }
+
+    public function setSlug(string $slug)
+    {
+        $this->slug = $slug;
+    }
+
+    public function setNewIdAndSlug()
+    {
+        // TODO be passed doctrine manager; check Id & slug do not already exist
+        $this->id = Library::GUID();
+        $this->slug = $this->id;
     }
 
     /**

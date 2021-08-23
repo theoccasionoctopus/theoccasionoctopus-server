@@ -36,6 +36,7 @@ class EditEventTest extends BaseWebTestWithDataBase
         $this->event->setEndWithObject(new \DateTime('2025-01-01 11:00:00', new \DateTimeZone('UTC')));
         $this->event->setTitle('Title');
         $this->event->setId('36573fb9-a021-4005-9fd2-3034cda50a72');
+        $this->event->setSlug('36573fb9-a021-4005-9fd2-3034cda50a72');
         $this->event->setPrivacy(0);
         $this->entityManager->persist($this->event);
 
@@ -343,6 +344,7 @@ class EditEventTest extends BaseWebTestWithDataBase
         $tag->setTitle('Test');
         $tag->setAccount($this->account);
         $tag->setId('0fb95f5d-1973-4d0b-ad21-8aea0d425684');
+        $tag->setSlug('0fb95f5d-1973-4d0b-ad21-8aea0d425684');
         $tag->setPrivacy(0);
         $tag->setEnabled(True);
 

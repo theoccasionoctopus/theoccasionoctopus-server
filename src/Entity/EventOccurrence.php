@@ -6,10 +6,17 @@ use App\Entity\Helper\InterfaceStartEnd;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Security\Core\User\UserInterface;
+use App\Library;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\EventOccurrenceRepository")
- * @ORM\Table(name="event_occurrence",uniqueConstraints={@ORM\UniqueConstraint(name="event_occurrence_event_start_idx", columns={"event_id", "start_epoch"})})
+ * @ORM\Table(
+ *     name="event_occurrence",
+ *     uniqueConstraints={
+ *         @ORM\UniqueConstraint(name="event_occurrence_event_start_idx", columns={"event_id", "start_epoch"}),
+ *         @ORM\UniqueConstraint(name="event_occurrence_event_slug_idx", columns={"event_id","slug"})
+ *     }
+ * )
  */
 class EventOccurrence implements InterfaceStartEnd
 {
@@ -19,6 +26,12 @@ class EventOccurrence implements InterfaceStartEnd
      * @ORM\Column(type="guid")
      */
     private $id;
+
+    /**
+     * @Assert\NotNull
+     * @ORM\Column(type="guid")
+     */
+    private $slug;
 
     /**
      * @Assert\NotNull
@@ -57,6 +70,24 @@ class EventOccurrence implements InterfaceStartEnd
     {
         $this->id = $id;
     }
+
+    public function getSlug(): string
+    {
+        return $this->slug;
+    }
+
+    public function setSlug(string $slug)
+    {
+        $this->slug = $slug;
+    }
+
+    public function setNewIdAndSlug()
+    {
+        // TODO be passed doctrine manager; check Id & slug do not already exist
+        $this->id = Library::GUID();
+        $this->slug = $this->id;
+    }
+
 
     /**
      * @return mixed

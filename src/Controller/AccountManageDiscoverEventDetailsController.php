@@ -79,7 +79,7 @@ class AccountManageDiscoverEventDetailsController extends AccountManageControlle
         $event = new Event();
         $event->copyFromEvent($this->discoverEvent);
         $event->setAccount($this->account);
-        $event->setId(Library::GUID());
+        $event->setNewIdAndSlug();
         $event->setPrivacy($this->account->getAccountLocal()->getDefaultPrivacy());
 
         $form = $this->createForm(EventAddToAccountType::class, $event, array(

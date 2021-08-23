@@ -5,10 +5,16 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Security\Core\User\UserInterface;
+use App\Library;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\HistoryRepository")
- * @ORM\Table(name="history")
+ * @ORM\Table(
+ *     name="history",
+ *     uniqueConstraints={
+ *         @ORM\UniqueConstraint(name="history_account_slug_idx", columns={"account_id","slug"})
+ *     }
+ * )
  * @ORM\HasLifecycleCallbacks()
  */
 class History
@@ -18,6 +24,13 @@ class History
      * @ORM\Column(type="guid")
      */
     private $id;
+
+    /**
+     * @Assert\NotNull
+     * @ORM\Column(type="guid")
+     */
+    private $slug;
+
 
     /**
      * @Assert\NotNull
@@ -60,6 +73,24 @@ class History
     {
         $this->id = $id;
     }
+
+    public function getSlug(): string
+    {
+        return $this->slug;
+    }
+
+    public function setSlug(string $slug)
+    {
+        $this->slug = $slug;
+    }
+
+    public function setNewIdAndSlug()
+    {
+        // TODO be passed doctrine manager; check Id & slug do not already exist
+        $this->id = Library::GUID();
+        $this->slug = $this->id;
+    }
+
 
     /**
      * @return mixed

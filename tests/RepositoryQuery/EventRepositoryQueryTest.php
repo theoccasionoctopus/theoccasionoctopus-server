@@ -38,6 +38,7 @@ class EventRepositoryQueryTest extends BaseTestWithDataBase
         $otherAccountEvent->setEndWithObject(new \DateTime('2025-10-01 11:00:00', new \DateTimeZone('UTC')));
         $otherAccountEvent->setTitle('Title Other Event');
         $otherAccountEvent->setId('12573fb9-a021-4005-9fd2-3034cda50a12');
+        $otherAccountEvent->setSlug('12573fb9-a021-4005-9fd2-3034cda50a12');
         $otherAccountEvent->setPrivacy(0);
 
         $this->entityManager->persist($otherAccountEvent);
@@ -65,6 +66,7 @@ class EventRepositoryQueryTest extends BaseTestWithDataBase
         $event->setEndWithObject(new \DateTime('2025-01-01 11:00:00', new \DateTimeZone('UTC')));
         $event->setTitle('Title');
         $event->setId('36573fb9-a021-4005-9fd2-3034cda50a72');
+        $event->setSlug('36573fb9-a021-4005-9fd2-3034cda50a72');
         $event->setPrivacy(0);
 
         $this->entityManager->persist($event);
@@ -115,6 +117,7 @@ class EventRepositoryQueryTest extends BaseTestWithDataBase
         $event->setEndWithObject(new \DateTime('2025-01-01 11:00:00', new \DateTimeZone('UTC')));
         $event->setTitle('Title');
         $event->setId('36573fb9-a021-4005-9fd2-3034cda50a72');
+        $event->setSlug('36573fb9-a021-4005-9fd2-3034cda50a72');
         $event->setPrivacy(0);
         $this->entityManager->persist($event);
 

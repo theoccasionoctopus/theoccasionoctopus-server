@@ -64,7 +64,7 @@ class EventToEventOccurrenceService
         foreach ($occurrenceResultsByUTCStart as $occurrenceResult) {
             $eventOccurrence = new EventOccurrence();
             $eventOccurrence->setEvent($event);
-            $eventOccurrence->setId(Library::GUID());
+            $eventOccurrence->setNewIdAndSlug();
             $eventOccurrence->setStartWithObject($occurrenceResult->getStartUTC());
             $eventOccurrence->setEndWithObject($occurrenceResult->getEndUTC());
             $this->entityManager->persist($eventOccurrence);

@@ -39,7 +39,7 @@ class AccountManageTagNewController extends AccountManageController
                 $tag->setTitle($form->get('title')->getData());
                 $tag->setDescription($form->get('description')->getData());
                 $tag->setEnabled(true);
-                $tag->setId(Library::GUID());
+                $tag->setNewIdAndSlug();
                 $tag->setAccount($this->account);
                 $tag->setPrivacy($form->get('privacy')->getData());
 

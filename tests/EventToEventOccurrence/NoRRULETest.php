@@ -30,6 +30,7 @@ class NoRRULETest extends BaseTestWithDataBase
         $this->event->setEndWithObject(new \DateTime('2025-01-01 11:00:00', new \DateTimeZone('UTC')));
         $this->event->setTitle('Title');
         $this->event->setId('36573fb9-a021-4005-9fd2-3034cda50a72');
+        $this->event->setSlug('36573fb9-a021-4005-9fd2-3034cda50a72');
         $this->event->setPrivacy(0);
 
         $this->entityManager->persist($this->event);
