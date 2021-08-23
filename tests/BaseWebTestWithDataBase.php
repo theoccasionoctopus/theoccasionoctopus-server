@@ -32,7 +32,7 @@ abstract class BaseWebTestWithDataBase extends WebTestCase
     /**
      * {@inheritDoc}
      */
-    public function setUp()
+    public function setUp(): void
     {
 
         $this->client = self::createClient();

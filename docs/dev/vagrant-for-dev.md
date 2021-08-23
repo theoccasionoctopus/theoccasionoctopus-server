@@ -99,7 +99,7 @@ into `.env.test.local`
 
 Then run
 
-    ./bin/phpunit
+    ./vendor/bin/phpunit
 
 ## Linting
 

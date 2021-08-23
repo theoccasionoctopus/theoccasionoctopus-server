@@ -29,7 +29,7 @@ abstract class BaseTestWithDataBase extends KernelTestCase
     /**
      * {@inheritDoc}
      */
-    public function setUp()
+    public function setUp(): void
     {
         $kernel = self::bootKernel();
 

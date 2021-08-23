@@ -48,4 +48,4 @@ jobs:
         run: composer install --prefer-dist --no-progress --no-suggest
 
       - name: Run Tests
-        run: php bin/phpunit
+        run: php vendor/bin/phpunit
