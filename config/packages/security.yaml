@@ -1,4 +1,6 @@
 security:
+    enable_authenticator_manager: true
+
     encoders:
         App\Entity\User:
             algorithm: auto
@@ -16,7 +18,6 @@ security:
             security: false
         main:
             pattern: ^/
-            anonymous: true
             lazy: true
             guard:
                 authenticators:

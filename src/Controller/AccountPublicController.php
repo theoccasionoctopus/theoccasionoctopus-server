@@ -35,7 +35,7 @@ class AccountPublicController extends BaseController
         }
         $this->account = $accountLocal->getAccount();
         // If user is logged in, do they have special read permissions here?
-        $user= $this->get('security.token_storage')->getToken()->getUser();
+        $user = $this->get('security.token_storage')->getToken() ? $this->get('security.token_storage')->getToken()->getUser() : null;
         if ($user && $user instanceof User) {
             if ($doctrine->getRepository(Account::class)->findAccountsManagedByUserThatFollowsThisAccount($user, $this->account)) {
                 $this->account_permission_read_only_followers = true;

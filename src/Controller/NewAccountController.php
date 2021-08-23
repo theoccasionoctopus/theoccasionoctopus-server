@@ -29,7 +29,7 @@ class NewAccountController extends BaseController
     {
 
         // Must be a user!
-        $user= $this->get('security.token_storage')->getToken()->getUser();
+        $user = $this->get('security.token_storage')->getToken() ? $this->get('security.token_storage')->getToken()->getUser() : null;
         if (!($user instanceof User)) {
             throw new  AccessDeniedException('You must log in first!');
         }

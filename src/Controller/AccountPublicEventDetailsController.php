@@ -67,7 +67,7 @@ class AccountPublicEventDetailsController extends AccountPublicController
 
         # Add to account buttons?
         $addedToAccountsUserManages = [];
-        $user = $this->get('security.token_storage')->getToken()->getUser();
+        $user = $this->get('security.token_storage')->getToken() ? $this->get('security.token_storage')->getToken()->getUser() : null;
         if ($user instanceof User) {
             foreach ($doctrine->getRepository(Account::class)->findUserCanManage($user) as $addToAccount) {
                 if ($addToAccount->getId() != $this->account->getId()) {

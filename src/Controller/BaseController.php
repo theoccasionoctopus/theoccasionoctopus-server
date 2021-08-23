@@ -49,7 +49,7 @@ abstract class BaseController extends AbstractController
             'userTimeZone' => $this->userTimeZoneCode,
         );
 
-        $user = $this->get('security.token_storage')->getToken()->getUser();
+        $user = $this->get('security.token_storage')->getToken() ? $this->get('security.token_storage')->getToken()->getUser() : null;
         if ($user instanceof User) {
             $doctrine = $this->getDoctrine();
             $repository = $doctrine->getRepository(Account::class);

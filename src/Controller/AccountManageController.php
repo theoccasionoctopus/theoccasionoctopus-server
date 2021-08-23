@@ -40,7 +40,7 @@ class AccountManageController extends BaseController
 
         // Must be a user
         // (We check this after loading the account specifically so that $this->account is still set)
-        $user= $this->get('security.token_storage')->getToken()->getUser();
+        $user = $this->get('security.token_storage')->getToken() ? $this->get('security.token_storage')->getToken()->getUser() : null;
         if (!($user instanceof User)) {
             throw new AccessDeniedRedirectToPublicURLIfPossibleException();
         }

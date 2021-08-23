@@ -17,7 +17,7 @@ class IndexController extends BaseController
     {
         $this->setUp($request);
 
-        $user= $this->get('security.token_storage')->getToken()->getUser();
+        $user = $this->get('security.token_storage')->getToken() ? $this->get('security.token_storage')->getToken()->getUser() : null;
         if ($user instanceof User) {
             if (true) { # TODO if email verified
 

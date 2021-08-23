@@ -23,7 +23,7 @@ class UserController extends BaseController
     {
 
         // If already logged in, go to homepage
-        $user= $this->get('security.token_storage')->getToken()->getUser();
+        $user = $this->get('security.token_storage')->getToken() ? $this->get('security.token_storage')->getToken()->getUser() : null;
         if ($user instanceof User) {
             return $this->redirectToRoute('index');
         }
@@ -47,7 +47,7 @@ class UserController extends BaseController
         }
 
         // If already logged in, go to homepage
-        $user= $this->get('security.token_storage')->getToken()->getUser();
+        $user = $this->get('security.token_storage')->getToken() ? $this->get('security.token_storage')->getToken()->getUser() : null;
         if ($user instanceof User) {
             return $this->redirectToRoute('index');
         }
