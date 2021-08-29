@@ -16,6 +16,7 @@ use App\Entity\Account;
 use App\Library;
 use Symfony\Component\Security\Guard\GuardAuthenticatorHandler;
 use Psr\Log\LoggerInterface;
+use App\Message\NewUserMessage;
 
 class UserController extends BaseController
 {
@@ -83,6 +84,9 @@ class UserController extends BaseController
 
                 // Log
                 $logger->info('New user created', ['user_id'=>$user->getId()]);
+
+                // Message
+                $this->dispatchMessage(new NewUserMessage($user->getId()));
 
                 // Log user in ourselves and redirect
                 $token = $formAuthenticator->createAuthenticatedToken($user, 'main');
