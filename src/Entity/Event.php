@@ -742,10 +742,25 @@ class Event implements InterfaceStartEnd
         if ($this->setTimezone($sourceEvent->getTimezone())) {
             $r = true;
         }
-        if ($this->setStartWithObject($sourceEvent->getStart())) {
+        // Use setStartWithInts & setEndWithInts so that null hour/min/sec values (for all day events) are copied across.
+        if ($this->setStartWithInts(
+            $sourceEvent->getStartYear(),
+            $sourceEvent->getStartMonth(),
+            $sourceEvent->getStartDay(),
+            $sourceEvent->getStartHour(),
+            $sourceEvent->getStartMinute(),
+            $sourceEvent->getStartSecond()
+        )) {
             $r = true;
         }
-        if ($this->setEndWithObject($sourceEvent->getEnd())) {
+        if ($this->setEndWithInts(
+            $sourceEvent->getEndYear(),
+            $sourceEvent->getEndMonth(),
+            $sourceEvent->getEndDay(),
+            $sourceEvent->getEndHour(),
+            $sourceEvent->getEndMinute(),
+            $sourceEvent->getEndSecond()
+        )) {
             $r = true;
         }
         if ($this->setCancelled($sourceEvent->getCancelled())) {
