@@ -34,7 +34,11 @@
 
         </ul>
 
-        <a class="button" href="{{ url('api1_account_tags_show_tag_json',{'account_id':account.id ,'tag_slug':tag.slug}) }}">Export JSON</a>
+        {%  include 'account/public/common/share_export.html.twig' with {
+        'title': 'Tags',
+        'share_export_url': url('account_public_tag_show_tag',{'account_username':account.username,'tag_slug': tag.slug }),
+        'share_export_tag_json_url':  url('api1_account_tags_show_tag_json',{'account_id':account.id ,'tag_slug':tag.slug}),
+        } %}
 
     </div>
 

@@ -20,7 +20,12 @@
             {%  endfor %}
         </ul>
 
-        <a class="button" href="{{ url('api1_account_tags_json',{'account_id':account.id }) }}">Export JSON</a>
+
+        {%  include 'account/public/common/share_export.html.twig' with {
+        'title': 'Tags',
+        'share_export_url': url('account_public_tag',{'account_username':account.username}),
+        'share_export_tags_json_url':  url('api1_account_tags_json',{'account_id':account.id }),
+        } %}
 
     </div>
 

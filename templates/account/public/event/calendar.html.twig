@@ -20,6 +20,15 @@
         <a class="button" href="#" onclick=" $('#calendar').fullCalendar('next'); return false;">NEXT</a>
     </div>
 
+    <div class="content">
+        {%  include 'account/public/common/share_export.html.twig' with {
+        'title': 'Events',
+        'share_export_url': url('account_public_event',{'account_username':account.username}),
+        'share_export_events_json_url':  url('api1_account_events_json',{'account_id':account.id }),
+        'share_export_ical_url':  url('api1_account_events_ical',{'account_id':account.id }),
+        } %}
+    </div>
+
 {% endblock %}
 
 {% block javascripts %}

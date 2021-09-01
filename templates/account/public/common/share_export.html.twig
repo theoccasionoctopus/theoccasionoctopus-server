@@ -1,0 +1,45 @@
+<div id="share_export_content">
+    <h3>Share / Export</h3>
+
+    <a href="mailto:?subject={{ title | url_encode  }}&body={{ share_export_url | url_encode  }}" title="Email" class="button">
+        <i class="fas fa-envelope" title="Email"></i> Email
+    </a>
+    <a href="https://twitter.com/intent/tweet?text={{ title | url_encode  }}%20{{ share_export_url | url_encode  }}" target="_blank" title="Twitter" class="button">
+        <i class="fab fa-twitter" title="Twitter"></i> Twitter
+    </a>
+    <a href="https://www.facebook.com/sharer/sharer.php?u={{ share_export_url | url_encode  }}" target="_blank" title="Facebook" class="button">
+        <i class="fab fa-facebook" title="Facebook"></i> Facebook
+    </a>
+
+
+    {%  if share_export_tags_json_url is defined and share_export_tags_json_url %}
+        <a class="button" href="{{ share_export_tags_json_url }}">
+            <i class="fas fa-download"></i> Tags JSON
+        </a>
+    {%  endif %}
+    {%  if share_export_tag_json_url is defined and share_export_tag_json_url %}
+        <a class="button" href="{{ share_export_tag_json_url }}">
+            <i class="fas fa-download"></i> Tag JSON
+        </a>
+    {%  endif %}
+    {%  if share_export_events_json_url is defined and share_export_events_json_url %}
+        <a class="button" href="{{ share_export_events_json_url }}">
+            <i class="fas fa-download"></i> Events JSON
+        </a>
+    {%  endif %}
+    {%  if share_export_event_json_url is defined and share_export_event_json_url %}
+        <a class="button" href="{{ share_export_event_json_url }}">
+            <i class="fas fa-download"></i> Event JSON
+        </a>
+    {%  endif %}
+    {%  if share_export_ical_url is defined and share_export_ical_url %}
+        <a class="button" href="{{ share_export_ical_url }}">
+            <i class="fas fa-download"></i> ICAL
+        </a>
+        <div>
+            <h4>Google Calendar</h4>
+            Click the plus sign next to "Other calendars". Select "From URL" and copy and paste this in:
+            <input type="url" value="{{ share_export_ical_url }}" readonly>
+        </div>
+    {%  endif %}
+</div>

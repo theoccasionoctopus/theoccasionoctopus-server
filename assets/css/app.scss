@@ -276,3 +276,16 @@ form.styled {
     flex-basis: 0;
   }
 }
+
+
+#share_export_content {
+  padding: 10px;
+  margin: 10px;
+  border: 1px solid black;
+  border-radius: 4px;
+  input[type="url"] {
+    display: block;
+    width: 100%;
+  }
+}
+

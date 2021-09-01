@@ -113,8 +113,6 @@
 
             {%  endif %}
 
-            <a class="button" href="{{ url('api1_account_events_show_event_json',{'account_id':account.id ,'event_slug':event.slug}) }}"><i class="fas fa-download"></i> Export JSON</a>
-
 
             {%  for addToAccountData in addedToAccountsUserManages %}
                 {%  if addToAccountData.event %}
@@ -133,6 +131,11 @@
                 {%  endif %}
             {%  endfor %}
 
+            {%  include 'account/public/common/share_export.html.twig' with {
+            'title': event.title,
+            'share_export_url': url('account_public_event_show_event',{'account_username':account.username,'event_slug': event.slug }),
+            'share_export_event_json_url':  url('api1_account_events_show_event_json',{'account_id':account.id ,'event_slug':event.slug})
+            } %}
         </div>
 
     </div>
