@@ -49,7 +49,7 @@ class ICalBuilderForAccount
     public function getEvent(Event $event)
     {
         $txt = Library::getIcalLine('BEGIN', 'VEVENT');
-        $txt .= Library::getIcalLine('UID', $event->getId().'@'.$this->uidSuffix);
+        $txt .= Library::getIcalLine('UID', $event->getAccount()->getId().'_'.$event->getSlug().'@'.$this->uidSuffix);
 
         if ($event->getDeleted()) {
             $txt .= Library::getIcalLine('SUMMARY', $event->getTitle(). " [DELETED]");
