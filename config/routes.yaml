@@ -325,6 +325,10 @@ api1_account_events_show_event_json:
     controller: App\Controller\APIV1AccountEventDetailsController::showJSON
     methods:  [GET]
 
+api1_account_events_show_event_ical:
+    path: /api/v1/account/{account_id}/event/{event_slug}.ical
+    controller: App\Controller\APIV1AccountEventDetailsController::showICAL
+    methods:  [GET]
 
 api1_account_events_edit_event_json:
     path: /api/v1/account/{account_id}/event/{event_slug}.json

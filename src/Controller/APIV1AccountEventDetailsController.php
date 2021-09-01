@@ -92,6 +92,22 @@ class APIV1AccountEventDetailsController extends APIV1AccountController
         );
     }
 
+    public function showICAL($account_id, $event_slug, Request $request)
+    {
+        $this->buildEvent($account_id, $event_slug, $request);
+
+        $builder = new ICalBuilderForAccount($this->account, $this->container);
+        $out = $builder->getStart();
+        $out .= $builder->getEvent($this->event);
+        $out .= $builder->getEnd();
+
+        return new Response(
+            $out,
+            Response::HTTP_OK,
+            ['content-type' => 'text/calendar']
+        );
+    }
+
     public function editJSON($account_id, $event_slug, Request $request, HistoryWorkerService $historyWorkerService)
     {
         $this->buildEvent($account_id, $event_slug, $request);
