@@ -44,6 +44,16 @@ There is no option to list event occurrences in iCal - the iCal format is better
 
 Note this is the event Id, not the event occurrence ID.
 
+## Read a single Event in iCal
+
+
+| Information | Value                                            |
+| ----------- | -------------------------------------------------|
+| Type        | `GET`                                            |
+| URL         | `/api/v1/account/ACCOUNT-ID/event/EVENT-ID.ical` |
+
+Note this is the event Id, not the event occurrence ID.
+
 
 ## Edit an Event
 
